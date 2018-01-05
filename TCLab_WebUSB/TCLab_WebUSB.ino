@@ -47,7 +47,7 @@
 // WebUSB WebUSBSerial(1, "github.com/webusb/arduino/tree/gh-pages/demos/console/index.html");
 // WebUSB WebUSBSerial(1, "");
 
-WebUSB WebUSBSerial(1, "webusb.github.io/arduino/demos/console/");
+WebUSB WebUSBSerial(1, "jckantor.github.io/TClab/demos/console/");
 
 #define Serial WebUSBSerial
 
