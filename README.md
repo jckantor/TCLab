@@ -1,4 +1,4 @@
-# TClab
+# TCLab
 Python files and interfaces for the Process Control Temperature Control Laboratory.
 
 * [https://jckantor.github.io/TClab/demos/](https://jckantor.github.io/TClab/demos/)
