@@ -1,33 +1,48 @@
-import os
 import sys
 import time
+import serial
+from serial.tools import list_ports
 from math import ceil, floor
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from IPython import display
-
-from .VocCommChannel import VocCommChannel
-
+        
 class TCLab(object):
 
-    voc = None
-
-    def __init__(self):
-        self.channel = VocCommChannel()
+    def __init__(self, port=None, baud=9600):
+        if (sys.platform == 'darwin') and not port:
+            port = '/dev/tty.wchusbserial1410'
+        else:
+            port = self.findPort()
+        print('Opening connection')
+        self.sp = serial.Serial(port=port, baudrate=baud, timeout=2)
+        self.sp.flushInput()
+        self.sp.flushOutput()
         time.sleep(3)
-        print('TCLab connected via Arduino using WebUSB')
+        print('TCLab connected via Arduino on port ' + port)
         self.start()
-
-    def send(self, msg):
-        # print("DBG: sending: {}".format(msg))
-        self.channel.write(msg)
-
-    def rcv(self):
-        msg = self.channel.read()
-        # print("DBG: rcv: {}".format(msg))
-        return msg
         
+    def findPort(self):
+        found = False
+        for port in list(list_ports.comports()):
+            # Arduino Uno
+            if port[2].startswith('USB VID:PID=16D0:0613'):
+                port = port[0]
+                found = True
+            # HDuino
+            if port[2].startswith('USB VID:PID=1A86:7523'):
+                port = port[0]
+                found = True                
+        if (not found):
+            print('Arduino COM port not found')
+            print('Please ensure that the USB cable is connected')
+            print('--- Printing Serial Ports ---')            
+            for port in list(serial.tools.list_ports.comports()):
+                print(port[0] + ' ' + port[1] + ' ' + port[2])
+            port = 'COM3'
+        return port
+    
     def initplot(self,tf=20):
         # create an empty plot, and keep the line object around
         plt.figure(figsize=(12,6))
@@ -40,7 +55,7 @@ class TCLab(object):
         plt.xlabel('Seconds')
         plt.legend(['T1','T2'])
         plt.grid()
-    
+
         self.ax2 = plt.subplot(2,1,2)
         self.line_Q1, = plt.step([],[],where='post',lw=2,alpha=0.8)
         self.line_Q2, = plt.step([],[],where='post',lw=2,alpha=0.8)
@@ -50,7 +65,7 @@ class TCLab(object):
         plt.xlabel('Seconds')
         plt.legend(['Q1','Q2'])
         plt.grid()
-    
+
         plt.tight_layout()
         
     def updateplot(self):
@@ -153,23 +168,20 @@ class TCLab(object):
     def read(self,cmd):
         cmd_str = self.build_cmd_str(cmd,'')
         try:
-            # self.send(cmd_str.encode())
-            self.send(cmd_str)
-        except Exception as e:
-            print("DBG: read: EXCEPTION: {}".format(e))
+            self.sp.write(cmd_str.encode())
+            self.sp.flush()
+        except Exception:
             return None
-        msg = self.rcv().replace("\r\n", "")
-        return msg
+        return self.sp.readline().decode('UTF-8').replace("\r\n", "")
     
     def write(self,cmd,pwm):       
         cmd_str = self.build_cmd_str(cmd,(pwm,))
         try:
-            self.send(cmd_str) # .encode()) # convert to bytes - is it needed?
-        except Exception as e:
-            print("DBG: write: EXCEPTION: {}".format(e))
+            self.sp.write(cmd_str.encode())
+            self.sp.flush()
+        except:
             return None
-        msg = self.rcv().replace("\r\n", "")
-        return msg
+        return self.sp.readline().decode('UTF-8').replace("\r\n", "")
     
     def build_cmd_str(self,cmd, args=None):
         """
@@ -187,6 +199,11 @@ class TCLab(object):
         return "{cmd} {args}\n".format(cmd=cmd, args=args)
         
     def close(self):
+        try:
+            self.sp.close()
+            print('Arduino disconnected successfully')
+        except:
+            print('Problems disconnecting from Arduino.')
+            print('Please unplug and replug Arduino.')
         return True
-
-
+    

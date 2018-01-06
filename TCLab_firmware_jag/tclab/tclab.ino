@@ -43,10 +43,6 @@
 
 #include <WebUSB.h>
 
-// WebUSB WebUSBSerial(1, "demo.gazak.com");
-// WebUSB WebUSBSerial(1, "github.com/webusb/arduino/tree/gh-pages/demos/console/index.html");
-// WebUSB WebUSBSerial(1, "jckantor.github.io/TClab/demos/console/");
-
 WebUSB WebUSBSerial(1, "");
 
 #define Serial WebUSBSerial
@@ -288,7 +284,7 @@ void setup() {
 // arduino main event loop
 void loop() {
   readCommand();
-  echoCommand();
+  // echoCommand();
   parseCommand();
   checkTimeout();
   dispatchCommand();
