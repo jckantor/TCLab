@@ -1,19 +1,20 @@
 /*
   TCLab Temperature Control Lab Firmware
   Jeffrey Kantor
-  October, 2017
+  January, 2018
 
-  This firmware is loaded into the Temperature Control Laboratory Arduino to
+  This Arduino firmware is loaded into the Temperature Control Laboratory to
   provide a high level interface to the Temperature Control Lab. The firmware
-  scans the serial port looking for case-insensitive commands:
+  scans the serial port looking for case-insensitive commands. Each command returns
+  a result string.
 
-  A         software restart
-  Q1 int    set Heater 1, range 0 to 255 subject to limit
-  Q2 int    set Heater 2, range 0 to 255 subject to limit
-  T1        get Temperature T1, returns deg C as string
-  T2        get Temperature T2, returns dec C as string
+  A         software restart. Returns "Start".
+  Q1 int    set Heater 1, range 0 to 255 subject to limit. Returns value of Q1.
+  Q2 int    set Heater 2, range 0 to 255 subject to limit. Returns value of Q2.
+  T1        get Temperature T1. Returns value of T1 in deg C.
+  T2        get Temperature T2. Returns value of T2 in deg C.
   V         get firmware version string
-  X         stop, enter sleep mode
+  X         stop, enter sleep mode. Returns "Stop".
 
   Limits on the heater can be configured with the constants below.
 
@@ -42,7 +43,7 @@
 */
 
 // constants
-const String vers = "0.03";    // version of this firmware
+const String vers = "0.04";    // version of this firmware
 const int baud = 9600;         // serial baud rate
 const char sp = ' ';           // command separator
 const char nl = '\n';          // command terminator
@@ -56,13 +57,13 @@ const int pinQ2   = 5;         // Q2
 const int pinLED1 = 9;         // LED1
 
 // high limits expressed (units of pin values)
-const int limQ1   = 150;       // Q1 limit
-const int limQ2   = 150;       // Q2 limit
+const int limQ1   = 255;       // Q1 limit
+const int limQ2   = 255;       // Q2 limit
 const int limT1   = 310;       // T1 high alarm (50 deg C)
 const int limT2   = 310;       // T2 high alarm (50 deg C)
 
 // LED1 levels
-const int hiLED   =  50;       // hi LED
+const int hiLED   =  60;       // hi LED
 const int loLED   = hiLED/16;  // lo LED
 
 // global variables

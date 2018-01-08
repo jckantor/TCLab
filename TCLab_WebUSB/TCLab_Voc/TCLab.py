@@ -1,58 +1,33 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Jan  7 15:06:51 2018
-
-@author: jeff
-"""
-
+import os
 import sys
 import time
-import serial
-from serial.tools import list_ports
 from math import ceil, floor
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from IPython import display
-        
+
+from .VocCommChannel import VocCommChannel
+
 class TCLab(object):
 
-    def __init__(self, port=None, baud=9600):
-        if not port:
-            port = self.findPort()
-        print('Opening connection')
-        self.sp = serial.Serial(port=port, baudrate=baud, timeout=2)
-        print(self.sp.isOpen())
-        print('TCLab connected via Arduino on port ' + port)
-        self.sp.flushInput()
-        self.sp.flushOutput()
+    voc = None
+
+    def __init__(self):
+        self.channel = VocCommChannel()
         time.sleep(3)
+        print('TCLab connected via Arduino using WebUSB')
         self.start()
+
+    def send(self, msg):
+        # print("DBG: sending: {}".format(msg))
+        self.channel.write(msg)
+
+    def rcv(self):
+        msg = self.channel.read()
+        # print("DBG: rcv: {}".format(msg))
+        return msg
         
-    def findPort(self):
-        found = False
-        for comport in list(list_ports.comports()):
-            # Arduino Uno
-            if comport[2].startswith('USB VID:PID=16D0:0613'):
-                port = comport[0]
-                found = True
-            # HDuino
-            if comport[2].startswith('USB VID:PID=1A86:7523'):
-                port = comport[0]
-                found = True                
-            # Leonardo
-            if comport[2].startswith('USB VID:PID=2341:8036'):
-                port = comport[0]
-                found = True
-        if (not found):
-            print('Arduino COM port not found')
-            print('Please ensure that the USB cable is connected')
-            print('--- Printing Serial Ports ---')            
-            for port in list(serial.tools.list_ports.comports()):
-                print(port[0] + ' ' + port[1] + ' ' + port[2])
-        return port
-    
     def initplot(self,tf=20):
         # create an empty plot, and keep the line object around
         plt.figure(figsize=(12,6))
@@ -65,7 +40,7 @@ class TCLab(object):
         plt.xlabel('Seconds')
         plt.legend(['T1','T2'])
         plt.grid()
-
+    
         self.ax2 = plt.subplot(2,1,2)
         self.line_Q1, = plt.step([],[],where='post',lw=2,alpha=0.8)
         self.line_Q2, = plt.step([],[],where='post',lw=2,alpha=0.8)
@@ -75,7 +50,7 @@ class TCLab(object):
         plt.xlabel('Seconds')
         plt.legend(['Q1','Q2'])
         plt.grid()
-
+    
         plt.tight_layout()
         
     def updateplot(self):
@@ -178,20 +153,23 @@ class TCLab(object):
     def read(self,cmd):
         cmd_str = self.build_cmd_str(cmd,'')
         try:
-            self.sp.write(cmd_str.encode())
-            self.sp.flush()
-        except Exception:
+            # self.send(cmd_str.encode())
+            self.send(cmd_str)
+        except Exception as e:
+            print("DBG: read: EXCEPTION: {}".format(e))
             return None
-        return self.sp.readline().decode('UTF-8').replace("\r\n", "")
+        msg = self.rcv().replace("\r\n", "")
+        return msg
     
     def write(self,cmd,pwm):       
         cmd_str = self.build_cmd_str(cmd,(pwm,))
         try:
-            self.sp.write(cmd_str.encode())
-            self.sp.flush()
-        except:
+            self.send(cmd_str) # .encode()) # convert to bytes - is it needed?
+        except Exception as e:
+            print("DBG: write: EXCEPTION: {}".format(e))
             return None
-        return self.sp.readline().decode('UTF-8').replace("\r\n", "")
+        msg = self.rcv().replace("\r\n", "")
+        return msg
     
     def build_cmd_str(self,cmd, args=None):
         """
@@ -209,11 +187,32 @@ class TCLab(object):
         return "{cmd} {args}\n".format(cmd=cmd, args=args)
         
     def close(self):
-        try:
-            self.sp.close()
-            print('Arduino disconnected successfully')
-        except:
-            print('Problems disconnecting from Arduino.')
-            print('Please unplug and replug Arduino.')
         return True
-    
+
+
+class TCLabClockError(RuntimeError):
+    def __init__(self, message):
+        RuntimeError.__init__(self, message)
+
+def clock(tfinal, tstep=1, strict=False):
+    start_time = time.time()
+    prev_time = start_time
+    fuzz = 0.005
+    k = 0
+    while (prev_time-start_time) <= tfinal  + fuzz:
+        if strict and ((prev_time - start_time) > (k*tstep + fuzz)):
+            raise TCLabClockError("TCLab failed to keep up with real time.")
+        yield round(prev_time - start_time,2)
+        if strict:
+            tsleep = (k+1)*tstep - (time.time() - start_time) - fuzz
+        else:
+            tsleep = tstep - (time.time() - prev_time) - fuzz
+        try:
+            if tsleep >= fuzz:
+                time.sleep(tsleep)
+            prev_time = time.time()
+            k += 1
+        except:
+            self.stop()
+
+
