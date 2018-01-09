@@ -1,11 +1,12 @@
 # TCLab
 Python files and interfaces for the Process Control Temperature Control Laboratory.
 
-* [https://jckantor.github.io/TCLab/demos/](https://jckantor.github.io/TCLab/demos/)
+## Overview
 
-## External Documentation
+This TCLab library comprises three main elements:
 
-This version of the Temperature Control Laboratory utilizes the WebUSB protocol to directly connect the Arduino device
-to a browser window. The requirements include a recent version of the Chrome Browser (Vers 61 or later).
+* An Arduino sketch that implements a simple protocol for communicating with the 
+Temperature Control Laboratory device,
+* A Python library to provide a high level interface with the device,
+* A collection of Jupyter notebooks illustrating concepts in process control. 
 
-* [https://github.com/webusb/arduino/](https://github.com/webusb/arduino/)
