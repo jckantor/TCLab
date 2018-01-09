@@ -1,19 +1,19 @@
 /*
   TCLab Temperature Control Lab Firmware
   Jeffrey Kantor
-  October, 2017
+  January, 2018
 
-  This firmware is loaded into the Temperature Control Laboratory Arduino to
-  provide a high level interface to the Temperature Control Lab. The firmware
-  scans the serial port looking for case-insensitive commands:
+  This firmware provides a high level interface to the Temperature Control Lab. The
+  firmware scans the serial port looking for case-insensitive commands. Each command returns
+  a result string.
 
-  A         software restart
-  Q1 int    set Heater 1, range 0 to 255 subject to limit
-  Q2 int    set Heater 2, range 0 to 255 subject to limit
-  T1        get Temperature T1, returns deg C as string
-  T2        get Temperature T2, returns dec C as string
+  A         software restart. Returns "Start".
+  Q1 int    set Heater 1, range 0 to 255 subject to limit. Returns value of Q1.
+  Q2 int    set Heater 2, range 0 to 255 subject to limit. Returns value of Q2.
+  T1        get Temperature T1. Returns value of T1 in deg C.
+  T2        get Temperature T2. Returns value of T2 in deg C.
   V         get firmware version string
-  X         stop, enter sleep mode
+  X         stop, enter sleep mode. Returns "Stop".
 
   Limits on the heater can be configured with the constants below.
 
@@ -41,14 +41,8 @@
   The constants can be used to configure the firmware.
 */
 
-#include <WebUSB.h>
-
-WebUSB WebUSBSerial(1, "");
-
-#define Serial WebUSBSerial
-
 // constants
-const String vers = "0.03";    // version of this firmware
+const String vers = "1.0.0";   // version of this firmware
 const int baud = 9600;         // serial baud rate
 const char sp = ' ';           // command separator
 const char nl = '\n';          // command terminator
@@ -62,18 +56,17 @@ const int pinQ2   = 5;         // Q2
 const int pinLED1 = 9;         // LED1
 
 // high limits expressed (units of pin values)
-const int limQ1   = 150;       // Q1 limit
-const int limQ2   = 150;       // Q2 limit
+const int limQ1   = 255;       // Q1 limit
+const int limQ2   = 255;       // Q2 limit
 const int limT1   = 310;       // T1 high alarm (50 deg C)
 const int limT2   = 310;       // T2 high alarm (50 deg C)
 
 // LED1 levels
-const int hiLED   =  50;       // hi LED
+const int hiLED   =  60;       // hi LED
 const int loLED   = hiLED/16;  // lo LED
 
 // global variables
 char Buffer[64];               // buffer for parsing serial input
-int buffer_index = 0;          // index for Buffer
 String cmd;                    // command 
 int pv;                        // command pin value
 int ledStatus;                 // 0: sleep mode
@@ -85,54 +78,7 @@ int brdStatus = 1;             // board status 0:sleep, 1:normal
 int Q1 = 0;                    // last value written to Q1 pin
 int Q2 = 0;                    // last value written to Q2 poin
 int alarmStatus;               // hi temperature alarm status
-long tlast;                    // millis when last host command
-
-boolean newData = false;
-
-void readCommand() {
-  while (Serial && (Serial.available() > 0) && (newData == false)) {
-    int byte = Serial.read();
-    if ( (byte != '\r') && (byte != '\n') && (buffer_index < 64)) {
-      Buffer[buffer_index] = byte;
-      buffer_index++;
-    }
-    else {
-      newData = true;
-    }
-  }
-}
-
-void echoCommand() {
-  if (newData) {
-    Serial.write("Received Command: ");
-    Serial.write(Buffer, buffer_index);
-    Serial.write("\r\n");
-    Serial.flush();
-  }
-}
-
-void parseCommand(void) {
-
-  if (newData) {
-    String read_ = String(Buffer);
-
-    // separate command from associated data
-    int idx = read_.indexOf(sp);
-    cmd = read_.substring(0, idx);
-    cmd.trim();
-    cmd.toUpperCase();
-
-    // extract data. toInt() returns 0 on error
-    String data = read_.substring(idx + 1);
-    data.trim();
-    pv = data.toFloat();
-
-    // reset parameter for next command
-    memset(Buffer, 0, sizeof(Buffer));
-    buffer_index = 0;
-    newData = false;
-  }
-}
+int tlast;                     // millis when last host command
 
 // set Heater 1 to pv with hard limits imposed.
 void setHeater1(int pv) {
@@ -213,9 +159,6 @@ void dispatchCommand(void) {
     brdStatus = 0;
     Serial.println("Stop");
   }
-  // Clear command to keep entering the loop over and over
-  cmd = "";
-  Serial.flush();  
 }
 
 void checkAlarm(void) {
@@ -272,23 +215,19 @@ void updateStatus(void) {
 // arduino startup
 void setup() {
   analogReference(EXTERNAL);
+  Serial.begin(baud); 
   while (!Serial) {
     ; // wait for serial port to connect.
   }
-  Serial.begin(baud); 
-  Serial.flush();
   setHeater1(0);
   setHeater2(0);
 }
 
 // arduino main event loop
 void loop() {
-  readCommand();
-  // echoCommand();
-  parseCommand();
+  parseSerial();
   checkTimeout();
   dispatchCommand();
   checkAlarm();
   updateStatus();
 }
-

@@ -19,15 +19,15 @@ from IPython import display
 class TCLab(object):
 
     def __init__(self, port=None, baud=9600):
+        print('Opening TCLab connection')
         if not port:
             port = self.findPort()
-        print('Opening connection')
         self.sp = serial.Serial(port=port, baudrate=baud, timeout=2)
-        print(self.sp.isOpen())
-        print('TCLab connected via Arduino on port ' + port)
         self.sp.flushInput()
         self.sp.flushOutput()
         time.sleep(3)
+        if self.sp.isOpen():
+            print('TCLab connection open on port ' + port)
         self.start()
         
     def findPort(self):
