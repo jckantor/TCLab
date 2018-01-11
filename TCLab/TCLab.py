@@ -72,9 +72,9 @@ class TCLab(object):
         return
 
     def send(self,msg):
+        self.sp.write((msg + '\r\n').encode())
         if self.debug:
             print('Sent: "' + msg + '"')
-        self.sp.write(msg.encode())
         self.sp.flush()
         
     def receive(self):

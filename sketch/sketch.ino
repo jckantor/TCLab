@@ -38,7 +38,7 @@
 
 // constants
 const String vers = "0.1.0";   // version of this firmware
-const int baud = 9600;         // serial baud rate
+const int baud = 19200;        // serial baud rate
 const char sp = ' ';           // command separator
 const char nl = '\n';          // command terminator
 
@@ -63,6 +63,7 @@ const int loLED   = hiLED/16;  // lo LED
 
 // global variables
 char Buffer[64];               // buffer for parsing serial input
+int buffer_index = 0;          // index for Buffer
 String cmd;                    // command 
 int pv;                        // command value
 int ledStatus;                 // 1: loLED
@@ -72,22 +73,50 @@ int ledStatus;                 // 1: loLED
 int Q1 = 0;                    // last value written to Q1 pin
 int Q2 = 0;                    // last value written to Q2 poin
 int alarmStatus;               // hi temperature alarm status
+boolean newData = false;       // boolean flag indicating new command
 
-void parseSerial(void) {
-  int ByteCount = Serial.readBytesUntil(nl,Buffer,sizeof(Buffer));
-  String read_ = String(Buffer);
-  memset(Buffer,0,sizeof(Buffer));
-   
-  // separate command from associated data
-  int idx = read_.indexOf(sp);
-  cmd = read_.substring(0,idx);
-  cmd.trim();
-  cmd.toUpperCase();
+void readCommand() {
+  while (Serial && (Serial.available() > 0) && (newData == false)) {
+    int byte = Serial.read();
+    if ( (byte != '\r') && (byte != '\n') && (buffer_index < 64)) {
+      Buffer[buffer_index] = byte;
+      buffer_index++;
+    }
+    else {
+      newData = true;
+    }
+  }
+}
 
-  // extract data. toInt() returns 0 on error or no data present
-  String data = read_.substring(idx+1);
-  data.trim();
-  pv = data.toInt();
+void echoCommand() {
+  if (newData) {
+    Serial.write("Received Command: ");
+    Serial.write(Buffer, buffer_index);
+    Serial.write("\r\n");
+    Serial.flush();
+  }
+}
+
+void parseCommand(void) {
+  if (newData) {
+    String read_ = String(Buffer);
+
+    // separate command from associated data
+    int idx = read_.indexOf(sp);
+    cmd = read_.substring(0, idx);
+    cmd.trim();
+    cmd.toUpperCase();
+
+    // extract data. toInt() returns 0 on error
+    String data = read_.substring(idx + 1);
+    data.trim();
+    pv = data.toFloat();
+
+    // reset parameter for next command
+    memset(Buffer, 0, sizeof(Buffer));
+    buffer_index = 0;
+    newData = false;
+  }
 }
 
 void dispatchCommand(void) {
@@ -128,6 +157,8 @@ void dispatchCommand(void) {
     setHeater2(0);
     Serial.println(cmd);
   }
+  Serial.flush();
+  cmd = "";
 }
 
 void checkAlarm(void) {
@@ -191,14 +222,15 @@ void setup() {
   }
   Serial.begin(baud); 
   Serial.flush();
-  Serial.setTimeout(10);
   setHeater1(0);
   setHeater2(0);
 }
 
 // arduino main event loop
 void loop() {
-  parseSerial();
+  readCommand();
+  //echoCommand();
+  parseCommand();
   dispatchCommand();
   checkAlarm();
   updateStatus();
