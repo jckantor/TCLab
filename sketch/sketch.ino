@@ -191,14 +191,14 @@ void updateStatus(void) {
     if ((millis() % 2000) > 1000) {
       analogWrite(pinLED1, loLED);
     } else {
-      analogWrite(pinLED1, 0);
+      analogWrite(pinLED1, loLED/4);
     }
   }
   else if (ledStatus == 4) {          // hight temperature alarm, heater on
     if ((millis() % 2000) > 1000) {
       analogWrite(pinLED1, hiLED);
     } else {
-      analogWrite(pinLED1, 0);
+      analogWrite(pinLED1, loLED);
     }
   }
 }
