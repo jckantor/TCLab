@@ -49,9 +49,10 @@ const int pinQ1   = 3;         // Q1
 const int pinQ2   = 5;         // Q2
 const int pinLED1 = 9;         // LED1
 
-// limit on heaters values
-const int limQ1   = 255;       // Q1 limit
-const int limQ2   = 255;       // Q2 limit
+// limit on heaters values.  A combined limit of 300 should
+// avoid overloads on a 5 watt USB power supply. 
+const int limQ1   = 200;       // Q1 limit
+const int limQ2   = 100;       // Q2 limit
 
 // temperature alarm limits expressed (units of pin values)
 const int limT1   = 310;       // T1 high alarm (50 deg C)

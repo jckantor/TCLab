@@ -15,7 +15,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from IPython import display
-        
+
 class TCLab(object):
 
     def __init__(self, port=None, baud=19200, debug=False):
@@ -177,7 +177,6 @@ class TCLab(object):
         plt.xlabel('Seconds')
         plt.legend(['Q1','Q2'])
         plt.grid()
-
         plt.tight_layout()
         
     def updateplot(self):
