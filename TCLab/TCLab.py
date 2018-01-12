@@ -17,10 +17,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 from IPython import display
 
-class TCLab(object):
+class tclab(object):
 
-    def __init__(self, port=None, baud=19200, debug=False):
-        print('Connecting to TCLab')
+    def __init__(self, port=None, baud=9600, debug=False):
+        print('Connecting to tclab')
         if not port:
             for comport in list(list_ports.comports()):
                 if comport[2].startswith((
@@ -50,7 +50,7 @@ class TCLab(object):
         self.send('T2')
         self._T2 = float(self.receive())
         if self.sp.isOpen():
-            print('TCLab connected on port ' + port)
+            print('tclab connected on port ' + port)
         self.tstart = time.time()
         self.updateLog()
         
@@ -66,10 +66,10 @@ class TCLab(object):
             self.send('X')
             self.receive()
             self.sp.close()
-            print('TCLab disconnected successfully.')
+            print('tclab disconnected successfully.')
         except:
-            print('Problem encountered while disconnecting from TCLab.')
-            print('Please unplug and replug TCLab.')
+            print('Problem encountered while disconnecting from tclab.')
+            print('Please unplug and replug tclab.')
         return
 
     def send(self,msg):
