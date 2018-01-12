@@ -40,7 +40,7 @@
 
 // constants
 const String vers = "1.1.0";   // version of this firmware
-const int baud = 19200;        // serial baud rate
+const int baud = 9600;         // serial baud rate
 const char sp = ' ';           // command separator
 const char nl = '\n';          // command terminator
 
