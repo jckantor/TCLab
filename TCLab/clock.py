@@ -17,10 +17,7 @@ def clock(tfinal, tstep=1, strict=False):
             tsleep = (k+1)*tstep - (time.time() - start_time) - fuzz
         else:
             tsleep = tstep - (time.time() - prev_time) - fuzz
-        try:
-            if tsleep >= fuzz:
-                time.sleep(tsleep)
-            prev_time = time.time()
-            k += 1
-        except:
-            self.stop()
+        if tsleep >= fuzz:
+            time.sleep(tsleep)
+        prev_time = time.time()
+        k += 1
