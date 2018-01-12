@@ -10,6 +10,7 @@ import sys
 import time
 import serial
 from serial.tools import list_ports
+
 from math import ceil, floor
 import pandas as pd
 import numpy as np
@@ -199,5 +200,3 @@ class TCLab(object):
             self.ax1.set_ylim(5*floor(Tmin/5), 5*ceil(Tmax/5))        
         display.clear_output(wait=True)
         display.display(plt.gcf())
-        
-             

@@ -4,12 +4,12 @@ class TCLabClockError(RuntimeError):
     def __init__(self, message):
         RuntimeError.__init__(self, message)
 
-def clock(tfinal, tstep=1, strict=False):
+def clock(tperiod, tstep=1, strict=False):
     start_time = time.time()
     prev_time = start_time
     fuzz = 0.005
     k = 0
-    while (prev_time-start_time) <= tfinal  + fuzz:
+    while (prev_time-start_time) <= tperiod  + fuzz:
         if strict and ((prev_time - start_time) > (k*tstep + fuzz)):
                 raise TCLabClockError("TCLab failed to keep up with real time.")
         yield round(prev_time - start_time,2)
