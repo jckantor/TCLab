@@ -86,7 +86,7 @@ class TCLab(object):
     
     @property
     def version(self):
-        self.send('V')
+        self.send('VER')
         return self.receive()
     
     @property
