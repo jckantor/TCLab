@@ -1,10 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Sun Jan  7 15:06:51 2018
-
-@author: jeff
-"""
 
 import sys
 import time
@@ -15,13 +10,13 @@ from math import ceil, floor
 import matplotlib.pyplot as plt
 from IPython import display
 
-class tclab(object):
+class TCLab(object):
 
     def __init__(self, port=None, baud=9600, debug=False):
         self.debug = debug
         self._Q1 = 0
         self._Q2 = 0
-        print('Connecting to tclab')
+        print('Connecting to TCLab')
         if not port:
             for comport in list(list_ports.comports()):
                 if comport[2].startswith((
@@ -40,7 +35,7 @@ class tclab(object):
         self.send('VER')
         self.version = self.receive()
         if self.sp.isOpen():
-            print('tclab connected on port ' + port)
+            print('TCLab connected on port ' + port)
         
     def __enter__(self):
         return self
@@ -54,9 +49,9 @@ class tclab(object):
             self.send('X')
             self.receive()
             self.sp.close()
-            print('tclab disconnected successfully.')
+            print('TCLab disconnected successfully.')
         except:
-            print('Problem encountered while disconnecting from tclab.')
+            print('Problem encountered while disconnecting from TCLab.')
             print('Please unplug and replug tclab.')
         return
 
@@ -89,6 +84,7 @@ class tclab(object):
             self.send('R1')
             self._Q1 = float(self.receive())
         else:
+            val = max(0, min(val, 100))
             self.send('Q1 ' + str(val))
             self._Q1 = float(self.receive())
         return self._Q1
@@ -98,6 +94,7 @@ class tclab(object):
             self.send('R2')
             self._Q2 = float(self.receive())
         else:
+            val = max(0, min(val, 100))
             self.send('Q2 ' + str(val))
             self._Q2 = float(self.receive())
         return self._Q2
