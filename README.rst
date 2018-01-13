@@ -46,8 +46,8 @@ Execute the following code ::
 
 If everything has worked, you should see the following output message ::
 
-    Oonnecting to TCLab
-	TCLab connected on port XXXX
+    Connecting to TCLab
+    TCLab connected on port XXXX
     20.58
 
 The number returned is the temperature of sensor T1 in deg C.
