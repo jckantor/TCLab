@@ -5,11 +5,6 @@ import time
 import serial
 from serial.tools import list_ports
 
-from math import ceil, floor
-import numpy as np
-import matplotlib.pyplot as plt
-from IPython import display
-
 class TCLab(object):
 
     def __init__(self, port=None, baud=9600, debug=False):
@@ -104,48 +99,3 @@ class TCLab(object):
             self.send('Q2 ' + str(val))
             self._Q2 = float(self.receive())
         return self._Q2
-
-    def initplot(self,tf=20):
-        # create an empty plot, and keep the line object around
-        plt.figure(figsize=(12,6))
-        self.ax1 = plt.subplot(2,1,1)
-        self.line_T1, = plt.plot(0,self.T1,lw=2,alpha=0.8)
-        self.line_T2, = plt.plot(0,self.T2,lw=2,alpha=0.8)
-        plt.xlim(0,1.05*tf)
-        plt.title('Temperature Control Lab')
-        plt.ylabel('Temperature / °C')
-        plt.xlabel('Time / Seconds')
-        plt.legend(['T1','T2'])
-        plt.grid()
-
-        self.ax2 = plt.subplot(2,1,2)
-        self.line_Q1, = plt.step(0,self.Q1(),where='post',lw=2,alpha=0.8)
-        self.line_Q2, = plt.step(0,self.Q2(),where='post',lw=2,alpha=0.8)
-        plt.xlim(0,1.05*tf)
-        plt.ylim(-5,110)
-        plt.ylabel('Percent of Maximum Power')
-        plt.xlabel('Time / Seconds')
-        plt.legend(['Q1','Q2'])
-        plt.grid()
-        plt.tight_layout()
-
-    def updateplot(self):
-        tp = time.time() - self.tstart
-        T1,T2,Q1,Q2 = self.T1,self.T2,self.Q1(),self.Q2()
-        self.line_T1.set_xdata(np.append(self.line_T1.get_xdata(),tp))
-        self.line_T1.set_ydata(np.append(self.line_T1.get_ydata(),T1))
-        self.line_T2.set_xdata(np.append(self.line_T2.get_xdata(),tp))
-        self.line_T2.set_ydata(np.append(self.line_T2.get_ydata(),T2))
-        self.line_Q1.set_xdata(np.append(self.line_Q1.get_xdata(),tp))
-        self.line_Q1.set_ydata(np.append(self.line_Q1.get_ydata(),Q1))
-        self.line_Q2.set_xdata(np.append(self.line_Q2.get_xdata(),tp))
-        self.line_Q2.set_ydata(np.append(self.line_Q2.get_ydata(),Q2))
-        if tp > self.ax1.get_xlim()[1]:
-            self.ax1.set_xlim(0,1.5*self.ax1.get_xlim()[1])
-            self.ax2.set_xlim(0,1.5*self.ax2.get_xlim()[1])
-        Tmax = max(max(self.line_T1.get_ydata()),max(self.line_T2.get_ydata()))
-        Tmin = min(min(self.line_T1.get_ydata()),min(self.line_T2.get_ydata()))
-        if (Tmax > self.ax1.get_ylim()[1]) or (Tmin < self.ax1.get_ylim()[0]):
-            self.ax1.set_ylim(5*floor(Tmin/5), 5*ceil(Tmax/5))
-        display.clear_output(wait=True)
-        display.display(plt.gcf())
