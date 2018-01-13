@@ -14,8 +14,8 @@
   Q2 float  set Heater 2, range 0 to 100. Returns value of Q2.
   R1        get value of Heater 1, range 0 to 100
   R2        get value of Heater 2, range 0 to 100
-  T1        get Temperature T1. Returns value of T1 in deg C.
-  T2        get Temperature T2. Returns value of T2 in deg C.
+  T1        get Temperature T1. Returns value of T1 in °C.
+  T2        get Temperature T2. Returns value of T2 in °C.
   VER       get firmware version string
   X         stop, enter sleep mode. Returns "Stop".
 
@@ -52,8 +52,8 @@ const int pinQ2   = 5;         // Q2
 const int pinLED1 = 9;         // LED1
 
 // temperature alarm limits expressed (units of pin values)
-const int limT1   = 310;       // T1 high alarm (50 deg C)
-const int limT2   = 310;       // T2 high alarm (50 deg C)
+const int limT1   = 310;       // T1 high alarm (50 °C)
+const int limT2   = 310;       // T2 high alarm (50 °C)
 
 // LED1 levels
 const int hiLED   =  60;       // hi LED
@@ -62,7 +62,7 @@ const int loLED   = hiLED/16;  // lo LED
 // global variables
 char Buffer[64];               // buffer for parsing serial input
 int buffer_index = 0;          // index for Buffer
-String cmd;                    // command 
+String cmd;                    // command
 int val;                       // command value
 int ledStatus;                 // 1: loLED
                                // 2: hiLED
@@ -228,7 +228,7 @@ void setup() {
   while (!Serial) {
     ; // wait for serial port to connect.
   }
-  Serial.begin(baud); 
+  Serial.begin(baud);
   Serial.flush();
   setHeater1(0);
   setHeater2(0);
