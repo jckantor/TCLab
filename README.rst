@@ -41,8 +41,8 @@ Checking that everything works
 
 Execute the following code ::
 
-	import tclab
-	tclab.TCLab().T1
+    import tclab
+    tclab.TCLab().T1
 
 If everything has worked, you should see the following output message ::
 
@@ -61,4 +61,7 @@ The notebook directory provides examples on how to use the TCLab module.
 Course Website
 --------------
 
-For more information and instructional videos, visit the `Arduino temperature control lab page <http://apmonitor.com/pdc/index.php/Main/ArduinoTemperatureControl>`__ on the BYU Process Dynamics and Control course website.
+For more information, instructional videos, and Jupyter notebook examples visit the 
+
+* `Arduino temperature control lab page <http://apmonitor.com/pdc/index.php/Main/ArduinoTemperatureControl>`__ on the BYU Process Dynamics and Control course website.
+* `CBE 30338 <http://jckantor.github.io/CBE30338/>`__for the Notre Dame Chemical Process Control course website.
