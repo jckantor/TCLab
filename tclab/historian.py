@@ -6,7 +6,7 @@ Created on Fri Jan 12 09:14:07 2018
 @author: jeff
 """
 
-class historian(object):
+class Historian(object):
     
     def __init__(self):
         self._log = []
