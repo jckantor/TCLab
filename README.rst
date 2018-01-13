@@ -52,10 +52,10 @@ If everything has worked, you should see the following output message ::
 
 The number returned is the temperature of sensor T1 in deg C.
 
-Experiment
+Next Steps
 ----------
 
-The notebook directory provides examples on how to use the TCLab mo
+The notebook directory provides examples on how to use the TCLab module.
 
 
 Course Website
