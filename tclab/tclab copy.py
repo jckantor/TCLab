@@ -12,6 +12,8 @@ import serial
 from serial.tools import list_ports
 
 from math import ceil, floor
+import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 from IPython import display
 
@@ -19,8 +21,6 @@ class tclab(object):
 
     def __init__(self, port=None, baud=9600, debug=False):
         self.debug = debug
-        self._Q1 = 0
-        self._Q2 = 0
         print('Connecting to tclab')
         if not port:
             for comport in list(list_ports.comports()):
@@ -84,25 +84,51 @@ class tclab(object):
         self._T2 = float(self.receive())
         return self._T2
     
-    def Q1(self,val=None):
-        if val is None:
-            self.send('R1')
-            self._Q1 = float(self.receive())
-        else:
-            self.send('Q1 ' + str(val))
-            self._Q1 = float(self.receive())
+    @property
+    def Q1(self):
+        self.send('R1')
+        self._Q1 = int(self.receive())
         return self._Q1
     
-    def Q2(self,val=None):
-        if val is None:
-            self.send('R2')
-            self._Q2 = float(self.receive())
-        else:
-            self.send('Q2 ' + str(val))
-            self._Q2 = float(self.receive())
+    @Q1.setter
+    def Q1(self,pwm):
+        pwm = max(0,min(255,pwm)) 
+        self.send('Q1 ' + str(pwm))
+        self._Q1 = int(self.receive())
+        
+    @property
+    def Q2(self):
+        self.send('R2')
+        self._Q2 = int(self.receive())
         return self._Q2
-
     
+    @Q2.setter
+    def Q2(self,pwm):
+        pwm = max(0,min(255,pwm)) 
+        self.send('Q2 ' + str(pwm))
+        self._Q2 = int(self.receive())
+        
+    def updateLog(self):
+        tnow = time.time()-self.tstart
+        self._log.append([floor(tnow/0.1)*0.1,self._Q1,self._Q2,self._T1,self._T2])
+        
+    @property
+    def log(self):
+        df = pd.DataFrame(self._log, columns = ['Time','Q1','Q2','T1','T2'])
+        df.set_index('Time',inplace=True)
+        df = df.groupby(df.index).aggregate(np.mean)
+        df.fillna(method='ffill',inplace=True)
+        return df
+    
+    def plot(self):
+        fig, axes = plt.subplots(nrows=2, ncols=1)
+        self.log[['Q1','Q2']].plot(grid=True, kind='line', 
+                drawstyle='steps-post', ax=axes[0])
+        axes[0].set_ylabel('mV')
+        self.log[['T1','T2']].plot(grid=True, kind='line', ax=axes[1])
+        axes[1].set_ylabel('deg C')
+        plt.tight_layout()
+ 
     def initplot(self,tf=20):
         # create an empty plot, and keep the line object around
         plt.figure(figsize=(12,6))
