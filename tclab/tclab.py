@@ -7,6 +7,7 @@ import serial
 from serial.tools import list_ports
 
 from math import ceil, floor
+import numpy as np
 import matplotlib.pyplot as plt
 from IPython import display
 
@@ -36,6 +37,7 @@ class TCLab(object):
         self.version = self.receive()
         if self.sp.isOpen():
             print('TCLab connected on port ' + port)
+        self.tstart = time.time()
         
     def __enter__(self):
         return self
@@ -98,7 +100,6 @@ class TCLab(object):
             self.send('Q2 ' + str(val))
             self._Q2 = float(self.receive())
         return self._Q2
-
     
     def initplot(self,tf=20):
         # create an empty plot, and keep the line object around
@@ -114,8 +115,8 @@ class TCLab(object):
         plt.grid()
 
         self.ax2 = plt.subplot(2,1,2)
-        self.line_Q1, = plt.step(0,self.Q1,where='post',lw=2,alpha=0.8)
-        self.line_Q2, = plt.step(0,self.Q2,where='post',lw=2,alpha=0.8)
+        self.line_Q1, = plt.step(0,self.Q1(),where='post',lw=2,alpha=0.8)
+        self.line_Q2, = plt.step(0,self.Q2(),where='post',lw=2,alpha=0.8)
         plt.xlim(0,1.05*tf)
         plt.ylim(-5,260)
         plt.ylabel('mV')
@@ -126,7 +127,7 @@ class TCLab(object):
         
     def updateplot(self):
         tp = time.time() - self.tstart
-        T1,T2,Q1,Q2 = self.T1,self.T2,self.Q1,self.Q2
+        T1,T2,Q1,Q2 = self.T1,self.T2,self.Q1(),self.Q2()
         self.line_T1.set_xdata(np.append(self.line_T1.get_xdata(),tp))
         self.line_T1.set_ydata(np.append(self.line_T1.get_ydata(),T1))
         self.line_T2.set_xdata(np.append(self.line_T2.get_xdata(),tp))
