@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import sys
 import time
 import serial
 from serial.tools import list_ports
@@ -68,6 +67,11 @@ class TCLab(object):
         if self.debug:
             print('Return: "' + msg + '"')
         return msg
+    
+    def LED(self,val=100):
+        val = max(0, min(val, 100))
+        self.send('LED ' + str(val))
+        return float(self.receive())
 
     @property
     def T1(self):
