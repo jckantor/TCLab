@@ -1,7 +1,9 @@
 TCLab: Temperature Control Laboratory
 =====================================
 
-The `BYU Arduino Temperature Control Lab <http://apmonitor.com/pdc/index.php/Main/ArduinoTemperatureControl>`__ is designed as a modular, portable, and inexpensive solution for hands-on process control learning.  Heat output is adjusted by modulating the voltage to a transistor. A thermistor measures the temperature. Energy from the transistor output is transferred by conduction and convection to the temperature sensor.  The lab is integrated into a small PCB shield which can be mounted to any `Arduino <https://www.arduino.cc/>`__ or Arduino compatible microcontroller. Experiments can then be programmatically controlled using Python over a USB connection.
+The `BYU Arduino Temperature Control Lab <http://apmonitor.com/pdc/index.php/Main/ArduinoTemperatureControl>`__ is designed as a modular, portable, and inexpensive solution for hands-on process control learning.  Heat output is adjusted by modulating current flow to each of two transistors. Thermistors measure the temperatures. Energy from the transistor output is transferred by conduction and convection to the temperature sensor. The dynamics of heat transfer provide rich opportunities to implement single and multivariable control systems. The lab is integrated into a small PCB shield which can be mounted to any `Arduino <https://www.arduino.cc/>`__ or Arduino compatible microcontroller. Experiments can then be programmatically controlled using Python over a USB connection.
+
+The TCLab modules provides access to the temperature control lab using Python, and includes the necessary Arduino firmware for device operation.
 
 Installation
 ------------
@@ -39,36 +41,24 @@ Checking that everything works
 
 Execute the following code ::
 
-    import tclab
-    tclab.flash_led()
+	import tclab
+	tclab.TCLab().T1
 
 If everything has worked, you should see the following output message ::
 
-    Opening connection
-    TCLab connected via Arduino on port XXXX
-    LED On
-    LED Off
-    Arduino disconnected successfully
+    Oonnecting to TCLab
+	TCLab connected on port XXXX
+    20.58
 
-The LED on your board should light up for 1 second and then go out.
+The number returned is the temperature of sensor T1 in deg C.
+
+Experiment
+----------
+
+The notebook directory provides examples on how to use the TCLab mo
+
 
 Course Website
 --------------
 
 For more information and instructional videos, visit the `Arduino temperature control lab page <http://apmonitor.com/pdc/index.php/Main/ArduinoTemperatureControl>`__ on the BYU Process Dynamics and Control course website.
-
-## Overview
-
-This TCLab library comprises three main elements:
-
-* An Arduino sketch (TCLab/sketch/sketch.ino) implementing a simple protocol for communicating with the 
-Temperature Control Laboratory device.
-* A Python library (TCLab/TCLab.py) providing a high level interface with the device.
-* A collection of Jupyter notebooks (notebooks/) illustrating concepts in process control. 
-
-
-
-
-
-
-
