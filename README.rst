@@ -64,4 +64,4 @@ Course Website
 For more information, instructional videos, and Jupyter notebook examples visit the
 
 * `Arduino temperature control lab page <http://apmonitor.com/pdc/index.php/Main/ArduinoTemperatureControl>`__ on the BYU Process Dynamics and Control course website.
-* `CBE 30338 <http://jckantor.github.io/CBE30338/>`__for the Notre Dame Chemical Process Control course website.
+* `CBE 30338 <http://jckantor.github.io/CBE30338/>`__ for the Notre Dame Chemical Process Control course website.
