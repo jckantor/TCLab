@@ -11,6 +11,10 @@ Installation
 Install using ::
 
    pip install tclab
+   
+To upgrade an existing installation, use the command ::
+
+   pip install tclab --upgrade
 
 
 Hardware setup
@@ -26,7 +30,7 @@ Hardware setup
 
    Mac OS X users may need to install a serial driver. For arduino
    clones using the CH340G, CH34G or CH34X chipset, a suitable driver
-   can be found `here <https://github.com/MPParsley/ch340g-ch34g-ch34x-mac-os-x-driver>`__ 
+   can be found `here <https://github.com/MPParsley/ch340g-ch34g-ch34x-mac-os-x-driver>`__
    or `here <https://github.com/adrianmihalko/ch340g-ch34g-ch34x-mac-os-x-driver>`__.
 
 3. (optional) Install Arduino Firmware
@@ -41,8 +45,8 @@ Checking that everything works
 
 Execute the following code ::
 
-	import tclab
-	tclab.TCLab().T1
+    import tclab
+    tclab.TCLab().T1
 
 If everything has worked, you should see the following output message ::
 
@@ -50,7 +54,7 @@ If everything has worked, you should see the following output message ::
     TCLab connected on port XXXX
     20.58
 
-The number returned is the temperature of sensor T1 in deg C.
+The number returned is the temperature of sensor T1 in °C.
 
 Next Steps
 ----------
@@ -61,4 +65,7 @@ The notebook directory provides examples on how to use the TCLab module.
 Course Website
 --------------
 
-For more information and instructional videos, visit the `Arduino temperature control lab page <http://apmonitor.com/pdc/index.php/Main/ArduinoTemperatureControl>`__ on the BYU Process Dynamics and Control course website.
+For more information, instructional videos, and Jupyter notebook examples visit the
+
+* `Arduino temperature control lab page <http://apmonitor.com/pdc/index.php/Main/ArduinoTemperatureControl>`__ on the BYU Process Dynamics and Control course website.
+* `CBE 30338 <http://jckantor.github.io/CBE30338/>`__ for the Notre Dame Chemical Process Control course website.

@@ -8,14 +8,15 @@
   a result string.
 
   A         software restart. Returns "Start".
+  LED float set LED to float for 10 sec. range 0 to 100. Returns actual float
   P1 float  set pwm limit on heater 1, range 0 to 255. Default 200. Returns P1.
   P2 float  set pwm limit on heater 2, range 0 to 255. Default 100. Returns P2.
   Q1 float  set Heater 1, range 0 to 100. Returns value of Q1.
   Q2 float  set Heater 2, range 0 to 100. Returns value of Q2.
   R1        get value of Heater 1, range 0 to 100
   R2        get value of Heater 2, range 0 to 100
-  T1        get Temperature T1. Returns value of T1 in deg C.
-  T2        get Temperature T2. Returns value of T2 in deg C.
+  T1        get Temperature T1. Returns value of T1 in °C.
+  T2        get Temperature T2. Returns value of T2 in °C.
   VER       get firmware version string
   X         stop, enter sleep mode. Returns "Stop".
 
@@ -39,7 +40,7 @@
 */
 
 // constants
-const String vers = "1.1.0";   // version of this firmware
+const String vers = "1.2.0";   // version of this firmware
 const int baud = 9600;         // serial baud rate
 const char sp = ' ';           // command separator
 const char nl = '\n';          // command terminator
@@ -52,8 +53,8 @@ const int pinQ2   = 5;         // Q2
 const int pinLED1 = 9;         // LED1
 
 // temperature alarm limits expressed (units of pin values)
-const int limT1   = 310;       // T1 high alarm (50 deg C)
-const int limT2   = 310;       // T2 high alarm (50 deg C)
+const int limT1   = 310;       // T1 high alarm (50 °C)
+const int limT2   = 310;       // T2 high alarm (50 °C)
 
 // LED1 levels
 const int hiLED   =  60;       // hi LED
@@ -62,12 +63,14 @@ const int loLED   = hiLED/16;  // lo LED
 // global variables
 char Buffer[64];               // buffer for parsing serial input
 int buffer_index = 0;          // index for Buffer
-String cmd;                    // command 
+String cmd;                    // command
 int val;                       // command value
 int ledStatus;                 // 1: loLED
                                // 2: hiLED
                                // 3: loLED blink
                                // 4: hiLED blink
+long ledTimeout = 0;           // when to return LED to normal operation
+float LED = 100;               // LED override brightness
 float P1 = 200;                // heater 1 power limit in units of pwm. Range 0 to 255
 float P2 = 100;                // heater 2 power limit in units in pwm, range 0 to 255
 int Q1 = 0;                    // last value written to heater 1 in units of percent
@@ -124,6 +127,11 @@ void dispatchCommand(void) {
     setHeater1(0);
     setHeater2(0);
     Serial.println("Start");
+  }
+  else if (cmd == "LED") {
+    ledTimeout = millis() + 10000;
+    LED = max(0, min(100, val));
+    Serial.println(LED);
   }
   else if (cmd == "P1") {
     P1 = max(0, min(255, val));
@@ -190,7 +198,10 @@ void updateStatus(void) {
     ledStatus += 2;
   }
   // update led depending on ledStatus
-  if (ledStatus == 1) {               // normal operation, heaters off
+  if (millis() < ledTimeout) {        // override led operation
+    analogWrite(pinLED1, LED);
+  }
+  else if (ledStatus == 1) {          // normal operation, heaters off
     analogWrite(pinLED1, loLED);
   }
   else if (ledStatus == 2) {          // normal operation, heater on
@@ -228,10 +239,11 @@ void setup() {
   while (!Serial) {
     ; // wait for serial port to connect.
   }
-  Serial.begin(baud); 
+  Serial.begin(baud);
   Serial.flush();
   setHeater1(0);
   setHeater2(0);
+  ledTimeout = millis() + 1000;
 }
 
 // arduino main event loop
