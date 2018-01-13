@@ -4,7 +4,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "# 0 TCLab Overview\n",
+    "# 0 tclab Overview\n",
     "\n",
     "The following cells in this notebook demonstrate the use of the Temperature Control Lab."
    ]
@@ -17,16 +17,12 @@
     }
    },
    "source": [
-    "## TCLab Architecture\n",
-<<<<<<< HEAD
-    "\n",
-=======
->>>>>>> origin/development
+    "## tclab Architecture\n",
     "<img src='images/TCLabOverview.png' style=\"float: left;padding-right:30px;\"></img>\n",
     "**_Notebooks:_**\n",
     "Examples, lessons, and student projects.\n",
     "\n",
-    "**_TCLab.py:_**\n",
+    "**_tclab.py:_**\n",
     "Provide high-level ccess to sensors, heaters, a pseudo-realtime clock.\n",
     "\n",
     "**_sketch.ino:_**\n",
@@ -43,33 +39,20 @@
    "source": [
     "## Connecting to the Temperature Control Laboratory\n",
     "\n",
-    "### Importing TCLab\n",
+    "### Importing tclab\n",
     "\n",
-    "    Using TCLab is straightforward. The first step is to import `TCLab` from the python package `tclab`."
+    "Using TCLab is pretty straightforward. The first step is to import the python module `tclab.py` which should be located in a top-level directory of the same name.  If it is located somewhere else, then then argument ot `sys.path.append` should be altered accordingly. An alternative is to located the module in the same directory as the notebook in which case the `import sys` and `sys.path.append` commands can be omitted."
    ]
   },
   {
    "cell_type": "code",
-   "execution_count": 1,
+   "execution_count": 8,
    "metadata": {},
-   "outputs": [
-    {
-     "ename": "ModuleNotFoundError",
-     "evalue": "No module named 'tclab.tclab'",
-     "output_type": "error",
-     "traceback": [
-      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
-      "\u001b[0;31mModuleNotFoundError\u001b[0m                       Traceback (most recent call last)",
-      "\u001b[0;32m<ipython-input-1-f86a7126f2b7>\u001b[0m in \u001b[0;36m<module>\u001b[0;34m()\u001b[0m\n\u001b[1;32m      1\u001b[0m \u001b[0;32mimport\u001b[0m \u001b[0msys\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      2\u001b[0m \u001b[0msys\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mpath\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mappend\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"..\"\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m----> 3\u001b[0;31m \u001b[0;32mfrom\u001b[0m \u001b[0mtclab\u001b[0m \u001b[0;32mimport\u001b[0m \u001b[0mTCLab\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m",
-      "\u001b[0;32m~/Dropbox/Git/TCLab/tclab/__init__.py\u001b[0m in \u001b[0;36m<module>\u001b[0;34m()\u001b[0m\n\u001b[0;32m----> 1\u001b[0;31m \u001b[0;32mfrom\u001b[0m \u001b[0;34m.\u001b[0m\u001b[0mtclab\u001b[0m \u001b[0;32mimport\u001b[0m \u001b[0mTCLab\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m      2\u001b[0m \u001b[0;32mfrom\u001b[0m \u001b[0;34m.\u001b[0m\u001b[0mclock\u001b[0m \u001b[0;32mimport\u001b[0m \u001b[0mclock\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      3\u001b[0m \u001b[0;32mfrom\u001b[0m \u001b[0;34m.\u001b[0m\u001b[0mpid\u001b[0m \u001b[0;32mimport\u001b[0m \u001b[0mpid\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      4\u001b[0m \u001b[0;32mfrom\u001b[0m \u001b[0;34m.\u001b[0m\u001b[0mhistorian\u001b[0m \u001b[0;32mimport\u001b[0m \u001b[0mhistorian\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
-      "\u001b[0;31mModuleNotFoundError\u001b[0m: No module named 'tclab.tclab'"
-     ]
-    }
-   ],
+   "outputs": [],
    "source": [
     "import sys\n",
     "sys.path.append(\"..\")\n",
-    "from tclab import TCLab"
+    "from tclab import tclab"
    ]
   },
   {
@@ -82,34 +65,33 @@
    "source": [
     "### Creating and Closing a Connection\n",
     "\n",
-    "A TCLab() instance is created with the statement\n",
+    "A tclab() instance is created with the statement\n",
     "\n",
-    "    a = TCLab()\n",
+    "    a = tclab()\n",
     "\n",
     "Upon creation, the tclab() instance attempts to find a device connected to a serial port. An error is generated if no device is found.  The instance should be closed when no longer in use."
    ]
   },
   {
    "cell_type": "code",
-   "execution_count": 5,
+   "execution_count": 9,
    "metadata": {},
    "outputs": [
     {
-     "ename": "TypeError",
-     "evalue": "'module' object is not callable",
-     "output_type": "error",
-     "traceback": [
-      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
-      "\u001b[0;31mTypeError\u001b[0m                                 Traceback (most recent call last)",
-      "\u001b[0;32m<ipython-input-5-af0b150def21>\u001b[0m in \u001b[0;36m<module>\u001b[0;34m()\u001b[0m\n\u001b[1;32m      1\u001b[0m \u001b[0;32mfrom\u001b[0m \u001b[0mtclab\u001b[0m \u001b[0;32mimport\u001b[0m \u001b[0mTCLab\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      2\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m----> 3\u001b[0;31m \u001b[0ma\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mTCLab\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m      4\u001b[0m \u001b[0mprint\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0ma\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mversion\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      5\u001b[0m \u001b[0ma\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mclose\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
-      "\u001b[0;31mTypeError\u001b[0m: 'module' object is not callable"
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Connecting to tclab\n",
+      "tclab connected on port /dev/cu.wchusbserial1410\n",
+      "TCLab Firmware Version 1.1.0\n",
+      "tclab disconnected successfully.\n"
      ]
     }
    ],
    "source": [
-    "from tclab import TCLab\n",
+    "from tclab import tclab\n",
     "\n",
-    "a = TCLab()\n",
+    "a = tclab()\n",
     "print(a.version)\n",
     "a.close()"
    ]
@@ -125,7 +107,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 6,
+   "execution_count": 10,
    "metadata": {
     "slideshow": {
      "slide_type": "skip"
@@ -146,7 +128,7 @@
    "source": [
     "from tclab import tclab\n",
     "\n",
-    "with TCLab() as a:\n",
+    "with tclab() as a:\n",
     "    print(a.version)"
    ]
   },
@@ -284,7 +266,7 @@
    "source": [
     "## Syncronizing with Real Time using `clock`\n",
     "\n",
-    "For convenience, the tclab module includes a function `clock` for synchronizing calculations with real time.  `clock(tperiod, tstep)` is a python iterator that generates a sequence of iterations over a period of `tperiod` seconds separated by `tstep` seconds. "
+    "For convenience, the TCLab module includes a function `control` for synchronizing calculations with real time.  `control(tperiod,tstep)` is a python iterator that generates a sequence of iterations over a period of `tperiod` seconds separated by `tstep` seconds. "
    ]
   },
   {
@@ -485,15 +467,15 @@
     "%matplotlib inline\n",
     "import sys\n",
     "sys.path.append(\"..\")\n",
-    "from tclab import TCLab, clock\n",
-    "from tclab import Historian\n",
+    "from TCLab import TCLab, clock\n",
+    "from TCLab.historian import historian\n",
     "\n",
     "# connect to the temperature control lab\n",
     "with TCLab() as a:\n",
     "    # turn heaters on\n",
     "    a.Q1 = 200\n",
     "    a.Q2 = 100\n",
-    "    h = Historian()\n",
+    "    h = historian()\n",
     "    print(\"\\nSet Heater 1 to {0:d} mV\".format(a.Q1))\n",
     "    print(\"Set Heater 2 to {0:d} mV\".format(a.Q2))\n",
     "\n",
@@ -555,6 +537,18 @@
    "display_name": "Python 3",
    "language": "python",
    "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.6.3"
   }
  },
  "nbformat": 4,
