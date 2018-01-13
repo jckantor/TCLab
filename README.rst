@@ -11,6 +11,10 @@ Installation
 Install using ::
 
    pip install tclab
+   
+To upgrade an existing installation, use the command ::
+
+   pip install tclab --upgrade
 
 
 Hardware setup
