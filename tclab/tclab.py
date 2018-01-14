@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
+
 import time
 import serial
 from serial.tools import list_ports
