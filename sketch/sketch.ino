@@ -37,10 +37,21 @@
   an unrecognized command from the host.
 
   The constants can be used to configure the firmware.
+
+  Version History
+      1.0.1 first version included in the tclab package
+      1.1.0 added R1 and R2 commands to read current heater values
+            modified heater values to units of percent of full power
+            added P1 and P2 commands to set heater power limits
+            rewrote readCommand to avoid busy states
+            simplified LED status model
+      1.2.0 added LED command
+      1.2.1 correctly reset heater values on close
+            added version history
 */
 
 // constants
-const String vers = "1.2.0";   // version of this firmware
+const String vers = "1.2.1";   // version of this firmware
 const int baud = 9600;         // serial baud rate
 const char sp = ' ';           // command separator
 const char nl = '\n';          // command terminator
@@ -142,13 +153,11 @@ void dispatchCommand(void) {
     Serial.println(P2);
   }
   else if (cmd == "Q1") {
-    Q1 = max(0, min(100, val));
-    setHeater1(Q1);
+    setHeater1(val);
     Serial.println(Q1);
   }
   else if (cmd == "Q2") {
-    Q2 = max(0, min(100, val));
-    setHeater2(Q2);
+    setHeater2(val);
     Serial.println(Q2);
   }
   else if (cmd == "R1") {
@@ -225,12 +234,14 @@ void updateStatus(void) {
 
 // set Heater 1
 void setHeater1(float qval) {
-  analogWrite(pinQ1, qval*P1/100);
+  Q1 = max(0, min(qval, 100));
+  analogWrite(pinQ1, Q1*P1/100);
 }
 
 // set Heater 2
 void setHeater2(float qval) {
-  analogWrite(pinQ2, qval*P2/100);
+  Q2 = max(0, min(qval, 100));
+  analogWrite(pinQ2, Q2*P2/100);
 }
 
 // arduino startup

@@ -20,8 +20,8 @@ To upgrade an existing installation, use the command ::
 Hardware setup
 --------------
 
-1. Plug the Arduino with the lab attached into your computer via the USB
-   connection. Plug the DC adapter into the wall.
+1. Plug the Arduino (UNO or Leonardo) with the lab attached into your computer via
+   the USB connection. Plug the DC adapter into the wall.
 
 2. (optional) Install Arduino Drivers
 
