@@ -10,17 +10,15 @@ from __future__ import division
 
 import time
 from math import ceil, floor
-import numpy as np
 import matplotlib.pyplot as plt
 from IPython import display
-import pandas as pd
 
 class Historian(object):
     
     def __init__(self,lab):
-        self._log = []
         self.lab = lab
         self.tstart = time.time()
+        self._log = [[0.0, self.lab.T1, self.lab.T2, self.lab.Q1(), self.lab.Q2()]]
         self.RTplot = False
     
     def __enter__(self):
@@ -66,14 +64,15 @@ class Historian(object):
         plt.tight_layout()
 
     def updateplot(self):
-        self.line_T1.set_xdata(np.append(self.line_T1.get_xdata(), self.tp))
-        self.line_T1.set_ydata(np.append(self.line_T1.get_ydata(), self.T1))
-        self.line_T2.set_xdata(np.append(self.line_T2.get_xdata(), self.tp))
-        self.line_T2.set_ydata(np.append(self.line_T2.get_ydata(), self.T2))
-        self.line_Q1.set_xdata(np.append(self.line_Q1.get_xdata(), self.tp))
-        self.line_Q1.set_ydata(np.append(self.line_Q1.get_ydata(), self.Q1))
-        self.line_Q2.set_xdata(np.append(self.line_Q2.get_xdata(), self.tp))
-        self.line_Q2.set_ydata(np.append(self.line_Q2.get_ydata(), self.Q2))
+        [t,T1,T2,Q1,Q2] = [[row[i] for row in self._log] for i in range(5)]
+        self.line_T1.set_xdata(t)
+        self.line_T1.set_ydata(T1)
+        self.line_T2.set_xdata(t)
+        self.line_T2.set_ydata(T2)
+        self.line_Q1.set_xdata(t)
+        self.line_Q1.set_ydata(Q1)
+        self.line_Q2.set_xdata(t)
+        self.line_Q2.set_ydata(Q2)
         if self.tp > self.ax1.get_xlim()[1]:
             self.ax1.set_xlim(0, 1.5*self.ax1.get_xlim()[1])
             self.ax2.set_xlim(0, 1.5*self.ax2.get_xlim()[1])
@@ -86,7 +85,5 @@ class Historian(object):
 
     @property
     def log(self):
-        df = pd.DataFrame(self._log, columns = ['Time','Q1','Q2','T1','T2'])
-        df.set_index('Time',inplace=True)
-        return df
+        return self._log
 
