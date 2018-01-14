@@ -1,7 +1,15 @@
+During development
+==================
+
+1. Develop and test changes using::
+
+    python setup.py develop
+
+
 After making changes
 ====================
 
-1. Change the version number in ``config.py``
+1. Change the version number in ``setup.py``
 2. Push the latest code to GitHub
 3. Check the distribution::
 

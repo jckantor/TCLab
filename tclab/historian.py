@@ -11,10 +11,11 @@ from math import ceil, floor
 import numpy as np
 import matplotlib.pyplot as plt
 from IPython import display
+import pandas as pd
 
 class Historian(object):
     
-    def __init__(self, lab):
+    def __init__(self,lab):
         self._log = []
         self.lab = lab
         self.tstart = time.time()
@@ -85,7 +86,5 @@ class Historian(object):
     def log(self):
         df = pd.DataFrame(self._log, columns = ['Time','Q1','Q2','T1','T2'])
         df.set_index('Time',inplace=True)
-        df = df.groupby(df.index).aggregate(np.mean)
-        df.fillna(method='ffill',inplace=True)
         return df
 
