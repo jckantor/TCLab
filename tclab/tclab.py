@@ -9,8 +9,6 @@ class TCLab(object):
 
     def __init__(self, port=None, baud=9600, debug=False):
         self.debug = debug
-        self._Q1 = 0
-        self._Q2 = 0
         print('Connecting to TCLab')
         if not port:
             for comport in list(list_ports.comports()):
@@ -29,8 +27,10 @@ class TCLab(object):
         self.receive()
         self.send('VER')
         self.version = self.receive()
+        self.Q1(0)
+        self.Q2(0)
         if self.sp.isOpen():
-            print('TCLab connected on port ' + port)
+            print(self.version + ' connected on port ' + port)
         self.tstart = time.time()
 
     def __enter__(self):
@@ -42,6 +42,8 @@ class TCLab(object):
 
     def close(self):
         try:
+            self.Q1(0)
+            self.Q2(0)
             self.send('X')
             self.receive()
             self.sp.close()
