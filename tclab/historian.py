@@ -80,12 +80,7 @@ class Historian(object):
             self.ax1.set_ylim(5*floor(Tmin/5), 5*ceil(Tmax/5))
         display.clear_output(wait=True)
         display.display(plt.gcf())
-        
-        
-    def updateLog(self):
-        tnow = time.time()-self.tstart
-        self._log.append([floor(tnow/0.1)*0.1,self._Q1,self._Q2,self._T1,self._T2])
-        
+
     @property
     def log(self):
         df = pd.DataFrame(self._log, columns = ['Time','Q1','Q2','T1','T2'])
