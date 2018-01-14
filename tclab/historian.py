@@ -9,7 +9,6 @@ from __future__ import print_function
 from __future__ import division
 
 import time
-from math import ceil, floor
 import matplotlib.pyplot as plt
 from IPython import display
 
@@ -76,10 +75,10 @@ class Historian(object):
         if self.tp > self.ax1.get_xlim()[1]:
             self.ax1.set_xlim(0, 1.5*self.ax1.get_xlim()[1])
             self.ax2.set_xlim(0, 1.5*self.ax2.get_xlim()[1])
-        Tmax = max(max(self.line_T1.get_ydata()), max(self.line_T2.get_ydata()))
-        Tmin = min(min(self.line_T1.get_ydata()), min(self.line_T2.get_ydata()))
+        Tmax = max(max(T1), max(T2))
+        Tmin = min(min(T1), min(T2))
         if (Tmax > self.ax1.get_ylim()[1]) or (Tmin < self.ax1.get_ylim()[0]):
-            self.ax1.set_ylim(5*floor(Tmin/5), 5*ceil(Tmax/5))
+            self.ax1.set_ylim(Tmin - (Tmin%5), Tmax + 5 - (Tmax%5))
         display.clear_output(wait=True)
         display.display(plt.gcf())
 
