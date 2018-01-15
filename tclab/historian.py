@@ -14,24 +14,26 @@ from IPython import display
 
 class Historian(object):
     
-    def __init__(self,lab):
+    def __init__(self, lab):
         self.lab = lab
         self.tstart = time.time()
-        self.tnow = 0
-        self._log = [[0, self.lab.T1, self.lab.T2, self.lab.Q1(), self.lab.Q2()]]
         self.RTplot = False
-    
-    def __enter__(self):
-        return self
-    
-    def __exit__(self, type, value, traceback):
-        return
-    
+        self.t = []
+        self.T1 = []
+        self.T2 = []
+        self.Q1 = []
+        self.Q2 = []
+        self.columns = ['Time', 'T1', 'T2', 'Q1', 'Q2']
+        self.fields = [self.t, self.T1, self.T2, self.Q1, self.Q2]
+        self.logdict = {c: f for c, f in zip(self.columns, self.fields)}
+
+        self.update(tnow=0)
+
     def initplot(self, tperiod = 20):
         self.RTplot = True
         self.tnow = 0
-        self._log = [[self.tnow, self.lab.T1, self.lab.T2, self.lab.Q1(), self.lab.Q2()]]
-        t,T1,T2,Q1,Q2 = self._log[0]
+        T1 = self.T1[0]
+        T2 = self.T2[0]
         plt.figure(figsize=(10, 5))
         self.ax1 = plt.subplot(2, 1, 1)
         self.line_T1, = plt.plot(0, T1, lw=2, alpha=0.8)
@@ -47,8 +49,8 @@ class Historian(object):
         plt.grid()
 
         self.ax2 = plt.subplot(2,1,2)
-        self.line_Q1, = plt.step(0, Q1, where='pre', lw=2, alpha=0.8)
-        self.line_Q2, = plt.step(0, Q2, where='pre', lw=2, alpha=0.8)
+        self.line_Q1, = plt.step(0, self.Q1[0], where='pre', lw=2, alpha=0.8)
+        self.line_Q2, = plt.step(0, self.Q2[0], where='pre', lw=2, alpha=0.8)
         plt.xlim(0, 1.05*tperiod)
         plt.ylim(-5, 110)
         plt.ylabel('Percent of Max Power')
@@ -57,17 +59,19 @@ class Historian(object):
         plt.grid()
         plt.tight_layout()
         
-    def update(self, tnow = None):
+    def update(self, tnow=None):
         if tnow is None:
             self.tnow = time.time() - self.tstart
         else:
             self.tnow = tnow
-        self._log.append([self.tnow, self.lab.T1, self.lab.T2, self.lab.Q1(), self.lab.Q2()])
+        row = [self.tnow, self.lab.T1, self.lab.T2, self.lab.Q1(), self.lab.Q2()]
+        for c, v in zip(self.columns, row):
+            self.logdict[c].append(v)
         if self.RTplot:
             self.updateplot()
 
     def updateplot(self):
-        [t,T1,T2,Q1,Q2] = [[row[i] for row in self._log] for i in range(5)]
+        [t, T1, T2, Q1, Q2] = [self.logdict[c] for c in self.columns]
         self.line_T1.set_xdata(t)
         self.line_T1.set_ydata(T1)
         self.line_T2.set_xdata(t)
@@ -88,25 +92,5 @@ class Historian(object):
 
     @property
     def log(self):
-        return self._log
-    
-    @property
-    def t(self):
-        return [row[0] for row in self._log]
-
-    @property
-    def T1(self):
-        return [row[1] for row in self._log]
-
-    @property
-    def T2(self):
-        return [row[2] for row in self._log]
-
-    @property
-    def Q1(self):
-        return [row[3] for row in self._log]
-
-    @property
-    def Q2(self):
-        return [row[4] for row in self._log]
+        return zip(*[self.logdict[c] for c in self.columns])
 
