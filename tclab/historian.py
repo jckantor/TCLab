@@ -92,5 +92,5 @@ class Historian(object):
 
     @property
     def log(self):
-        return zip(*[self.logdict[c] for c in self.columns])
+        return list(zip(*[self.logdict[c] for c in self.columns]))
 
