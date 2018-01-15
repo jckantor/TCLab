@@ -1,5 +1,5 @@
-TCLab contributors (sorted alphabetically)
-==========================================
+TCLab contributors (alphabetically)
+===================================
 
 * **[John Hedengren](https://apm.byu.edu/prism/index.php/Members/JohnHedengren)**
 
