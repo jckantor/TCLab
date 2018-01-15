@@ -14,7 +14,7 @@ TCLab contributors (sorted alphabetically)
   * Author of sketch firmware
   * TCLab module
 
-* **[Carl Sandrock](http://www.up.ac.za/chemical-engineering/article/1913155/mr-c-sandrock)**
+* **[Carl Sandrock](http://www.up.ac.za/chemeng/csandrock)**
 
   * Historian module
   * Package development
