@@ -7,8 +7,8 @@ import time
 import serial
 from serial.tools import list_ports
 
-class TCLab(object):
 
+class TCLab(object):
     def __init__(self, port=None, baud=9600, debug=False):
         self.debug = debug
         print('Connecting to TCLab')
@@ -38,7 +38,7 @@ class TCLab(object):
     def __enter__(self):
         return self
 
-    def __exit__(self, type, value, traceback):
+    def __exit__(self, exc_type, exc_value, traceback):
         self.close()
         return
 
@@ -55,19 +55,19 @@ class TCLab(object):
             print('Please unplug and replug tclab.')
         return
 
-    def send(self,msg):
+    def send(self, msg):
         self.sp.write((msg + '\r\n').encode())
         if self.debug:
             print('Sent: "' + msg + '"')
         self.sp.flush()
 
     def receive(self):
-        msg = self.sp.readline().decode('UTF-8').replace('\r\n','')
+        msg = self.sp.readline().decode('UTF-8').replace('\r\n', '')
         if self.debug:
             print('Return: "' + msg + '"')
         return msg
     
-    def LED(self,val=100):
+    def LED(self, val=100):
         val = max(0, min(val, 100))
         self.send('LED ' + str(val))
         return float(self.receive())
@@ -84,7 +84,7 @@ class TCLab(object):
         self._T2 = float(self.receive())
         return self._T2
 
-    def Q1(self,val=None):
+    def Q1(self, val=None):
         if val is None:
             self.send('R1')
             self._Q1 = float(self.receive())
@@ -94,7 +94,7 @@ class TCLab(object):
             self._Q1 = float(self.receive())
         return self._Q1
 
-    def Q2(self,val=None):
+    def Q2(self, val=None):
         if val is None:
             self.send('R2')
             self._Q2 = float(self.receive())
