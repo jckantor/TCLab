@@ -12,8 +12,8 @@ import time
 import matplotlib.pyplot as plt
 from IPython import display
 
+
 class Historian(object):
-    
     def __init__(self, lab):
         self.lab = lab
         self.tstart = time.time()
@@ -29,7 +29,7 @@ class Historian(object):
 
         self.update(tnow=0)
 
-    def initplot(self, tperiod = 20):
+    def initplot(self, tperiod=20):
         self.RTplot = True
         self.tnow = 0
         T1 = self.T1[0]
@@ -39,8 +39,8 @@ class Historian(object):
         self.line_T1, = plt.plot(0, T1, lw=2, alpha=0.8)
         self.line_T2, = plt.plot(0, T2, lw=2, alpha=0.8)
         plt.xlim(0, 1.05*tperiod)
-        Tmax = max(T1,T2)
-        Tmin = min(T1,T2)
+        Tmax = max(T1, T2)
+        Tmin = min(T1, T2)
         self.ax1.set_ylim(Tmin - (Tmin%5), Tmax + 5 - (Tmax%5))        
         plt.title('Temperature Control Lab')
         plt.ylabel(u'Temperature / °C')
@@ -48,7 +48,7 @@ class Historian(object):
         plt.legend(['T1', 'T2'])
         plt.grid()
 
-        self.ax2 = plt.subplot(2,1,2)
+        self.ax2 = plt.subplot(2, 1, 2)
         self.line_Q1, = plt.step(0, self.Q1[0], where='pre', lw=2, alpha=0.8)
         self.line_Q2, = plt.step(0, self.Q2[0], where='pre', lw=2, alpha=0.8)
         plt.xlim(0, 1.05*tperiod)
@@ -92,5 +92,5 @@ class Historian(object):
 
     @property
     def log(self):
-        return zip(*[self.logdict[c] for c in self.columns])
+        return list(zip(*[self.logdict[c] for c in self.columns]))
 
