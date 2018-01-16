@@ -9,20 +9,24 @@ from __future__ import print_function
 from __future__ import division
 
 import time
+import bisect
 
 class Historian(object):
-    def __init__(self, lab):
-        self.lab = lab
+    """Generalised logging class"""
+    def __init__(self, sources):
+        """
+
+        sources: an iterable of (name, callable) tuples
+                     - name (str) is the name of a signal and the
+                     - callable is evaluated to obtain the value
+        """
+        self.sources = [('Time', lambda: self.tnow)] + list(sources)
         self.tstart = time.time()
         self.tnow = 0
-        self.t = []
-        self.T1 = []
-        self.T2 = []
-        self.Q1 = []
-        self.Q2 = []
-        self.columns = ['Time', 'T1', 'T2', 'Q1', 'Q2']
-        self.fields = [self.t, self.T1, self.T2, self.Q1, self.Q2]
+        self.columns = [name for name, _ in self.sources]
+        self.fields = [[] for _ in range(len(self.sources))]
         self.logdict = {c: f for c, f in zip(self.columns, self.fields)}
+        self.t = self.logdict['Time']
 
         self.update(tnow=0)
 
@@ -31,13 +35,20 @@ class Historian(object):
             self.tnow = time.time() - self.tstart
         else:
             self.tnow = tnow
-        row = [self.tnow, self.lab.T1, self.lab.T2, self.lab.Q1(), self.lab.Q2()]
-        for c, v in zip(self.columns, row):
-            self.logdict[c].append(v)
+
+        for n, c in self.sources:
+            self.logdict[n].append(c())
 
     @property
     def log(self):
         return list(zip(*[self.logdict[c] for c in self.columns]))
+
+    def at(self, t, columns=None):
+        """ Return the values of columns at or just before a certain time"""
+        if columns is None:
+            columns = self.columns
+        i = bisect.bisect(self.t, t) - 1
+        return [self.logdict[c][i] for c in columns]
 
 
 class Plotter:
@@ -50,10 +61,7 @@ class Plotter:
         self.plt = plt
         self.display = display
 
-        T1 = self.historian.T1[0]
-        T2 = self.historian.T2[0]
-        Q1 = self.historian.Q1[0]
-        Q2 = self.historian.Q2[0]
+        t, T1, T2, Q1, Q2 = self.historian.at(0)
 
         line_options = {'lw': 2, 'alpha': 0.8}
 
