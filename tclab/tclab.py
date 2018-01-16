@@ -43,16 +43,12 @@ class TCLab(object):
         return
 
     def close(self):
-        try:
-            self.Q1(0)
-            self.Q2(0)
-            self.send('X')
-            self.receive()
-            self.sp.close()
-            print('TCLab disconnected successfully.')
-        except:
-            print('Problem encountered while disconnecting from TCLab.')
-            print('Please unplug and replug tclab.')
+        self.Q1(0)
+        self.Q2(0)
+        self.send('X')
+        self.receive()
+        self.sp.close()
+        print('TCLab disconnected successfully.')
         return
 
     def send(self, msg):
