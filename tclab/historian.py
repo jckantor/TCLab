@@ -52,8 +52,8 @@ class Plotter:
 
         T1 = self.historian.T1[0]
         T2 = self.historian.T2[0]
-        Q1 = self.historian.Q1
-        Q2 = self.historian.Q2
+        Q1 = self.historian.Q1[0]
+        Q2 = self.historian.Q2[0]
 
         line_options = {'lw': 2, 'alpha': 0.8}
 
