@@ -92,7 +92,7 @@ boolean newData = false;       // boolean flag indicating new command
 void readCommand() {
   while (Serial && (Serial.available() > 0) && (newData == false)) {
     int byte = Serial.read();
-    if ( (byte != '\r') && (byte != '\n') && (buffer_index < 64)) {
+    if ((byte != '\r') && (byte != nl) && (buffer_index < 64)) {
       Buffer[buffer_index] = byte;
       buffer_index++;
     }
@@ -106,7 +106,7 @@ void echoCommand() {
   if (newData) {
     Serial.write("Received Command: ");
     Serial.write(Buffer, buffer_index);
-    Serial.write("\r\n");
+    Serial.write(nl);
     Serial.flush();
   }
 }
