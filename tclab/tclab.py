@@ -88,21 +88,19 @@ class TCLab(object):
     def Q1(self, val=None):
         if val is None:
             self.send('R1')
-            self._Q1 = float(self.receive())
         else:
             val = max(0, min(val, 100))
             self.send('Q1 ' + str(val))
-            self._Q1 = float(self.receive())
+        self._Q1 = float(self.receive())
         return self._Q1
 
     def Q2(self, val=None):
         if val is None:
             self.send('R2')
-            self._Q2 = float(self.receive())
         else:
             val = max(0, min(val, 100))
             self.send('Q2 ' + str(val))
-            self._Q2 = float(self.receive())
+        self._Q2 = float(self.receive())
         return self._Q2
 
 
