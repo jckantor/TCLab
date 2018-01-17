@@ -10,14 +10,22 @@ After making changes
 ====================
 
 1. Change the version number in ``setup.py``
-2. Push the latest code to GitHub
-3. Check the distribution::
+2. Check the distribution::
 
     python setup.py check
 
+3. Create a tag for the version number::
 
-Uploading
-=========
+    git tag vX.Y.Z
+
+4. Push the latest code to GitHub, including the new tag::
+
+    git push --follow-tags
+
+
+Uploading to PyPI
+=================
+
 1. Build the distribution::
 
     python setup.py sdist bdist_wheel
