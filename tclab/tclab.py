@@ -34,6 +34,11 @@ class TCLab(object):
         if self.sp.isOpen():
             print(self.version + ' connected on port ' + port)
         self.tstart = time.time()
+        self.sources = [('T1', lambda: self.T1),
+                        ('T2', lambda: self.T2),
+                        ('Q1', self.Q1),
+                        ('Q2', self.Q2),
+                        ]
 
     def __enter__(self):
         return self
@@ -99,3 +104,5 @@ class TCLab(object):
             self.send('Q2 ' + str(val))
             self._Q2 = float(self.receive())
         return self._Q2
+
+
