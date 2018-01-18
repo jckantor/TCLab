@@ -7,6 +7,11 @@ import serial
 from serial.tools import list_ports
 
 
+def clip(val, lower=0, upper=100):
+    """Limit value to be between lower and upper limits"""
+    return max(lower, min(val, upper))
+
+
 class TCLab(object):
     def __init__(self, port=None, baud=9600, debug=False):
         self.debug = debug
@@ -49,8 +54,7 @@ class TCLab(object):
         """Shut down TCLab device and close serial connection."""
         self.Q1(0)
         self.Q2(0)
-        self.send('X')
-        self.receive()
+        self.send_and_receive('X')
         self.sp.close()
         print('TCLab disconnected successfully.')
         return
@@ -76,8 +80,7 @@ class TCLab(object):
 
     def LED(self, val=100):
         """Flash TCLab LED at a specified brightness (default 100) for 10 seconds."""
-        val = max(0, min(val, 100))
-        return self.send_and_receive('LED ' + str(val), float)
+        return self.send_and_receive('LED ' + str(clip(val)), float)
 
     @property
     def T1(self):
@@ -94,8 +97,7 @@ class TCLab(object):
         if val is None:
             msg = 'R1'
         else:
-            val = max(0, min(val, 100))
-            msg = 'Q1 ' + str(val)
+            msg = 'Q1 ' + str(clip(val))
         return self.send_and_receive(msg, float)
 
     def Q2(self, val=None):
@@ -103,6 +105,5 @@ class TCLab(object):
         if val is None:
             msg = 'R2'
         else:
-            val = max(0, min(val, 100))
-            msg = 'Q2 ' + str(val)
+            msg = 'Q2 ' + str(clip(val))
         return self.send_and_receive(msg, float)
