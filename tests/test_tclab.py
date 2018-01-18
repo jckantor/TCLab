@@ -29,21 +29,19 @@ def test_T2(lab):
 
 
 def test_LED(lab):
-    lab.LED(100)
+    assert lab.LED(50) == 50
 
 
-def test_Q1_set(lab):
-    lab.Q1(100)
+def settertests(method):
+    assert method(-10) == 0
+    assert method(50) == 50
+    assert method(120) == 100
+    assert 0 <= method() <= 100
 
 
-def test_Q2_set(lab):
-    lab.Q2(100)
+def test_Q1(lab):
+    settertests(lab.Q1)
 
 
-def test_Q1_read(lab):
-    assert 0 <= lab.Q1() <= 100
-
-
-def test_Q2_read(lab):
-    assert 0 <= lab.Q2() <= 100
-
+def test_Q2(lab):
+    settertests(lab.Q2)
