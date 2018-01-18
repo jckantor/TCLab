@@ -95,7 +95,7 @@ class TCLab(object):
         return self.send_and_receive('T2', float)
 
     def Q1(self, val=None):
-        """Set TCLab heater power Q1 with range limited to 0-100, and actual value."""
+        """Set TCLab heater power Q1 with range limited to 0-100, return clipped value."""
         if val is None:
             msg = 'R1'
         else:
@@ -103,7 +103,7 @@ class TCLab(object):
         return self.send_and_receive(msg, float)
 
     def Q2(self, val=None):
-        """Set TCLab heater power Q1 with range limited to 0-100, and actual value."""
+        """Set TCLab heater power Q1 with range limited to 0-100, return clipped value."""
         if val is None:
             msg = 'R2'
         else:
