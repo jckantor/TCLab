@@ -11,6 +11,7 @@ def clip(val, lower=0, upper=100):
     """Limit value to be between lower and upper limits"""
     return max(lower, min(val, upper))
 
+sep = ' '   # Separates command and value in TCLab firmware
 
 class TCLab(object):
     def __init__(self, port=None, baud=9600, debug=False):
@@ -80,7 +81,7 @@ class TCLab(object):
 
     def LED(self, val=100):
         """Flash TCLab LED at a specified brightness (default 100) for 10 seconds."""
-        return self.send_and_receive('LED ' + str(clip(val)), float)
+        return self.send_and_receive('LED' + sep + str(clip(val)), float)
 
     @property
     def T1(self):
@@ -97,7 +98,7 @@ class TCLab(object):
         if val is None:
             msg = 'R1'
         else:
-            msg = 'Q1 ' + str(clip(val))
+            msg = 'Q1' + sep + str(clip(val))
         return self.send_and_receive(msg, float)
 
     def Q2(self, val=None):
@@ -105,5 +106,5 @@ class TCLab(object):
         if val is None:
             msg = 'R2'
         else:
-            msg = 'Q2 ' + str(clip(val))
+            msg = 'Q2' + sep + str(clip(val))
         return self.send_and_receive(msg, float)
