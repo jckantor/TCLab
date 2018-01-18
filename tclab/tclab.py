@@ -2,10 +2,16 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import print_function
-
 import time
 import serial
 from serial.tools import list_ports
+
+
+sep = ' '   # Separates command and value in TCLab firmware to
+
+def clip(val, lower=0, upper=100):
+    """Limit value to be between lower and upper limits"""
+    return max(lower, min(val, upper))
 
 
 class TCLab(object):
@@ -27,13 +33,17 @@ class TCLab(object):
             port = comport[0]
         self.sp = serial.Serial(port=port, baudrate=baud, timeout=2)
         self.receive()
-        self.send('VER')
-        self.version = self.receive()
+        self.version = self.send_and_receive('VER')
         self.Q1(0)
         self.Q2(0)
         if self.sp.isOpen():
             print(self.version + ' connected on port ' + port)
         self.tstart = time.time()
+        self.sources = [('T1', lambda: self.T1),
+                        ('T2', lambda: self.T2),
+                        ('Q1', self.Q1),
+                        ('Q2', self.Q2),
+                        ]
 
     def __enter__(self):
         return self
@@ -43,63 +53,59 @@ class TCLab(object):
         return
 
     def close(self):
-        try:
-            self.Q1(0)
-            self.Q2(0)
-            self.send('X')
-            self.receive()
-            self.sp.close()
-            print('TCLab disconnected successfully.')
-        except:
-            print('Problem encountered while disconnecting from TCLab.')
-            print('Please unplug and replug tclab.')
+        """Shut down TCLab device and close serial connection."""
+        self.Q1(0)
+        self.Q2(0)
+        self.send_and_receive('X')
+        self.sp.close()
+        print('TCLab disconnected successfully.')
         return
 
     def send(self, msg):
+        """Send a string message to the TCLab firmware."""
         self.sp.write((msg + '\r\n').encode())
         if self.debug:
             print('Sent: "' + msg + '"')
         self.sp.flush()
 
     def receive(self):
+        """Return a string message received from the TCLab firmware."""
         msg = self.sp.readline().decode('UTF-8').replace('\r\n', '')
         if self.debug:
             print('Return: "' + msg + '"')
         return msg
-    
+
+    def send_and_receive(self, msg, convert=str):
+        """Send a string message and return the response"""
+        self.send(msg)
+        return convert(self.receive())
+
     def LED(self, val=100):
-        val = max(0, min(val, 100))
-        self.send('LED ' + str(val))
-        return float(self.receive())
+        """Flash TCLab LED at a specified brightness (default 100) for 10 seconds."""
+        return self.send_and_receive('LED' + sep + str(clip(val)), float)
 
     @property
     def T1(self):
-        self.send('T1')
-        self._T1 = float(self.receive())
-        return self._T1
+        """Return a float denoting TCLab temperature T1 in degrees C."""
+        return self.send_and_receive('T1', float)
 
     @property
     def T2(self):
-        self.send('T2')
-        self._T2 = float(self.receive())
-        return self._T2
+        """Return a float denoting TCLab temperature T2 in degrees C."""
+        return self.send_and_receive('T2', float)
 
     def Q1(self, val=None):
+        """Set TCLab heater power Q1 with range limited to 0-100, return clipped value."""
         if val is None:
-            self.send('R1')
-            self._Q1 = float(self.receive())
+            msg = 'R1'
         else:
-            val = max(0, min(val, 100))
-            self.send('Q1 ' + str(val))
-            self._Q1 = float(self.receive())
-        return self._Q1
+            msg = 'Q1' + sep + str(clip(val))
+        return self.send_and_receive(msg, float)
 
     def Q2(self, val=None):
+        """Set TCLab heater power Q1 with range limited to 0-100, return clipped value."""
         if val is None:
-            self.send('R2')
-            self._Q2 = float(self.receive())
+            msg = 'R2'
         else:
-            val = max(0, min(val, 100))
-            self.send('Q2 ' + str(val))
-            self._Q2 = float(self.receive())
-        return self._Q2
+            msg = 'Q2' + sep + str(clip(val))
+        return self.send_and_receive(msg, float)
