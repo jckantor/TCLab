@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import print_function
-
 import time
 import serial
 from serial.tools import list_ports
@@ -48,6 +47,7 @@ class TCLab(object):
         return
 
     def close(self):
+        """Shut down TCLab device and close serial connection."""
         self.Q1(0)
         self.Q2(0)
         self.send('X')
@@ -57,35 +57,41 @@ class TCLab(object):
         return
 
     def send(self, msg):
+        """Send a string message to the TCLab firmware."""
         self.sp.write((msg + '\r\n').encode())
         if self.debug:
             print('Sent: "' + msg + '"')
         self.sp.flush()
 
     def receive(self):
+        """Return a string message received from the TCLab firmware."""
         msg = self.sp.readline().decode('UTF-8').replace('\r\n', '')
         if self.debug:
             print('Return: "' + msg + '"')
         return msg
     
     def LED(self, val=100):
+        """Flash TCLab LED at a specified brightness (default 100) for 10 seconds."""
         val = max(0, min(val, 100))
         self.send('LED ' + str(val))
         return float(self.receive())
 
     @property
     def T1(self):
+        """Return a float denoting TCLab temperature T1 in degrees C."""
         self.send('T1')
         self._T1 = float(self.receive())
         return self._T1
 
     @property
     def T2(self):
+        """Return a float denoting TCLab temperature T2 in degrees C."""
         self.send('T2')
         self._T2 = float(self.receive())
         return self._T2
 
     def Q1(self, val=None):
+        """Set TCLab heater power Q1 with range limited to 0-100, and actual value."""
         if val is None:
             self.send('R1')
         else:
@@ -95,6 +101,7 @@ class TCLab(object):
         return self._Q1
 
     def Q2(self, val=None):
+        """Set TCLab heater power Q1 with range limited to 0-100, and actual value."""
         if val is None:
             self.send('R2')
         else:
@@ -102,5 +109,3 @@ class TCLab(object):
             self.send('Q2 ' + str(val))
         self._Q2 = float(self.receive())
         return self._Q2
-
-
