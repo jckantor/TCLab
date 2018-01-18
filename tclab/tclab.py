@@ -7,7 +7,7 @@ import serial
 from serial.tools import list_ports
 
 
-sep = ' '   # Separates command and value in TCLab firmware to
+sep = ' '   # Separates command and value in TCLab firmware
 
 def clip(val, lower=0, upper=100):
     """Limit value to be between lower and upper limits"""
