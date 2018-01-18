@@ -26,8 +26,7 @@ class TCLab(object):
             port = comport[0]
         self.sp = serial.Serial(port=port, baudrate=baud, timeout=2)
         self.receive()
-        self.send('VER')
-        self.version = self.receive()
+        self.version = self.send_and_receive('VER')
         self.Q1(0)
         self.Q2(0)
         if self.sp.isOpen():
@@ -69,43 +68,41 @@ class TCLab(object):
         if self.debug:
             print('Return: "' + msg + '"')
         return msg
-    
+
+    def send_and_receive(self, msg, convert=str):
+        """Send a string message and return the response"""
+        self.send(msg)
+        return convert(self.receive())
+
     def LED(self, val=100):
         """Flash TCLab LED at a specified brightness (default 100) for 10 seconds."""
         val = max(0, min(val, 100))
-        self.send('LED ' + str(val))
-        return float(self.receive())
+        return self.send_and_receive('LED ' + str(val), float)
 
     @property
     def T1(self):
         """Return a float denoting TCLab temperature T1 in degrees C."""
-        self.send('T1')
-        self._T1 = float(self.receive())
-        return self._T1
+        return self.send_and_receive('T1', float)
 
     @property
     def T2(self):
         """Return a float denoting TCLab temperature T2 in degrees C."""
-        self.send('T2')
-        self._T2 = float(self.receive())
-        return self._T2
+        return self.send_and_receive('T2', float)
 
     def Q1(self, val=None):
         """Set TCLab heater power Q1 with range limited to 0-100, and actual value."""
         if val is None:
-            self.send('R1')
+            msg = 'R1'
         else:
             val = max(0, min(val, 100))
-            self.send('Q1 ' + str(val))
-        self._Q1 = float(self.receive())
-        return self._Q1
+            msg = 'Q1 ' + str(val)
+        return self.send_and_receive(msg, float)
 
     def Q2(self, val=None):
         """Set TCLab heater power Q1 with range limited to 0-100, and actual value."""
         if val is None:
-            self.send('R2')
+            msg = 'R2'
         else:
             val = max(0, min(val, 100))
-            self.send('Q2 ' + str(val))
-        self._Q2 = float(self.receive())
-        return self._Q2
+            msg = 'Q2 ' + str(val)
+        return self.send_and_receive(msg, float)
