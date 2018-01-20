@@ -36,9 +36,8 @@ Hardware setup
 3. (optional) Install Arduino Firmware
 
    If you are using your own Arduino board, you will need to flash the
-   board with the custom firmware used by the lab. This is done using
-   the `Arduino IDE <https://www.arduino.cc/en/Main/Software>`__. The
-   script that must be uploaded to the board is found in the sketch directory.
+   board with the custom firmware used by the lab. Follow instructions in the 
+   [TCLab-sketch repository](https://github.com/jckantor/TCLab-sketch).
 
 Checking that everything works
 ------------------------------
