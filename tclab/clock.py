@@ -19,7 +19,7 @@ def clock(tperiod, tstep=1, strict=True, tol=0.1):
     curr_time = start_time = time.time()
     fuzz = 0.01
     k = 0
-    while (curr_time-start_time) <= (tperiod - tstep) + tol + fuzz:
+    while (curr_time - start_time) <= (tperiod - tstep) + tol + fuzz:
         yield round(curr_time - start_time, 1)
         if strict:
             tsleep = (k+1)*tstep - (time.time() - start_time) - fuzz
