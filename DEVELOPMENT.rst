@@ -1,9 +1,13 @@
 During development
 ==================
 
-1. Develop and test changes using::
+1. Develop using::
 
     python setup.py develop
+    
+2. Test changes using::
+
+    pytest -v
 
 
 After making changes
