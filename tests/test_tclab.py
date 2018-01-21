@@ -1,11 +1,11 @@
 import pytest
 
-from tclab import TCLab
+from tclab import TCLabSurrogate, TCLab
 
 
-@pytest.fixture(scope="module")
-def lab():
-    a = TCLab()
+@pytest.fixture(scope="module", params=[TCLab, TCLabSurrogate])
+def lab(request):
+    a = request.param()
     yield a
     a.close()
 

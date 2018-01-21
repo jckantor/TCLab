@@ -109,3 +109,59 @@ class TCLab(object):
         else:
             msg = 'Q2' + sep + str(clip(val))
         return self.send_and_receive(msg, float)
+
+
+class TCLabSurrogate(object):
+    def __init__(self, port=None, baud=9600, debug=False):
+        self.debug = debug
+        print('Simulated TCLab')
+        self.Q1(0)
+        self.Q2(0)
+        self._T1 = 25
+        self._T2 = 25
+        self.tstart = time.time()
+        self.sources = [('T1', lambda: self.T1),
+                        ('T2', lambda: self.T2),
+                        ('Q1', self.Q1),
+                        ('Q2', self.Q2),
+                        ]
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.close()
+        return
+
+    def close(self):
+        """Simulate shutting down TCLab device."""
+        self.Q1(0)
+        self.Q2(0)
+        print('Surrogate TCLab disconnected successfully.')
+        return
+
+    def LED(self, val=100):
+        """Simulate flashing TCLab LED at a specified brightness (default 100) for 10 seconds."""
+        return val
+
+    @property
+    def T1(self):
+        """Return a float denoting TCLab temperature T1 in degrees C."""
+        return self._T1
+
+    @property
+    def T2(self):
+        """Return a float denoting TCLab temperature T2 in degrees C."""
+        return self._T2
+
+    def Q1(self, val=None):
+        """Simulate setting TCLab heater power Q1 with range limited to 0-100, return clipped value."""
+        if val is not None:
+            self._Q1 = clip(val)
+        return self._Q1
+
+    def Q2(self, val=None):
+        """Simulate setting TCLab heater power Q2 with range limited to 0-100, return clipped value."""
+        if val is not None:
+            self._Q2 = clip(val)
+        return self._Q2
