@@ -20,16 +20,20 @@ class TCLab(object):
         print('Connecting to TCLab')
         if not port:
             for comport in list(list_ports.comports()):
-                if comport[2].startswith((
-                        'USB VID:PID=16D0:0613',    # Arduino Uno
-                        'USB VID:PID=1A86:7523',    # Hduino
-                        'USB VID:PID=2341:8036')):  # Arduino Leonardo
+                if comport[2].startswith('USB VID:PID=16D0:0613'):
+                    self.arduino = 'Arduino Uno'
+                    break
+                elif comport[2].startswith('USB VID:PID=1A86:7523'):
+                    self.arduino = 'Hduino'
+                    break
+                elif comport[2].startswith('USB VID:PID=2341:8036'):
+                    self.arduino = 'Arduino Leonardo'
                     break
             else:
                 print('--- Printing Serial Ports ---')
                 for port in list(list_ports.comports()):
                     print(port[0] + ' ' + port[1] + ' ' + port[2])
-                raise RuntimeError('No Arduino device was found.')
+                raise RuntimeError('No compatible Arduino device was found.')
             port = comport[0]
         self.sp = serial.Serial(port=port, baudrate=baud, timeout=2)
         self.receive()
@@ -37,7 +41,7 @@ class TCLab(object):
         self.Q1(0)
         self.Q2(0)
         if self.sp.isOpen():
-            print(self.version + ' connected on port ' + port)
+            print(self.version + ' on ' + self.arduino + ' connected on port ' + port)
         self.tstart = time.time()
         self.sources = [('T1', lambda: self.T1),
                         ('T2', lambda: self.T2),
