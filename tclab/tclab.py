@@ -38,6 +38,8 @@ class TCLab(object):
         self.sp = serial.Serial(port=port, baudrate=baud, timeout=2)
         self.receive()
         self.version = self.send_and_receive('VER')
+        self._P1 = 200.0
+        self._P2 = 100.0
         self.Q1(0)
         self.Q2(0)
         if self.sp.isOpen():
@@ -97,6 +99,26 @@ class TCLab(object):
     def T2(self):
         """Return a float denoting TCLab temperature T2 in degrees C."""
         return self.send_and_receive('T2', float)
+    
+    @property
+    def P1(self):
+        """Return a float denoting maximum power of heater 1 in pwm."""
+        return self._P1
+    
+    @P1.setter
+    def P1(self, val):
+        """Set maximum power of heater 1 in pwm, range 0 to 255."""
+        self._P1 = self.send_and_receive('P1' + sep + str(clip(val,0,255)), float)
+
+    @property
+    def P2(self):
+        """Return a float denoting maximum power of heater 2 in pwm."""
+        return self._P2
+
+    @P2.setter
+    def P2(self, val):
+        """Set maximum power of heater 2 in pwm, range 0 to 255."""
+        self._P2 = self.send_and_receive('P2' + sep + str(clip(val,0,255)), float)
 
     def Q1(self, val=None):
         """Set TCLab heater power Q1 with range limited to 0-100, return clipped value."""
@@ -119,6 +141,8 @@ class TCLabSurrogate(object):
     def __init__(self, port=None, baud=9600, debug=False):
         self.debug = debug
         print('Simulated TCLab')
+        self._P1 = 200.0
+        self._P2 = 100.0
         self.Q1(0)
         self.Q2(0)
         self._T1 = 25
@@ -157,6 +181,26 @@ class TCLabSurrogate(object):
     def T2(self):
         """Return a float denoting TCLab temperature T2 in degrees C."""
         return self._T2
+
+    @property
+    def P1(self):
+        """Return a float denoting maximum power of heater 1 in pwm."""
+        return self._P1
+    
+    @P1.setter
+    def P1(self, val):
+        """Set maximum power of heater 1 in pwm, range 0 to 255."""
+        self._P1 = clip(val,0,255)
+
+    @property
+    def P2(self):
+        """Return a float denoting maximum power of heater 2 in pwm."""
+        return self._P2
+
+    @P2.setter
+    def P2(self, val):
+        """Set maximum power of heater 2 in pwm, range 0 to 255."""
+        self._P2 = clip(val,0,255)
 
     def Q1(self, val=None):
         """Simulate setting TCLab heater power Q1 with range limited to 0-100, return clipped value."""
