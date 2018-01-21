@@ -60,8 +60,8 @@ class Plotter:
 
         plt.figure(figsize=(10, 5))
         self.ax1 = plt.gca()
-        self.lines = []
         val = [self.historian.at(0, [pv]) for pv in self.historian.columns]
+        self.lines = []
         for k in range(1,len(self.historian.columns)):
             li, = plt.step(val[0], val[k], where='pre', **line_options)
             self.lines.append(li)
