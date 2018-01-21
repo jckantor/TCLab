@@ -141,13 +141,24 @@ class TCLabSurrogate(object):
     def __init__(self, port=None, baud=9600, debug=False):
         self.debug = debug
         print('Simulated TCLab')
+
+        self.tstart = time.time()
+        self.tlast = self.tstart
+
+        self._Q1 = 0
+        self._Q2 = 0
         self._P1 = 200.0
         self._P2 = 100.0
+
+        self.Ta = 25
+        self._T1 = self.Ta
+        self._T2 = self.Ta
+        self._H1 = self.Ta
+        self._H2 = self.Ta
+
         self.Q1(0)
         self.Q2(0)
-        self._T1 = 25
-        self._T2 = 25
-        self.tstart = time.time()
+
         self.sources = [('T1', lambda: self.T1),
                         ('T2', lambda: self.T2),
                         ('Q1', self.Q1),
@@ -169,47 +180,76 @@ class TCLabSurrogate(object):
         return
 
     def LED(self, val=100):
+        self.update()
         """Simulate flashing TCLab LED at a specified brightness (default 100) for 10 seconds."""
-        return val
+        return clip(val)
 
     @property
     def T1(self):
+        self.update()
         """Return a float denoting TCLab temperature T1 in degrees C."""
         return self._T1
 
     @property
     def T2(self):
+        self.update()
         """Return a float denoting TCLab temperature T2 in degrees C."""
         return self._T2
 
     @property
     def P1(self):
+        self.update()
         """Return a float denoting maximum power of heater 1 in pwm."""
         return self._P1
     
     @P1.setter
     def P1(self, val):
+        self.update()
         """Set maximum power of heater 1 in pwm, range 0 to 255."""
         self._P1 = clip(val,0,255)
 
     @property
     def P2(self):
+        self.update()
         """Return a float denoting maximum power of heater 2 in pwm."""
         return self._P2
 
     @P2.setter
     def P2(self, val):
+        self.update()
         """Set maximum power of heater 2 in pwm, range 0 to 255."""
         self._P2 = clip(val,0,255)
 
     def Q1(self, val=None):
+        self.update()
         """Simulate setting TCLab heater power Q1 with range limited to 0-100, return clipped value."""
         if val is not None:
             self._Q1 = clip(val)
         return self._Q1
 
     def Q2(self, val=None):
+        self.update()
         """Simulate setting TCLab heater power Q2 with range limited to 0-100, return clipped value."""
         if val is not None:
             self._Q2 = clip(val)
         return self._Q2
+
+    def update(self):
+        # Time updates
+        self.tnow = time.time()           # current wall clock
+        dt = self.tnow - self.tlast       # time step
+        self.tlast = self.tnow            # retain for next access
+
+        dH1 = 0.5*self._P1*self._Q1/10000 \
+              + 0.05*(self.Ta - self._H1) \
+              + 0.05*(self._H2 - self._H1)
+        dH2 = 0.5*self._P1*self._Q2/10000 \
+              + 0.05*(self.Ta - self._H2) \
+              + 0.05*(self._H1 - self._H2)
+        dT1 = 0.1*(self._H1 - self._T1)
+        dT2 = 0.1*(self._H2 - self._T2)
+
+        self._H1 += dH1 * dt
+        self._H2 += dH2 * dt
+        self._T1 += dT1 * dt
+        self._T2 += dT2 * dt
