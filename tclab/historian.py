@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Fri Jan 12 09:14:07 2018
 
-@author: jeff
-"""
 from __future__ import print_function
 from __future__ import division
 import time
