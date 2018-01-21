@@ -58,19 +58,22 @@ class Plotter:
 
         line_options = {'lw': 2, 'alpha': 0.8}
 
-        plt.figure(figsize=(10, 5))
-        self.ax1 = plt.gca()
-        val = [self.historian.at(0, [pv]) for pv in self.historian.columns]
+        self.fig = plt.figure(figsize=(8, 6))
+        nplots = len(self.historian.columns) - 1  
         self.lines = []
-        for k in range(1,len(self.historian.columns)):
-            li, = plt.step(val[0], val[k], where='pre', **line_options)
+        self.axes = []
+        for n in range(0, nplots):
+            self.axes.append(self.fig.add_subplot(nplots,1,n+1))
+            y = self.historian.at(0,[self.historian.columns[n+1]])[0]
+            li, = plt.step(0, y, where='post', **line_options)          
             self.lines.append(li)
-        plt.xlim(0, 1.05 * tperiod)
-        plt.ylim(-2, 105)
-        plt.title('Temperature Control Lab')
+            plt.xlim(0, 1.05 * tperiod)
+            plt.ylim(y-2,y+2)
+            plt.ylabel(self.historian.columns[n+1])
+            plt.grid()
         plt.xlabel('Time / Seconds')
-        plt.legend(self.historian.columns[1:])
-        plt.grid()
+        plt.tight_layout()
+        display.display(plt.gcf())
 
     def update(self, tnow=None):
         self.historian.update(tnow)
@@ -79,10 +82,15 @@ class Plotter:
         display = self.display
 
         t = self.historian.fields[0]
-        for k in range(1,len(self.historian.columns)):
-            self.lines[k-1].set_data(t,self.historian.fields[k])
-        if self.historian.tnow > self.ax1.get_xlim()[1]:
-            self.ax1.set_xlim(0, 1.4 * self.ax1.get_xlim()[1])
+        for n in range(0, len(self.historian.columns)-1):
+            y = self.historian.fields[n+1]
+            self.lines[n].set_data(t,y)
+            ymax = max(y)
+            ymin = min(y)
+            if (ymax > self.axes[n].get_ylim()[1]) or (ymin < self.axes[n].get_ylim()[0]):
+                self.axes[n].set_ylim(ymin-1,ymax+2)
+            if self.historian.tnow > self.axes[n].get_xlim()[1]:
+                self.axes[n].set_xlim(0, 1.4 * self.axes[n].get_xlim()[1])
         display.clear_output(wait=True)
         display.display(plt.gcf())
 
