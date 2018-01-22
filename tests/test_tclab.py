@@ -57,3 +57,22 @@ def test_Q1(lab):
 
 def test_Q2(lab):
     settertests(lab.Q2)
+
+
+def test_U1(lab):
+    lab.U1 = -10
+    assert lab.U1 == 0
+    lab.U1 = 50
+    assert lab.U1 == 50
+    lab.U1 = 120
+    assert lab.U1 == 100
+
+
+def test_U2(lab):
+    lab.U2 = -10
+    assert lab.U2 == 0
+    lab.U2 = 50
+    assert lab.U2 == 50
+    lab.U2 = 120
+    assert lab.U2 == 100
+

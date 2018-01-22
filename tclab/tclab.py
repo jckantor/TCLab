@@ -136,6 +136,26 @@ class TCLab(object):
             msg = 'Q2' + sep + str(clip(val))
         return self.send_and_receive(msg, float)
 
+    @property
+    def U1(self):
+        """Return TCLab heater 1 power, range 0 to 100."""
+        return self.send_and_receive('R1', float)
+
+    @U1.setter
+    def U1(self, val):
+        """Set TCLab heater 1 power with range limited to 0-100, return clipped value."""
+        return self.send_and_receive('Q1' + sep + str(clip(val)), float)
+
+    @property
+    def U2(self):
+        """Return TCLab heater 2 power."""
+        return self.send_and_receive('R2', float)
+
+    @U2.setter
+    def U2(self, val):
+        """Set TCLab heater 2 power with range limited to 0-100, return clipped value."""
+        return self.send_and_receive('Q2' + sep + str(clip(val)), float)
+
 
 class TCLabSurrogate(object):
     def __init__(self, port=None, baud=9600, debug=False):
@@ -225,6 +245,28 @@ class TCLabSurrogate(object):
         """Simulate setting TCLab heater power Q2 with range limited to 0-100, return clipped value."""
         if val is not None:
             self._Q2 = clip(val)
+        return self._Q2
+
+    @property
+    def U1(self):
+        """Return TCLab heater 1 power, range 0 to 100."""
+        return self._Q1
+
+    @U1.setter
+    def U1(self, val):
+        """Set TCLab heater 1 power with range limited to 0-100, return clipped value."""
+        self._Q1 = clip(val)
+        return self._Q1
+
+    @property
+    def U2(self):
+        """Return TCLab heater 2 power."""
+        return self._Q2
+
+    @U2.setter
+    def U2(self, val):
+        """Set TCLab heater 2 power with range limited to 0-100, return clipped value."""
+        self._Q2 = clip(val)
         return self._Q2
 
     def update(self):
