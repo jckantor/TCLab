@@ -193,56 +193,58 @@ class TCLabSurrogate(object):
         return
 
     def LED(self, val=100):
+        """Simulate flashing TCLab LED
+
+           val : specified brightness (default 100). """
         self.update()
-        """Simulate flashing TCLab LED at a specified brightness (default 100) for 10 seconds."""
         return clip(val)
 
     @property
     def T1(self):
-        self.update()
         """Return a float denoting TCLab temperature T1 in degrees C."""
+        self.update()
         return self._T1
 
     @property
     def T2(self):
-        self.update()
         """Return a float denoting TCLab temperature T2 in degrees C."""
+        self.update()
         return self._T2
 
     @property
     def P1(self):
-        self.update()
         """Return a float denoting maximum power of heater 1 in pwm."""
+        self.update()
         return self._P1
     
     @P1.setter
     def P1(self, val):
-        self.update()
         """Set maximum power of heater 1 in pwm, range 0 to 255."""
+        self.update()
         self._P1 = clip(val,0,255)
 
     @property
     def P2(self):
-        self.update()
         """Return a float denoting maximum power of heater 2 in pwm."""
+        self.update()
         return self._P2
 
     @P2.setter
     def P2(self, val):
-        self.update()
         """Set maximum power of heater 2 in pwm, range 0 to 255."""
+        self.update()
         self._P2 = clip(val,0,255)
 
     def Q1(self, val=None):
-        self.update()
         """Simulate setting TCLab heater power Q1 with range limited to 0-100, return clipped value."""
+        self.update()
         if val is not None:
             self._Q1 = clip(val)
         return self._Q1
 
     def Q2(self, val=None):
-        self.update()
         """Simulate setting TCLab heater power Q2 with range limited to 0-100, return clipped value."""
+        self.update()
         if val is not None:
             self._Q2 = clip(val)
         return self._Q2
