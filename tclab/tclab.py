@@ -136,25 +136,9 @@ class TCLab(object):
             msg = 'Q2' + sep + str(clip(val))
         return self.send_and_receive(msg, float)
 
-    @property
-    def U1(self):
-        """Return TCLab heater 1 power, range 0 to 100."""
-        return self.send_and_receive('R1', float)
-
-    @U1.setter
-    def U1(self, val):
-        """Set TCLab heater 1 power with range limited to 0-100, return clipped value."""
-        return self.send_and_receive('Q1' + sep + str(clip(val)), float)
-
-    @property
-    def U2(self):
-        """Return TCLab heater 2 power."""
-        return self.send_and_receive('R2', float)
-
-    @U2.setter
-    def U2(self, val):
-        """Set TCLab heater 2 power with range limited to 0-100, return clipped value."""
-        return self.send_and_receive('Q2' + sep + str(clip(val)), float)
+    # Define properties for Q1 and Q2
+    U1 = property(fget=Q1, fset=Q1, doc="Heater 1 value")
+    U2 = property(fget=Q2, fset=Q2, doc="Heater 2 value")
 
 
 class TCLabSurrogate(object):
@@ -249,27 +233,9 @@ class TCLabSurrogate(object):
             self._Q2 = clip(val)
         return self._Q2
 
-    @property
-    def U1(self):
-        """Return TCLab heater 1 power, range 0 to 100."""
-        return self._Q1
-
-    @U1.setter
-    def U1(self, val):
-        """Set TCLab heater 1 power with range limited to 0-100, return clipped value."""
-        self._Q1 = clip(val)
-        return self._Q1
-
-    @property
-    def U2(self):
-        """Return TCLab heater 2 power."""
-        return self._Q2
-
-    @U2.setter
-    def U2(self, val):
-        """Set TCLab heater 2 power with range limited to 0-100, return clipped value."""
-        self._Q2 = clip(val)
-        return self._Q2
+    # Define properties for Q1 and Q2
+    U1 = property(fget=Q1, fset=Q1, doc="Heater 1 value")
+    U2 = property(fget=Q2, fset=Q2, doc="Heater 2 value")
 
     def update(self):
         # Time updates
