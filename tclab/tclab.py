@@ -156,6 +156,7 @@ class TCLabSurrogate(object):
         self._T2 = self.Ta            # temperature thermister 2
         self._H1 = self.Ta            # temperature heater 1
         self._H2 = self.Ta            # temperature heater 2
+        self.maxstep = 0.2            # maximum time step for integration
         self.sources = [('T1', lambda: self.T1),
                         ('T2', lambda: self.T2),
                         ('Q1', self.Q1),
@@ -240,19 +241,23 @@ class TCLabSurrogate(object):
     def update(self):
         # Time updates
         self.tnow = time.time()           # current wall clock
-        dt = self.tnow - self.tlast       # time step
+        trequired = self.tnow - self.tlast
         self.tlast = self.tnow            # retain for next access
 
-        dH1 = self._P1*self._Q1/5720 \
-              + (self.Ta - self._H1)/20 \
-              + (self._H2 - self._H1)/100
-        dH2 = self._P2*self._Q2/5720 \
-              + (self.Ta - self._H2)/20 \
-              + (self._H1 - self._H2)/100
-        dT1 = (self._H1 - self._T1)/140
-        dT2 = (self._H2 - self._T2)/140
+        fullsteps, remainder = divmod(trequired, self.maxstep)
+        steps = [self.maxstep]*int(fullsteps) + [remainder]
 
-        self._H1 += dt * dH1
-        self._H2 += dt * dH2
-        self._T1 += dt * dT1
-        self._T2 += dt * dT2
+        for dt in steps:
+            DeltaTaH1 = self.Ta - self._H1
+            DeltaTaH2 = self.Ta - self._H2
+            DeltaT12 = self._H1 - self._H2
+            dH1 = self._P1 * self._Q1 / 5720 + DeltaTaH1 / 20 - DeltaT12 / 100
+            dH2 = self._P2 * self._Q2 / 5720 + DeltaTaH2 / 20 + DeltaT12 / 100
+            dT1 = (self._H1 - self._T1)/140
+            dT2 = (self._H2 - self._T2)/140
+
+            self._H1 += dt * dH1
+            self._H2 += dt * dH2
+            self._T1 += dt * dT1
+            self._T2 += dt * dT2
+
