@@ -141,24 +141,17 @@ class TCLabSurrogate(object):
     def __init__(self, port=None, baud=9600, debug=False):
         self.debug = debug
         print('Simulated TCLab')
-
-        self.tstart = time.time()
-        self.tlast = self.tstart
-
-        self._Q1 = 0
-        self._Q2 = 0
-        self._P1 = 200.0
-        self._P2 = 100.0
-
-        self.Ta = 25
-        self._T1 = self.Ta
-        self._T2 = self.Ta
-        self._H1 = self.Ta
-        self._H2 = self.Ta
-
-        self.Q1(0)
-        self.Q2(0)
-
+        self.Ta = 21                  # ambient temperature
+        self.tstart = time.time()     # start time
+        self.tlast = self.tstart      # last update time
+        self._P1 = 200.0              # max power heater 1
+        self._P2 = 100.0              # max power heater 2
+        self._Q1 = 0                  # initial heater 1
+        self._Q2 = 0                  # initial heater 2
+        self._T1 = self.Ta            # temperature thermister 1
+        self._T2 = self.Ta            # temperature thermister 2
+        self._H1 = self.Ta            # temperature heater 1
+        self._H2 = self.Ta            # temperature heater 2
         self.sources = [('T1', lambda: self.T1),
                         ('T2', lambda: self.T2),
                         ('Q1', self.Q1),
@@ -240,16 +233,16 @@ class TCLabSurrogate(object):
         dt = self.tnow - self.tlast       # time step
         self.tlast = self.tnow            # retain for next access
 
-        dH1 = 0.5*self._P1*self._Q1/10000 \
-              + 0.05*(self.Ta - self._H1) \
-              + 0.05*(self._H2 - self._H1)
-        dH2 = 0.5*self._P1*self._Q2/10000 \
-              + 0.05*(self.Ta - self._H2) \
-              + 0.05*(self._H1 - self._H2)
-        dT1 = 0.1*(self._H1 - self._T1)
-        dT2 = 0.1*(self._H2 - self._T2)
+        dH1 = self._P1*self._Q1/5720 \
+              + (self.Ta - self._H1)/20 \
+              + (self._H2 - self._H1)/100
+        dH2 = self._P2*self._Q2/5720 \
+              + (self.Ta - self._H2)/20 \
+              + (self._H1 - self._H2)/100
+        dT1 = (self._H1 - self._T1)/140
+        dT2 = (self._H2 - self._T2)/140
 
-        self._H1 += dH1 * dt
-        self._H2 += dH2 * dt
-        self._T1 += dT1 * dt
-        self._T2 += dT2 * dt
+        self._H1 += dt * dH1
+        self._H2 += dt * dH2
+        self._T1 += dt * dT1
+        self._T2 += dt * dT2
