@@ -1,4 +1,5 @@
 import time as original_time
+import gc
 
 SPEEDUP = 1
 
@@ -37,15 +38,23 @@ def clock(tperiod, tstep=1, strict=True, tol=0.1):
     k = 0
     while (curr_time - start_time) <= (tperiod - tstep) + tol + fuzz:
         yield round(curr_time - start_time, 1)
-        if strict:
-            tsleep = (k+1)*tstep - (time() - start_time) - fuzz
+        if SPEEDUP >= 10:
+            if strict:
+                tsleep = (k + 1) * tstep - (time() - start_time) - fuzz
+            else:
+                tsleep = tstep - (time() - curr_time) - fuzz
+            gcold = gc.isenabled()
+            gc.disable()
+            try:
+                if tsleep >= fuzz:
+                    sleep(tsleep)
+            finally:
+                if gcold:
+                    gc.enable()
+            curr_time = time()
         else:
-            tsleep = tstep - (time() - curr_time) - fuzz
-        if tsleep >= fuzz:
-            sleep(tsleep)
-        curr_time = time()
+            curr_time = start_time + (k + 1) * tstep
         k += 1
         if strict and (abs(curr_time - start_time - k * tstep) > tol + fuzz):
             raise RuntimeError("TCLab clock lost real time synchronization.")
-
     yield round(curr_time - start_time, 1)
