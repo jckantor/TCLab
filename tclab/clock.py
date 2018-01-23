@@ -14,8 +14,12 @@ def time():
     return tnow
 
 
-def scaledtime():
+def speedtime():
     return SPEEDUP*original_time.time()
+
+
+def speedsleep(tsleep):
+    return original_time.sleep(tsleep/SPEEDUP)
 
 
 def clock(tperiod, tstep=1, strict=True, tol=0.1):
@@ -36,16 +40,16 @@ def clock(tperiod, tstep=1, strict=True, tol=0.1):
     """
     global tnow
     tnow = 0
-    start_time = scaledtime()
+    start_time = speedtime()
     fuzz = 0.01
     k = 0
     while tnow <= tperiod - tstep + tol + fuzz:
         yield round(tnow, 1)
-        if SPEEDUP < 10:
+        if SPEEDUP <= 10:
             if strict:
-                tsleep = max(0, (k + 1) * tstep - (scaledtime() - start_time) - fuzz)
+                tsleep = max(0, (k + 1) * tstep - (speedtime() - start_time) - fuzz)
             else:
-                tsleep = max(0, tstep - (scaledtime() - start_time - tnow) - fuzz)
+                tsleep = max(0, tstep - (speedtime() - start_time - tnow) - fuzz)
             gcold = gc.isenabled()
             gc.disable()
             try:
@@ -54,7 +58,7 @@ def clock(tperiod, tstep=1, strict=True, tol=0.1):
             finally:
                 if gcold:
                     gc.enable()
-            tnow = scaledtime() - start_time
+            tnow = speedtime() - start_time
         else:
             tnow = (k+1)*tstep
         k += 1
