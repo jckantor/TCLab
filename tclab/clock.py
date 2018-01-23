@@ -33,28 +33,26 @@ def clock(tperiod, tstep=1, strict=True, tol=0.1):
          TCLabClockError: If clock becomes more than `tol` out of phase
              with real time clock.
     """
-    curr_time = start_time = time()
+    start_time = time()
+    tnow = 0
     fuzz = 0.01
     k = 0
-    while (curr_time - start_time) <= (tperiod - tstep) + tol + fuzz:
-        yield round(curr_time - start_time, 1)
-        if SPEEDUP >= 10:
-            if strict:
-                tsleep = (k + 1) * tstep - (time() - start_time) - fuzz
-            else:
-                tsleep = tstep - (time() - curr_time) - fuzz
-            gcold = gc.isenabled()
-            gc.disable()
-            try:
-                if tsleep >= fuzz:
-                    sleep(tsleep)
-            finally:
-                if gcold:
-                    gc.enable()
-            curr_time = time()
+    while tnow <= tperiod - tstep + tol + fuzz:
+        yield round(tnow, 1)
+        if strict:
+            tsleep = (k + 1) * tstep - (time() - start_time) - fuzz
         else:
-            curr_time = start_time + (k + 1) * tstep
+            tsleep = tstep - (time() - start_time - tnow) - fuzz
+        gcold = gc.isenabled()
+        gc.disable()
+        try:
+            if tsleep >= fuzz:
+                sleep(tsleep)
+        finally:
+            if gcold:
+                gc.enable()
+        tnow = time() - start_time
         k += 1
-        if strict and (abs(curr_time - start_time - k * tstep) > tol + fuzz):
+        if strict and (abs(tnow - k * tstep) > tol + fuzz):
             raise RuntimeError("TCLab clock lost real time synchronization.")
-    yield round(curr_time - start_time, 1)
+    yield round(tnow, 1)
