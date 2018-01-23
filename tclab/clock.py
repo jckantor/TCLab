@@ -1,4 +1,20 @@
-import time
+import time as original_time
+
+SPEEDUP = 1
+
+
+def setup(speedup=1):
+    global SPEEDUP
+    SPEEDUP = speedup
+
+
+def time():
+    return SPEEDUP*original_time.time()
+
+
+def sleep(tsleep):
+    return original_time.sleep(tsleep/SPEEDUP)
+
 
 def clock(tperiod, tstep=1, strict=True, tol=0.1):
     """Generator providing time values in sync with real time clock.
@@ -16,18 +32,18 @@ def clock(tperiod, tstep=1, strict=True, tol=0.1):
          TCLabClockError: If clock becomes more than `tol` out of phase
              with real time clock.
     """
-    curr_time = start_time = time.time()
+    curr_time = start_time = time()
     fuzz = 0.01
     k = 0
     while (curr_time - start_time) <= (tperiod - tstep) + tol + fuzz:
         yield round(curr_time - start_time, 1)
         if strict:
-            tsleep = (k+1)*tstep - (time.time() - start_time) - fuzz
+            tsleep = (k+1)*tstep - (time() - start_time) - fuzz
         else:
-            tsleep = tstep - (time.time() - curr_time) - fuzz
+            tsleep = tstep - (time() - curr_time) - fuzz
         if tsleep >= fuzz:
-            time.sleep(tsleep)
-        curr_time = time.time()
+            sleep(tsleep)
+        curr_time = time()
         k += 1
         if strict and (abs(curr_time - start_time - k * tstep) > tol + fuzz):
             raise RuntimeError("TCLab clock lost real time synchronization.")

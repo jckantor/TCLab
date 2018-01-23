@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import print_function
-import time
+from .clock import time
 import serial
 from serial.tools import list_ports
 
@@ -44,7 +44,7 @@ class TCLab(object):
         self.Q2(0)
         if self.sp.isOpen():
             print(self.version + ' on ' + self.arduino + ' connected on port ' + port)
-        self.tstart = time.time()
+        self.tstart = time()
         self.sources = [('T1', lambda: self.T1),
                         ('T2', lambda: self.T2),
                         ('Q1', self.Q1),
@@ -141,12 +141,12 @@ class TCLab(object):
     U2 = property(fget=Q2, fset=Q2, doc="Heater 2 value")
 
 
-class TCLabSurrogate(object):
+class TCLabModel(object):
     def __init__(self, port=None, baud=9600, debug=False):
         self.debug = debug
         print('Simulated TCLab')
         self.Ta = 21                  # ambient temperature
-        self.tstart = time.time()     # start time
+        self.tstart = time()     # start time
         self.tlast = self.tstart      # last update time
         self._P1 = 200.0              # max power heater 1
         self._P2 = 100.0              # max power heater 2
@@ -240,7 +240,7 @@ class TCLabSurrogate(object):
 
     def update(self):
         # Time updates
-        self.tnow = time.time()           # current wall clock
+        self.tnow = time()           # current wall clock
         trequired = self.tnow - self.tlast
         self.tlast = self.tnow            # retain for next access
 

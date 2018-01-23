@@ -3,7 +3,7 @@
 
 from __future__ import print_function
 from __future__ import division
-import time
+from .clock import time
 import bisect
 
 class Historian(object):
@@ -16,7 +16,7 @@ class Historian(object):
                      - callable is evaluated to obtain the value
         """
         self.sources = [('Time', lambda: self.tnow)] + list(sources)
-        self.tstart = time.time()
+        self.tstart = time()
         self.tnow = 0
         self.columns = [name for name, _ in self.sources]
         self.fields = [[] for _ in range(len(self.sources))]
@@ -27,7 +27,7 @@ class Historian(object):
 
     def update(self, tnow=None):
         if tnow is None:
-            self.tnow = time.time() - self.tstart
+            self.tnow = time() - self.tstart
         else:
             self.tnow = tnow
 
