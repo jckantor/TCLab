@@ -1,5 +1,5 @@
 from .tclab import TCLab, TCLabModel
-from .clock import clock
+from .clock import clock, time
 from .historian import Historian, Plotter
 
 def setup(connected=True, speedup=1):

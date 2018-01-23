@@ -146,7 +146,7 @@ class TCLabModel(object):
         self.debug = debug
         print('Simulated TCLab')
         self.Ta = 21                  # ambient temperature
-        self.tstart = time()     # start time
+        self.tstart = time()          # start time
         self.tlast = self.tstart      # last update time
         self._P1 = 200.0              # max power heater 1
         self._P2 = 100.0              # max power heater 2
@@ -240,7 +240,7 @@ class TCLabModel(object):
 
     def update(self):
         # Time updates
-        self.tnow = time()           # current wall clock
+        self.tnow = time() - self.tstart
         trequired = self.tnow - self.tlast
         self.tlast = self.tnow            # retain for next access
 
