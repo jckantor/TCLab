@@ -1,13 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Fri Jan 12 09:14:07 2018
 
-@author: jeff
-"""
 from __future__ import print_function
 from __future__ import division
-import time
+from .clock import time
 import bisect
 
 class Historian(object):
@@ -20,7 +16,7 @@ class Historian(object):
                      - callable is evaluated to obtain the value
         """
         self.sources = [('Time', lambda: self.tnow)] + list(sources)
-        self.tstart = time.time()
+        self.tstart = time()
         self.tnow = 0
         self.columns = [name for name, _ in self.sources]
         self.fields = [[] for _ in range(len(self.sources))]
@@ -31,7 +27,7 @@ class Historian(object):
 
     def update(self, tnow=None):
         if tnow is None:
-            self.tnow = time.time() - self.tstart
+            self.tnow = time()
         else:
             self.tnow = tnow
 
@@ -57,37 +53,28 @@ class Plotter:
         import matplotlib.pyplot as plt
         from IPython import display
 
+        display.clear_output()
         self.plt = plt
         self.display = display
 
-        t, T1, T2, Q1, Q2 = self.historian.at(0)
-
         line_options = {'lw': 2, 'alpha': 0.8}
 
-        plt.figure(figsize=(10, 5))
-        self.ax1 = plt.subplot(2, 1, 1)
-        self.line_T1, = plt.plot(0, T1, **line_options)
-        self.line_T2, = plt.plot(0, T2, **line_options)
-        plt.xlim(0, 1.05 * tperiod)
-        Tmax = max(T1, T2)
-        Tmin = min(T1, T2)
-        self.ax1.set_ylim(Tmin - (Tmin % 5), Tmax + 5 - (Tmax % 5))
-        plt.title('Temperature Control Lab')
-        plt.ylabel(u'Temperature / °C')
+        self.fig = plt.figure(figsize=(8, 6))
+        nplots = len(self.historian.columns) - 1  
+        self.lines = []
+        self.axes = []
+        for n in range(0, nplots):
+            self.axes.append(self.fig.add_subplot(nplots,1,n+1))
+            y = self.historian.at(0,[self.historian.columns[n+1]])[0]
+            li, = plt.step(0, y, where='post', **line_options)          
+            self.lines.append(li)
+            plt.xlim(0, 1.05 * tperiod)
+            plt.ylim(y-2,y+2)
+            plt.ylabel(self.historian.columns[n+1])
+            plt.grid()
         plt.xlabel('Time / Seconds')
-        plt.legend(['T1', 'T2'])
-        plt.grid()
-
-        self.ax2 = plt.subplot(2, 1, 2)
-        self.line_Q1, = plt.step(0, Q1, where='pre', **line_options)
-        self.line_Q2, = plt.step(0, Q2, where='pre', **line_options)
-        plt.xlim(0, 1.05 * tperiod)
-        plt.ylim(-5, 110)
-        plt.ylabel('Percent of Max Power')
-        plt.xlabel('Time / Seconds')
-        plt.legend(['Q1', 'Q2'])
-        plt.grid()
         plt.tight_layout()
+        display.display(plt.gcf())
 
     def update(self, tnow=None):
         self.historian.update(tnow)
@@ -95,18 +82,16 @@ class Plotter:
         plt = self.plt
         display = self.display
 
-        t, T1, T2, Q1, Q2 = self.historian.fields
-        self.line_T1.set_data(t, T1)
-        self.line_T2.set_data(t, T2)
-        self.line_Q1.set_data(t, Q1)
-        self.line_Q2.set_data(t, Q2)
-        if self.historian.tnow > self.ax1.get_xlim()[1]:
-            self.ax1.set_xlim(0, 1.4 * self.ax1.get_xlim()[1])
-            self.ax2.set_xlim(0, 1.4 * self.ax2.get_xlim()[1])
-        Tmax = max(max(T1), max(T2))
-        Tmin = min(min(T1), min(T2))
-        if (Tmax > self.ax1.get_ylim()[1]) or (
-                Tmin < self.ax1.get_ylim()[0]):
-            self.ax1.set_ylim(Tmin - (Tmin % 5), Tmax + 5 - (Tmax % 5))
+        t = self.historian.fields[0]
+        for n in range(0, len(self.historian.columns)-1):
+            y = self.historian.fields[n+1]
+            self.lines[n].set_data(t,y)
+            ymax = max(y)
+            ymin = min(y)
+            if (ymax > self.axes[n].get_ylim()[1]) or (ymin < self.axes[n].get_ylim()[0]):
+                self.axes[n].set_ylim(ymin-1,ymax+2)
+            if self.historian.tnow > self.axes[n].get_xlim()[1]:
+                self.axes[n].set_xlim(0, 1.4 * self.axes[n].get_xlim()[1])
         display.clear_output(wait=True)
         display.display(plt.gcf())
+
