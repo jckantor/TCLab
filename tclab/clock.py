@@ -46,8 +46,7 @@ def clock(tperiod, tstep=1, strict=True, tol=0.1):
     start_time = speedtime()
     fuzz = 0.003
     k = 0
-    if SPEEDUP > 1:
-        strict = False
+    strict = False if SPEEDUP > 1 else strict
     while tnow <= tperiod - tstep + tol + fuzz:
         yield round(tnow, 1)
         if SPEEDUP < 10:
