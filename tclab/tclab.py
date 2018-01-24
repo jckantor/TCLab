@@ -44,7 +44,7 @@ class TCLab(object):
         self.Q1(0)
         self.Q2(0)
         if self.sp.isOpen():
-            print(self.version + ' on ' + self.arduino + ' connected on port ' + port)
+            print(self.version + ' on ' + self.arduino + ' connected to port ' + port)
         self.tstart = time()
         self.sources = [('T1', lambda: self.T1),
                         ('T2', lambda: self.T2),

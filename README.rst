@@ -76,7 +76,7 @@ Execute the following code ::
 If everything has worked, you should see the following output message ::
 
     Connecting to TCLab
-    TCLab Firmware Version 1.2.1 connected on port XXXX
+    TCLab Firmware Version 1.2.1 on NHduino connected to port XXXX
     21.54
 
 The number returned is the temperature of sensor T1 in °C.
