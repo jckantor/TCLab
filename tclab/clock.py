@@ -46,9 +46,7 @@ def clock(tperiod, tstep=1, strict=True, tol=0.1):
     start_time = speedtime()
     fuzz = 0.01
     k = 0
-    print(tperiod, tstep, strict, tol)
     while tnow <= tperiod - tstep + tol + fuzz:
-        print(tnow)
         yield round(tnow, 1)
         if SPEEDUP <= 10:
             if strict:
@@ -69,4 +67,5 @@ def clock(tperiod, tstep=1, strict=True, tol=0.1):
         k += 1
         if strict and (abs(tnow - k * tstep) > tol + fuzz):
             raise RuntimeError("TCLab clock lost real time synchronization.")
+
     yield round(tnow, 1)
