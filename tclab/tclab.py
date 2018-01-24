@@ -8,7 +8,7 @@ from serial.tools import list_ports
 import random
 
 
-sep = ' '   # Separates command and value in TCLab firmware
+sep = ' '   # command/value separator in TCLab firmware
 
 def clip(val, lower=0, upper=100):
     """Limit value to be between lower and upper limits"""
@@ -25,7 +25,7 @@ class TCLab(object):
                     self.arduino = 'Arduino Uno'
                     break
                 elif comport[2].startswith('USB VID:PID=1A86:7523'):
-                    self.arduino = 'Hduino'
+                    self.arduino = 'NHduino'
                     break
                 elif comport[2].startswith('USB VID:PID=2341:8036'):
                     self.arduino = 'Arduino Leonardo'
@@ -243,7 +243,7 @@ class TCLabModel(object):
         # Time updates
         self.tnow = time() - self.tstart
         trequired = self.tnow - self.tlast
-        self.tlast = self.tnow            # retain for next access
+        self.tlast = self.tnow
 
         fullsteps, remainder = divmod(trequired, self.maxstep)
         steps = [self.maxstep]*int(fullsteps) + [remainder]
@@ -261,4 +261,3 @@ class TCLabModel(object):
             self._H2 += dt * dH2
             self._T1 += dt * dT1
             self._T2 += dt * dT2
-

@@ -1,7 +1,25 @@
 TCLab: Temperature Control Laboratory
 =====================================
 
-The `BYU Arduino Temperature Control Lab <http://apmonitor.com/pdc/index.php/Main/ArduinoTemperatureControl>`__
+``TCLab`` provides a Python interface to the
+`Arduino Temperature Control Lab <http://apmonitor.com/pdc/index.php/Main/ArduinoTemperatureControl>`_
+over a USB interface. ``TCLab`` is implemented as a Python class within
+the ``tclab`` package that also includes:
+
+* ``clock`` A Python generator for soft real-time implementation of
+  algorithms for process control.
+* ``Historian`` A Python class to log results of a process control
+  experiment.
+* ``Plotter`` Provides an historian with real-time plotting within a
+  Jupyter notebook.
+* ``TCLabModel`` An embedded model of the temperature control lab
+  for off-line and faster-than-realtime simulation of process control
+  experiments.
+
+The necessary Arduino firmware for device operation is available at the
+`TCLab-Sketch repository <https://github.com/jckantor/TCLab-sketch>`_.
+
+The `Arduino Temperature Control Lab <http://apmonitor.com/pdc/index.php/Main/ArduinoTemperatureControl>`_
 is a modular, portable, and inexpensive solution for hands-on process
 control learning.  Heat output is adjusted by modulating current flow to
 each of two transistors. Thermistors measure the temperatures. Energy
@@ -9,13 +27,8 @@ from the transistor output is transferred by conduction and convection
 to the temperature sensor. The dynamics of heat transfer provide rich
 opportunities to implement single and multivariable control systems.
 The lab is integrated into a small PCB shield which can be mounted to
-any `Arduino <https://www.arduino.cc/>`__ or Arduino compatible
-microcontroller. Experiments can then be programmatically controlled
-using Python over a USB connection.
-
-The TCLab modules provides access to the temperature control lab using
-Python, and includes the necessary Arduino firmware for device
-operation.
+any `Arduino <https://www.arduino.cc/>`_ or Arduino compatible
+microcontroller.
 
 Installation
 ------------
@@ -48,7 +61,7 @@ Hardware setup
 
    If you are using your own Arduino board, you will need to flash the
    board with the custom firmware used by the lab. Follow instructions
-   in the [TCLab-sketch repository](https://github.com/jckantor/TCLab-sketch).
+   in the `TCLab-Sketch repository <https://github.com/jckantor/TCLab-sketch>`__.
 
 Checking that everything works
 ------------------------------
@@ -72,11 +85,11 @@ Next Steps
 The notebook directory provides examples on how to use the TCLab module.
 
 
-Course Website
---------------
+Course Websites
+---------------
 
-For more information, instructional videos, and Jupyter notebook
-examples visit the
+More information, instructional videos, and Jupyter notebook
+examples are available at the following course websites.
 
 * `Arduino temperature control lab page <http://apmonitor.com/pdc/index.php/Main/ArduinoTemperatureControl>`__ on the BYU Process Dynamics and Control course website.
 * `CBE 30338 <http://jckantor.github.io/CBE30338/>`__ for the Notre Dame
