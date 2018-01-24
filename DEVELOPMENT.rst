@@ -18,7 +18,7 @@ After making changes
 
     python setup.py check
     
-3. Merge changes to master branch on Github.
+3. Push changes through to the master branch on Github.
 4. Create and push tag for the version number::
 
     git tag vX.Y.Z
