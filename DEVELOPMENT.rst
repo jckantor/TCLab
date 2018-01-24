@@ -17,14 +17,12 @@ After making changes
 2. Check the distribution::
 
     python setup.py check
-
-3. Create a tag for the version number::
+    
+3. Push changes through to the master branch on Github.
+4. Create and push tag for the version number::
 
     git tag vX.Y.Z
-
-4. Push the latest code to GitHub, including the new tag::
-
-    git push --follow-tags
+    git push --tags
 
 
 Uploading to PyPI
