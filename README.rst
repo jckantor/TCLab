@@ -4,14 +4,14 @@ TCLab: Temperature Control Laboratory
 The `BYU Arduino Temperature Control Lab <http://apmonitor.com/pdc/index.php/Main/ArduinoTemperatureControl>`__
 is a modular, portable, and inexpensive solution for hands-on process
 control learning.  Heat output is adjusted by modulating current flow to
- each of two transistors. Thermistors measure the temperatures. Energy
- from the transistor output is transferred by conduction and convection
- to the temperature sensor. The dynamics of heat transfer provide rich
- opportunities to implement single and multivariable control systems.
- The lab is integrated into a small PCB shield which can be mounted to
- any `Arduino <https://www.arduino.cc/>`__ or Arduino compatible
- microcontroller. Experiments can then be programmatically controlled
- using Python over a USB connection.
+each of two transistors. Thermistors measure the temperatures. Energy
+from the transistor output is transferred by conduction and convection
+to the temperature sensor. The dynamics of heat transfer provide rich
+opportunities to implement single and multivariable control systems.
+The lab is integrated into a small PCB shield which can be mounted to
+any `Arduino <https://www.arduino.cc/>`__ or Arduino compatible
+microcontroller. Experiments can then be programmatically controlled
+using Python over a USB connection.
 
 The TCLab modules provides access to the temperature control lab using
 Python, and includes the necessary Arduino firmware for device
@@ -27,7 +27,6 @@ Install using ::
 To upgrade an existing installation, use the command ::
 
    pip install tclab --upgrade
-
 
 Hardware setup
 --------------
