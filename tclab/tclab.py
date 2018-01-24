@@ -5,6 +5,7 @@ from __future__ import print_function
 from .clock import time
 import serial
 from serial.tools import list_ports
+import random
 
 
 sep = ' '   # Separates command and value in TCLab firmware
@@ -188,13 +189,13 @@ class TCLabModel(object):
     def T1(self):
         """Return a float denoting TCLab temperature T1 in degrees C."""
         self.update()
-        return self._T1
+        return self._T1 + random.normalvariate(0, 0.2)
 
     @property
     def T2(self):
         """Return a float denoting TCLab temperature T2 in degrees C."""
         self.update()
-        return self._T2
+        return self._T2 + random.normalvariate(0, 0.2)
 
     @property
     def P1(self):

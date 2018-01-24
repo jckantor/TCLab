@@ -44,22 +44,22 @@ def clock(tperiod, tstep=1, strict=True, tol=0.1):
     global tnow
     tnow = 0
     start_time = speedtime()
-    fuzz = 0.01
+    fuzz = 0.003
     k = 0
-    print(tperiod, tstep, strict, tol)
+    if SPEEDUP > 1:
+        strict = False
     while tnow <= tperiod - tstep + tol + fuzz:
-        print(tnow)
         yield round(tnow, 1)
-        if SPEEDUP <= 10:
+        if SPEEDUP < 10:
             if strict:
-                tsleep = max(0, (k + 1) * tstep - (speedtime() - start_time) - fuzz)
+                tsleep = max(0, (k+1)*tstep - (speedtime() - start_time) - fuzz*SPEEDUP)
             else:
-                tsleep = max(0, tstep - (speedtime() - start_time - tnow) - fuzz)
+                tsleep = max(0, tstep - (speedtime() - start_time - tnow) - fuzz*SPEEDUP)
             gcold = gc.isenabled()
             gc.disable()
             try:
                 if tsleep >= fuzz:
-                    original_time.sleep(tsleep/SPEEDUP)
+                    speedsleep(tsleep)
             finally:
                 if gcold:
                     gc.enable()
@@ -69,4 +69,5 @@ def clock(tperiod, tstep=1, strict=True, tol=0.1):
         k += 1
         if strict and (abs(tnow - k * tstep) > tol + fuzz):
             raise RuntimeError("TCLab clock lost real time synchronization.")
+
     yield round(tnow, 1)
