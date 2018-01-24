@@ -27,7 +27,7 @@ class Historian(object):
 
     def update(self, tnow=None):
         if tnow is None:
-            self.tnow = time() - self.tstart
+            self.tnow = time()
         else:
             self.tnow = tnow
 
@@ -53,6 +53,7 @@ class Plotter:
         import matplotlib.pyplot as plt
         from IPython import display
 
+        display.clear_output()
         self.plt = plt
         self.display = display
 

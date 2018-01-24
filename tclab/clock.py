@@ -11,14 +11,17 @@ def setup(speedup=1):
 
 
 def time():
+    """Returns current clock time."""
     return tnow
 
 
 def speedtime():
+    """Returns time rescaled by factor SPEEDUP."""
     return SPEEDUP*original_time.time()
 
 
 def speedsleep(tsleep):
+    """Sleeps for a period tsleep rescaled by factor SPEEDUP."""
     return original_time.sleep(tsleep/SPEEDUP)
 
 
@@ -43,7 +46,9 @@ def clock(tperiod, tstep=1, strict=True, tol=0.1):
     start_time = speedtime()
     fuzz = 0.01
     k = 0
+    print(tperiod, tstep, strict, tol)
     while tnow <= tperiod - tstep + tol + fuzz:
+        print(tnow)
         yield round(tnow, 1)
         if SPEEDUP <= 10:
             if strict:
