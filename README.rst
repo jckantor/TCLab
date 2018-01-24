@@ -7,14 +7,14 @@ over a USB interface. ``TCLab`` is implemented as a Python class within
 the ``tclab`` package that also includes:
 
 * ``clock`` A Python generator for soft real-time implementation of
-  algorithms for process control.
+  process control algorithms.
 * ``Historian`` A Python class to log results of a process control
   experiment.
 * ``Plotter`` Provides an historian with real-time plotting within a
   Jupyter notebook.
 * ``TCLabModel`` An embedded model of the temperature control lab
   for off-line and faster-than-realtime simulation of process control
-  experiments.
+  experiments. No hardware needs to be attached to use ``TCLabModel``.
 
 The necessary Arduino firmware for device operation is available at the
 `TCLab-Sketch repository <https://github.com/jckantor/TCLab-sketch>`_.
@@ -44,8 +44,9 @@ To upgrade an existing installation, use the command ::
 Hardware setup
 --------------
 
-1. Plug the Arduino (UNO or Leonardo) with the lab attached into your
-   computer via the USB connection. Plug the DC adapter into the wall.
+1. Plug a compatible Arduino device (UNO, Leonardo, NHduino) with the
+   lab attached into your computer via the USB connection. Plug the DC
+   power adapter into the wall.
 
 2. (optional) Install Arduino Drivers
 
@@ -59,9 +60,10 @@ Hardware setup
 
 3. (optional) Install Arduino Firmware
 
-   If you are using your own Arduino board, you will need to flash the
-   board with the custom firmware used by the lab. Follow instructions
-   in the `TCLab-Sketch repository <https://github.com/jckantor/TCLab-sketch>`__.
+   ``TCLab`` requires the one-time installation of custom firmware on
+   an Arduino device. If it hasn't been pre-installed, the necessary
+   firmware and instructions are available from the
+   `TCLab-Sketch repository <https://github.com/jckantor/TCLab-sketch>`_.
 
 Checking that everything works
 ------------------------------
@@ -83,7 +85,6 @@ Next Steps
 ----------
 
 The notebook directory provides examples on how to use the TCLab module.
-
 
 Course Websites
 ---------------
