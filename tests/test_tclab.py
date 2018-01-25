@@ -15,6 +15,13 @@ def test_constructor():
     a.close()
 
 
+def test_constructor_port():
+        """Raise RuntimeError for an unrecognized port."""
+        with pytest.raises(RuntimeError):
+            with TCLab(port='nonsense') as a:
+                pass
+
+
 def test_context():
     with TCLab() as _:
         pass
