@@ -28,6 +28,9 @@ class TCLab(object):
             if comport[2][:21] in arduinos.keys():
                 self.arduino = arduinos[comport[2][:21]]
                 break
+            if comport[2].startswith('USB VID:PID='):
+                self.arduino = comport[2][:21]
+                break
         else:
             print('--- Serial Ports ---')
             for comport in list(list_ports.comports()):
