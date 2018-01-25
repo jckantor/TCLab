@@ -9,10 +9,12 @@ import random
 
 sep = ' '   # command/value separator in TCLab firmware
 
-arduinos = {'USB VID:PID=16D0:0613': 'Arduino Uno',
-            'USB VID:PID=1A86:7523': 'NHduino',
-            'USB VID:PID=2341:8036': 'Arduino Leonardo',
-            }
+arduinos = [('USB VID:PID=16D0:0613', 'Arduino Uno'),
+            ('USB VID:PID=1A86:7523', 'NHduino'),
+            ('USB VID:PID=2341:8036', 'Arduino Leonardo'),
+            ('USB VID:PID=2A03', 'Arduino.org device'),
+            ('USB VID:PID', 'unknown device'),
+            ]
 
 
 def clip(val, lower=0, upper=100):
@@ -21,23 +23,24 @@ def clip(val, lower=0, upper=100):
 
 
 class TCLab(object):
-    def __init__(self, port='', baud=9600, debug=False):
+    def __init__(self, port='', debug=False):
         self.debug = debug
         print('Connecting to TCLab')
         for comport in list_ports.grep(port):
-            if comport[2][:21] in arduinos.keys():
-                self.arduino = arduinos[comport[2][:21]]
-                break
-            if comport[2].startswith('USB VID:PID='):
-                self.arduino = comport[2][:21]
-                break
+            for key,val in arduinos:
+                if comport[2].startswith(key):
+                    self.arduino = val
+                    break
+            else:
+                continue # key not found in arduinos
+            break # key was found in arduinos
         else:
             print('--- Serial Ports ---')
             for comport in list(list_ports.comports()):
                 print(" ".join(comport))
             raise RuntimeError('No compatible Arduino device found.')
         port = comport[0]
-        self.sp = serial.Serial(port=port, baudrate=baud, timeout=2)
+        self.sp = serial.Serial(port=port, timeout=2)
         self.receive()
         self.version = self.send_and_receive('VER')
         self._P1 = 200.0
@@ -144,7 +147,7 @@ class TCLab(object):
 
 
 class TCLabModel(object):
-    def __init__(self, port=None, baud=9600, debug=False):
+    def __init__(self, port='', debug=False):
         self.debug = debug
         print('Simulated TCLab')
         self.Ta = 21                  # ambient temperature
