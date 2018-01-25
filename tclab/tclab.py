@@ -7,8 +7,13 @@ import serial
 from serial.tools import list_ports
 import random
 
-
 sep = ' '   # command/value separator in TCLab firmware
+
+arduinos = {'USB VID:PID=16D0:0613': 'Arduino Uno',
+            'USB VID:PID=1A86:7523': 'NHduino',
+            'USB VID:PID=2341:8036': 'Arduino Leonardo',
+            }
+
 
 def clip(val, lower=0, upper=100):
     """Limit value to be between lower and upper limits"""
@@ -16,26 +21,19 @@ def clip(val, lower=0, upper=100):
 
 
 class TCLab(object):
-    def __init__(self, port=None, baud=9600, debug=False):
+    def __init__(self, port='', baud=9600, debug=False):
         self.debug = debug
         print('Connecting to TCLab')
-        if not port:
+        for comport in list_ports.grep(port):
+            if comport[2][:21] in arduinos.keys():
+                self.arduino = arduinos[comport[2][:21]]
+                break
+        else:
+            print('--- Serial Ports ---')
             for comport in list(list_ports.comports()):
-                if comport[2].startswith('USB VID:PID=16D0:0613'):
-                    self.arduino = 'Arduino Uno'
-                    break
-                elif comport[2].startswith('USB VID:PID=1A86:7523'):
-                    self.arduino = 'NHduino'
-                    break
-                elif comport[2].startswith('USB VID:PID=2341:8036'):
-                    self.arduino = 'Arduino Leonardo'
-                    break
-            else:
-                print('--- Printing Serial Ports ---')
-                for port in list(list_ports.comports()):
-                    print(port[0] + ' ' + port[1] + ' ' + port[2])
-                raise RuntimeError('No compatible Arduino device was found.')
-            port = comport[0]
+                print(" ".join(comport))
+            raise RuntimeError('No compatible Arduino device found.')
+        port = comport[0]
         self.sp = serial.Serial(port=port, baudrate=baud, timeout=2)
         self.receive()
         self.version = self.send_and_receive('VER')
