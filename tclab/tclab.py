@@ -38,7 +38,7 @@ class TCLab(object):
             print('--- Serial Ports ---')
             for comport in list(list_ports.comports()):
                 print(" ".join(comport))
-            raise RuntimeError('No compatible Arduino device found.')
+            raise RuntimeError('No Arduino device found.')
         port = comport[0]
         self.sp = serial.Serial(port=port, timeout=2)
         self.receive()
