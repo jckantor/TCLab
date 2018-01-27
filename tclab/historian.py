@@ -85,11 +85,11 @@ class Plotter:
         t = self.historian.fields[0]
         for n in range(0, len(self.historian.columns)-1):
             y = self.historian.fields[n+1]
-            self.lines[n].set_data(t,y)
+            self.lines[n].set_data(t, y)
             ymax = max(y)
             ymin = min(y)
             if (ymax > self.axes[n].get_ylim()[1]) or (ymin < self.axes[n].get_ylim()[0]):
-                self.axes[n].set_ylim(ymin-1,ymax+2)
+                self.axes[n].set_ylim(ymin-1, ymax+2)
             if self.historian.tnow > self.axes[n].get_xlim()[1]:
                 self.axes[n].set_xlim(0, 1.4 * self.axes[n].get_xlim()[1])
         display.clear_output(wait=True)
