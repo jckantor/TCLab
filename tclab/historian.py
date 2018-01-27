@@ -60,7 +60,7 @@ class Plotter:
         line_options = {'lw': 2, 'alpha': 0.8}
 
         self.fig = plt.figure(figsize=(8, 6))
-        nplots = len(self.historian.columns) - 1  
+        nplots = len(self.historian.columns) - 1
         self.lines = []
         self.axes = []
         for n in range(0, nplots):
@@ -69,7 +69,7 @@ class Plotter:
             li, = plt.step(0, y, where='post', **line_options)          
             self.lines.append(li)
             plt.xlim(0, 1.05 * tperiod)
-            plt.ylim(y-2,y+2)
+            plt.ylim(y-2, y+2)
             plt.ylabel(self.historian.columns[n+1])
             plt.grid()
         plt.xlabel('Time / Seconds')
