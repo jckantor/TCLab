@@ -7,6 +7,7 @@ from ipywidgets import Button, Label, FloatSlider, HBox, VBox
 
 
 def actionbutton(description, action, disabled=True):
+    """Create action with specified label and callback action."""
     button = Button(description=description, disabled=disabled)
     button.on_click(action)
 
@@ -64,12 +65,14 @@ class NotebookUI:
                     ])
 
     def update(self):
+        """Update GUI display."""
         timestamp = datetime.datetime.now().isoformat(timespec='seconds')
         self.timewidget.value = timestamp
         self.T1widget.value = '{:2.1f}'.format(self.lab.T1)
         self.T2widget.value = '{:2.1f}'.format(self.lab.T2)
 
     def action_start(self, widget):
+        """Start TCLab operation."""
         self.timer.start()
         self.start.disabled = True
         self.stop.disabled = False
@@ -79,6 +82,7 @@ class NotebookUI:
         self.Q2widget.disabled = False
 
     def action_stop(self, widget):
+        """Stop TCLab operation."""
         self.timer.stop()
         self.start.disabled = False
         self.stop.disabled = True
@@ -87,6 +91,7 @@ class NotebookUI:
         self.Q2widget.disabled = True
 
     def action_connect(self, widget):
+        """Connect to TCLab."""
         self.lab = TCLab()
         self.lab.connected = True
 
@@ -95,6 +100,7 @@ class NotebookUI:
         self.disconnect.disabled = False
 
     def action_disconnect(self, widget):
+        """Disconnect TCLab."""
         self.lab.close()
         self.lab.connected = False
 
@@ -103,7 +109,9 @@ class NotebookUI:
         self.start.disabled = True
 
     def action_Q1(self, change):
+        """Change heater 1 power."""
         self.lab.Q1(change['new'])
 
     def action_Q2(self, change):
+        """Change heater 2 power."""
         self.lab.Q2(change['new'])
