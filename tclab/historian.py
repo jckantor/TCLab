@@ -94,4 +94,3 @@ class Plotter:
                 self.axes[n].set_xlim(0, 1.4 * self.axes[n].get_xlim()[1])
         display.clear_output(wait=True)
         display.display(plt.gcf())
-
