@@ -7,7 +7,7 @@ from ipywidgets import Button, Label, FloatSlider, HBox, VBox
 
 
 def actionbutton(description, action, disabled=True):
-    """Create action with specified label and callback action."""
+    """Return button widget with specified label and callback action."""
     button = Button(description=description, disabled=disabled)
     button.on_click(action)
 
@@ -15,6 +15,7 @@ def actionbutton(description, action, disabled=True):
 
 
 def labelledvalue(label, value, units=''):
+    """Return widget and HBox for label, value, units display."""
     labelwidget = Label(value=label)
     valuewidget = Label(value=str(value))
     unitwidget = Label(value=units)
@@ -24,6 +25,7 @@ def labelledvalue(label, value, units=''):
 
 
 def slider(label, action, minvalue=0, maxvalue=100, disabled=True):
+    """Return slider widget for specified label and action callback."""
     sliderwidget = FloatSlider(description=label, min=minvalue, max=maxvalue)
     sliderwidget.disabled = disabled
     sliderwidget.observe(action, names='value')
