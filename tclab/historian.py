@@ -95,9 +95,10 @@ class Plotter:
             y = self.historian.fields[n+1][i:]
             self.lines[n].set_data(t, y)
             ymin, ymax = self.axes[n].get_ylim()
-            if max(y) > ymax:
-                self.axes[n].set_ylim(ymin, max(y) + 2)
-            if min(y) < ymin:
-                self.axes[n].set_ylim(min(y) - 2, ymax)
+            if max(y) > ymax - 0.05*(ymax - ymin):
+                ymax = max(y) + 0.10*(ymax - ymin)
+            if min(y) < ymin + 0.05*(ymax - ymin):
+                ymin = min(y) - 0.10*(ymax - ymin)
+            self.axes[n].set_ylim(ymin, ymax)
         display.clear_output(wait=True)
         display.display(plt.gcf())
