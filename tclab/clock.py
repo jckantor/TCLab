@@ -25,7 +25,7 @@ def speedsleep(tsleep):
     return original_time.sleep(tsleep/SPEEDUP)
 
 
-def clock(tperiod, tstep=1, strict=True, tol=0.1):
+def clock(tperiod, tstep=1, strict=True, tol=0.25):
     """Generator providing time values in sync with real time clock.
 
     Args:

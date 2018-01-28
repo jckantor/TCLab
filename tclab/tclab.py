@@ -25,7 +25,7 @@ def clip(val, lower=0, upper=100):
 class TCLab(object):
     def __init__(self, port='', debug=False):
         self.debug = debug
-        print('Connecting to TCLab')
+        print('Connecting to TCLab.')
         for comport in list_ports.grep(port):
             for key,val in arduinos:
                 if comport[2].startswith(key):
@@ -40,15 +40,23 @@ class TCLab(object):
                 print(" ".join(comport))
             raise RuntimeError('No Arduino device found.')
         port = comport[0]
-        self.sp = serial.Serial(port=port, timeout=2)
-        self.receive()
-        self.version = self.send_and_receive('VER')
+        self.sp = serial.Serial(port=port, baudrate=115200, timeout=2)
+        for baudrate in [115200, 9600]:
+            self.sp.baudrate = baudrate
+            self.sp.readline().decode('UTF-8')
+            self.sp.write(('VER' + '\r\n').encode())
+            self.version = self.sp.readline().decode('UTF-8').replace('\r\n', '')
+            if self.version != '':
+                break
+        else:
+            raise RuntimeError('Failed to Connect.')
+        if self.sp.isOpen():
+            print(self.version + ' (' + self.arduino + ') ' +
+                  ' on port ' + port + ' at ' + str(baudrate) + ' baud.')
         self._P1 = 200.0
         self._P2 = 100.0
         self.Q1(0)
         self.Q2(0)
-        if self.sp.isOpen():
-            print(self.version + ' on ' + self.arduino + ' connected to port ' + port)
         self.tstart = time()
         self.sources = [('T1', lambda: self.T1),
                         ('T2', lambda: self.T2),

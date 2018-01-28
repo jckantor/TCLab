@@ -28,7 +28,7 @@ def test_strict_error():
     """Raise RuntimeError under default strict=True clock mode."""
     with pytest.raises(RuntimeError):
         for _ in clock(1):
-            time.sleep(1.2)
+            time.sleep(1.5)
 
 
 def test_not_strict():
