@@ -28,11 +28,12 @@ def setup(connected=True, speedup=1):
     if connected:
         lab = TCLab
         if speedup != 1:
-            raise ValueError("The real lab must run in real time")
+            raise ValueError('The real lab must run in real time')
     else:
         lab = TCLabModel
         if speedup < 0:
-            raise ValueError("")
+            raise ValueError('speedup must be positive. '
+                             'You passed speedup={}'.format(speedup))
 
     clocksetup(speedup=speedup)
     return lab
