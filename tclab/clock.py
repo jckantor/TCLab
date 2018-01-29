@@ -26,6 +26,10 @@ def clock(tperiod, tstep=1, tol=0.25):
 
     Yields:
         float: The next time step rounded to nearest 10th of a second.
+
+    Raises:
+         TCLabClockError: If clock becomes more than `tol` out of phase
+             with real time clock.
     """
     global tnow
     tnow = 0
@@ -47,7 +51,10 @@ def clock(tperiod, tstep=1, tol=0.25):
                 if gcold:
                     gc.enable()
             tnow = SPEEDUP * realtime.time() - start_time
+            if abs(tnow - k * tstep) > tol:
+                raise RuntimeError("TCLab clock lost synchronization.")
         else:
             tnow = k * tstep
+
 
     yield round(tnow, 1)
