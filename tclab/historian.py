@@ -51,54 +51,64 @@ class Plotter:
         self.historian = historian
         self.twindow = twindow
         self.tmin = 0
+        self.nplots = len(self.historian.columns) - 1
 
         import matplotlib.pyplot as plt
-        from IPython import display
+        from matplotlib import get_backend
+        self.backend = get_backend()
 
-        display.clear_output()
-        self.plt = plt
-        self.display = display
+        print(self.backend)
 
-        line_options = {'lw': 2, 'alpha': 0.8}
+        if not self.backend == 'nbAgg':
+            from IPython import display
+            self.display = display
+            self.display.clear_output()
 
-        self.fig = plt.figure(figsize=(8, 6))
-        nplots = len(self.historian.columns) - 1
+        line_options = {'where': 'post', 'lw': 2, 'alpha': 0.8}
         self.lines = []
-        self.axes = []
-        for n in range(0, nplots):
-            self.axes.append(self.fig.add_subplot(nplots,1,n+1))
+        self.fig, self.axes = plt.subplots(self.nplots, 1, figsize=(8,6))
+        for n in range(0, self.nplots):
             y = self.historian.at(0,[self.historian.columns[n+1]])[0]
-            li, = plt.step(0, y, where='post', **line_options)          
+            li, = self.axes[n].step(0, y, **line_options)
             self.lines.append(li)
-            plt.xlim(0, self.twindow)
-            plt.ylim(y-2, y+2)
-            plt.ylabel(self.historian.columns[n+1])
-            plt.grid()
-        plt.xlabel('Time / Seconds')
+            self.axes[n].set_xlim(0, self.twindow)
+            self.axes[n].set_ylim(y-2, y+2)
+            self.axes[n].set_ylabel(self.historian.columns[n+1])
+            self.axes[n].grid()
+        self.axes[self.nplots-1].set_xlabel('Time / Seconds')
         plt.tight_layout()
-        display.display(plt.gcf())
+
+        if self.backend == 'nbAgg':
+            self.fig.canvas.draw()
+            self.fig.show()
+        else:
+            self.display.display(self.fig)
 
     def update(self, tnow=None):
         self.historian.update(tnow)
 
-        plt = self.plt
-        display = self.display
-
         if self.historian.tnow > self.tmin + self.twindow:
             self.tmin += self.twindow
-            for n in range(0, len(self.historian.columns)-1):
+            for n in range(0, self.nplots):
                 self.axes[n].set_xlim(self.tmin, self.tmin + self.twindow)
 
-        i = bisect.bisect_left(self.historian.fields[0],self.tmin)
+        i = bisect.bisect_left(self.historian.fields[0], self.tmin)
         t = self.historian.fields[0][i:]
-        for n in range(0, len(self.historian.columns)-1):
+        for n in range(0, self.nplots):
             y = self.historian.fields[n+1][i:]
             self.lines[n].set_data(t, y)
             ymin, ymax = self.axes[n].get_ylim()
             if max(y) > ymax - 0.05*(ymax - ymin):
                 ymax = max(y) + 0.10*(ymax - ymin)
+                self.axes[n].set_ylim(ymin, ymax)
             if min(y) < ymin + 0.05*(ymax - ymin):
                 ymin = min(y) - 0.10*(ymax - ymin)
-            self.axes[n].set_ylim(ymin, ymax)
-        display.clear_output(wait=True)
-        display.display(plt.gcf())
+                self.axes[n].set_ylim(ymin, ymax)
+
+        if self.backend == 'nbAgg':
+            self.fig.canvas.draw()
+            self.fig.show()
+        else:
+            self.display.clear_output(wait=True)
+            self.display.display(self.fig)
+
