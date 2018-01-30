@@ -187,7 +187,7 @@ class TCLabModel(object):
         """Simulate shutting down TCLab device."""
         self.Q1(0)
         self.Q2(0)
-        print('Surrogate TCLab disconnected successfully.')
+        print('TCLab Model disconnected successfully.')
         return
 
     def LED(self, val=100):
