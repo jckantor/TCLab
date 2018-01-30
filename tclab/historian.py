@@ -5,10 +5,24 @@ from __future__ import print_function
 from __future__ import division
 from .clock import time
 import bisect
+import sqlite3
+
+class TagDB:
+    """Interface to sqlite database containing tag values"""
+    def __init__(self, filename=":memory:"):
+        self.db = sqlite3.connect(filename)
+        self.db.execute("CREATE TABLE IF NOT EXISTS tagvalues (timestamp, name, value)")
+        self.db.commit()
+
+    def record(self, timestamp, name, value):
+        self.db.execute("INSERT INTO tagvalues VALUES (?, ?, ?)",
+                        (timestamp, name, value))
+        self.db.commit()
+
 
 class Historian(object):
     """Generalised logging class"""
-    def __init__(self, sources):
+    def __init__(self, sources, dbfile=":memory:"):
         """
 
         sources: an iterable of (name, callable) tuples
@@ -16,6 +30,7 @@ class Historian(object):
                      - callable is evaluated to obtain the value
         """
         self.sources = [('Time', lambda: self.tnow)] + list(sources)
+        self.db = TagDB(dbfile)
         self.tstart = time()
         self.tnow = 0
         self.columns = [name for name, _ in self.sources]
@@ -31,8 +46,11 @@ class Historian(object):
         else:
             self.tnow = tnow
 
-        for n, c in self.sources:
-            self.logdict[n].append(c())
+        for name, valuefunction in self.sources:
+            value = valuefunction()
+            self.logdict[name].append(value)
+            if name != "Time":
+                self.db.record(self.tnow, name, value)
 
     @property
     def log(self):
