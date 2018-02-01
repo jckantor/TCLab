@@ -12,6 +12,7 @@ class TagDB:
     def __init__(self, filename=":memory:"):
         self.db = sqlite3.connect(filename)
         self.db.execute("CREATE TABLE IF NOT EXISTS tagvalues (timestamp, name, value)")
+        self.db.execute("CREATE TABLE IF NOT EXISTS sessions (id, starttime)")
         self.db.commit()
 
     def record(self, timestamp, name, value):
@@ -24,7 +25,6 @@ class Historian(object):
     """Generalised logging class"""
     def __init__(self, sources, dbfile=":memory:"):
         """
-
         sources: an iterable of (name, callable) tuples
                      - name (str) is the name of a signal and the
                      - callable is evaluated to obtain the value
