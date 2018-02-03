@@ -2,6 +2,7 @@ import datetime
 import tornado
 
 from .tclab import TCLab
+from .historian import Historian, Plotter
 
 from ipywidgets import Button, Label, FloatSlider, HBox, VBox
 
@@ -37,6 +38,9 @@ class NotebookUI:
     def __init__(self):
         self.timer = tornado.ioloop.PeriodicCallback(self.update, 1000)
         self.lab = None
+        self.plotter = None
+        self.seconds = 0
+        self.firstsession = True
 
         # Buttons
         self.connect = actionbutton('Connect', self.action_connect, False)
@@ -46,8 +50,10 @@ class NotebookUI:
 
         buttons = HBox([self.connect, self.start, self.stop, self.disconnect])
 
-        # time
+        # status
         self.timewidget, timebox = labelledvalue('Timestamp:', 'No data')
+        self.sessionwidget, sessionbox = labelledvalue('Session:', 'No data')
+        statusbox = HBox([timebox, sessionbox])
 
         # Sliders for heaters
         self.Q1widget = slider('Q1', self.action_Q1)
@@ -62,20 +68,27 @@ class NotebookUI:
         temperatures = VBox([T1box, T2box])
 
         self.gui = VBox([buttons,
-                    timebox,
-                    HBox([heaters, temperatures]),
-                    ])
+                         statusbox,
+                         HBox([heaters, temperatures]),
+                         ])
 
     def update(self):
         """Update GUI display."""
         timestamp = datetime.datetime.now().isoformat(timespec='seconds')
+        self.seconds += 1
         self.timewidget.value = timestamp
         self.T1widget.value = '{:2.1f}'.format(self.lab.T1)
         self.T2widget.value = '{:2.1f}'.format(self.lab.T2)
+        self.plotter.update(self.seconds)
 
     def action_start(self, widget):
         """Start TCLab operation."""
-        self.timer.start()
+        self.seconds = 0
+        if not self.firstsession:
+            self.historian.new_session()
+        self.firstsession = False
+        self.sessionwidget.value = str(self.historian.session)
+
         self.start.disabled = True
         self.stop.disabled = False
         self.disconnect.disabled = True
@@ -83,9 +96,12 @@ class NotebookUI:
         self.Q1widget.disabled = False
         self.Q2widget.disabled = False
 
+        self.timer.start()
+
     def action_stop(self, widget):
         """Stop TCLab operation."""
         self.timer.stop()
+
         self.start.disabled = False
         self.stop.disabled = True
         self.disconnect.disabled = False
@@ -95,6 +111,10 @@ class NotebookUI:
     def action_connect(self, widget):
         """Connect to TCLab."""
         self.lab = TCLab()
+        self.historian = Historian(self.lab.sources)
+        self.plotter = Plotter(self.historian,
+                               layout=(('Q1', 'Q2'),
+                                       ('T1', 'T2')))
         self.lab.connected = True
 
         self.connect.disabled = True
