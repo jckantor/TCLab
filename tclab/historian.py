@@ -10,15 +10,47 @@ import sqlite3
 class TagDB:
     """Interface to sqlite database containing tag values"""
     def __init__(self, filename=":memory:"):
+        """Create or connect to a database
+
+        :param filename: The filename of the database. By default, values are stored in memory."""
         self.db = sqlite3.connect(filename)
-        self.db.execute("CREATE TABLE IF NOT EXISTS tagvalues (timestamp, name, value)")
-        self.db.execute("CREATE TABLE IF NOT EXISTS sessions (id, starttime)")
+        self.cursor = self.db.cursor()
+        creates = ["""CREATE TABLE IF NOT EXISTS tagvalues (
+                           session_id REFERENCES session (id), 
+                           timeseconds, name, value)""",
+                   """CREATE TABLE IF NOT EXISTS sessions (
+                           id INTEGER PRIMARY KEY, 
+                           starttime)"""]
+        for statement in creates:
+            self.cursor.execute(statement)
+        self.db.commit()
+        self.session = None
+
+    def start_session(self):
+        self.cursor.execute("INSERT INTO SESSIONS (starttime) VALUES (datetime('now'))")
+        self.session = self.cursor.lastrowid
         self.db.commit()
 
-    def record(self, timestamp, name, value):
-        self.db.execute("INSERT INTO tagvalues VALUES (?, ?, ?)",
-                        (timestamp, name, value))
+    def record(self, timeseconds, name, value):
+        if self.session is None:
+            self.start_session()
+        self.cursor.execute("INSERT INTO tagvalues VALUES (?, ?, ?, ?)",
+                            (self.session, timeseconds, name, value))
         self.db.commit()
+
+    def get(self, name, timeseconds=None, session=None):
+        if session is None:
+            session = self.session
+        query = """SELECT value FROM tagvalues where session_id=? and name=?"""
+        parameters = [session, name]
+        if timeseconds is not None:
+            query += " and timeseconds=?"
+            paramters.append(timeseconds)
+        query += " ORDER BY timeseconds"
+        return [value for (value,) in self.cursor.execute(query, parameters)]
+
+    def close(self):
+        self.db.close()
 
 
 class Historian(object):
@@ -31,6 +63,7 @@ class Historian(object):
         """
         self.sources = [('Time', lambda: self.tnow)] + list(sources)
         self.db = TagDB(dbfile)
+        self.db.start_session()
         self.tstart = time()
         self.tnow = 0
         self.columns = [name for name, _ in self.sources]
