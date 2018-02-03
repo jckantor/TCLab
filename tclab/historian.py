@@ -26,14 +26,18 @@ class TagDB:
         self.db.commit()
         self.session = None
 
-    def start_session(self):
+    def new_session(self):
         self.cursor.execute("INSERT INTO SESSIONS (starttime) VALUES (datetime('now'))")
         self.session = self.cursor.lastrowid
         self.db.commit()
 
+    def get_sessions(self):
+        result = self.cursor.execute("SELECT id, starttime FROM sessions")
+        return list(result)
+
     def record(self, timeseconds, name, value):
         if self.session is None:
-            self.start_session()
+            self.new_session()
         self.cursor.execute("INSERT INTO tagvalues VALUES (?, ?, ?, ?)",
                             (self.session, timeseconds, name, value))
         self.db.commit()
@@ -41,13 +45,13 @@ class TagDB:
     def get(self, name, timeseconds=None, session=None):
         if session is None:
             session = self.session
-        query = """SELECT value FROM tagvalues where session_id=? and name=?"""
+        query = """SELECT timeseconds, value FROM tagvalues where session_id=? and name=?"""
         parameters = [session, name]
         if timeseconds is not None:
             query += " and timeseconds=?"
-            paramters.append(timeseconds)
+            parameters.append(timeseconds)
         query += " ORDER BY timeseconds"
-        return [value for (value,) in self.cursor.execute(query, parameters)]
+        return list(self.cursor.execute(query, parameters))
 
     def close(self):
         self.db.close()
@@ -63,19 +67,25 @@ class Historian(object):
         """
         self.sources = [('Time', lambda: self.tnow)] + list(sources)
         self.db = TagDB(dbfile)
-        self.db.start_session()
+        self.db.new_session()
+        self.session = self.db.session
+
         self.tstart = time()
-        self.tnow = 0
+
         self.columns = [name for name, _ in self.sources]
+
+        self.build_fields()
+
+        self.update(tnow=0)
+
+    def build_fields(self):
         self.fields = [[] for _ in range(len(self.sources))]
         self.logdict = {c: f for c, f in zip(self.columns, self.fields)}
         self.t = self.logdict['Time']
 
-        self.update(tnow=0)
-
     def update(self, tnow=None):
         if tnow is None:
-            self.tnow = time()
+            self.tnow = time() - self.tstart
         else:
             self.tnow = tnow
 
@@ -95,6 +105,27 @@ class Historian(object):
             columns = self.columns
         i = bisect.bisect(self.t, t) - 1
         return [self.logdict[c][i] for c in columns]
+
+    def new_session(self):
+        self.db.new_session()
+        self.session = self.db.session
+        self.tstart = time()
+        self.build_fields()
+
+    def get_sessions(self):
+        return self.db.get_sessions()
+
+    def load_session(self, session):
+        self.db.session = session
+        self.build_fields()
+        #FIXME: The way time is handled here is a bit brittle
+        first = True
+        for name in self.columns[1:]:
+            for t, value in self.db.get(name):
+                self.logdict[name].append(value)
+                if first:
+                    self.t.append(t)
+            first = False
 
 
 class Plotter:
