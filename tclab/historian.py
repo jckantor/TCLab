@@ -47,24 +47,43 @@ class Historian(object):
 
 
 class Plotter:
-    def __init__(self, historian, twindow=120):
+    def __init__(self, historian, twindow=120, layout=None):
+        """Generalised graphical output of a Historian
+
+        :param historian: An instance of the Historian class
+        :param twindow: Amount of time to show in the plot
+        :param layout: A tuple of tuples indicating how the fields should be
+                plotted. For example (("T1", "T2"), ("Q1", "Q2")) indicates that
+                there will be two subplots with the two indicated fields plotted
+                on each.
+        """
         import matplotlib.pyplot as plt
         from matplotlib import get_backend
         self.backend = get_backend()
         self.historian = historian
         self.twindow = twindow
-        self.nplots = len(self.historian.columns) - 1
+
+        if layout is None:
+            layout = tuple((field,) for field in historian.columns[1:])
+        self.layout = layout
+
         line_options = {'where': 'post', 'lw': 2, 'alpha': 0.8}
-        self.lines = []
-        self.fig, self.axes = plt.subplots(self.nplots, 1, figsize=(8,6))
-        for n in range(0, self.nplots):
-            y = self.historian.at(0,[self.historian.columns[n+1]])[0]
-            self.lines.append(self.axes[n].step(0, y, **line_options)[0])
-            self.axes[n].set_xlim(0, self.twindow)
-            self.axes[n].set_ylim(y-2, y+2)
-            self.axes[n].set_ylabel(self.historian.columns[n+1])
-            self.axes[n].grid()
-        self.axes[self.nplots-1].set_xlabel('Time / Seconds')
+        self.lines = {}
+        self.fig, self.axes = plt.subplots(len(layout), 1, figsize=(8,6))
+        values = dict(zip(historian.columns, historian.at(0)))
+        for axis, fields in zip(self.axes, self.layout):
+            for field in fields:
+                y = values[field]
+                self.lines[field] = axis.step(0, y, label=field,
+                                              **line_options)[0]
+            axis.set_xlim(0, self.twindow)
+            axis.autoscale(axis='y', tight=False)
+            axis.set_ylabel(', '.join(fields))
+            if len(fields) > 1:
+                axis.legend()
+            axis.grid()
+
+        self.axes[-1].set_xlabel('Time / Seconds')
         plt.tight_layout()
         self.fig.canvas.draw()
         self.fig.show()
@@ -79,21 +98,16 @@ class Plotter:
         if self.historian.tnow > self.twindow:
             tmin = self.historian.tnow - self.twindow
             tmax = self.historian.tnow
-            for n in range(0, self.nplots):
-                self.axes[n].set_xlim(tmin, tmax)
+            for axis in self.axes:
+                axis.set_xlim(tmin, tmax)
         t = self.historian.fields[0]
-        for n in range(0, self.nplots):
-            y = self.historian.fields[n+1]
-            self.lines[n].set_data(t, y)
-            ymin, ymax = self.axes[n].get_ylim()
-            if max(y) > ymax - 0.05*(ymax - ymin):
-                ymax = max(y) + 0.10*(ymax - ymin)
-                self.axes[n].set_ylim(ymin, ymax)
-            if min(y) < ymin + 0.05*(ymax - ymin):
-                ymin = min(y) - 0.10*(ymax - ymin)
-                self.axes[n].set_ylim(ymin, ymax)
+        for axis, fields in zip(self.axes, self.layout):
+            for field in fields:
+                y = self.historian.logdict[field]
+                self.lines[field].set_data(t, y)
+            axis.relim()
+            axis.autoscale_view()
         self.fig.canvas.draw()
         if self.backend != 'nbAgg':
             self.display.clear_output(wait=True)
             self.display.display(self.fig)
-
