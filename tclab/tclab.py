@@ -40,9 +40,8 @@ class TCLab(object):
                 print(" ".join(comport))
             raise RuntimeError('No Arduino device found.')
         port = comport[0]
-        self.sp = serial.Serial(port=port, baudrate=115200, timeout=2)
-        for baudrate in [115200, 9600]:
-            self.sp.baudrate = baudrate
+        for baud in [115200, 9600]:
+            self.sp = serial.Serial(port=port, baudrate = baud, timeout=2)
             self.sp.readline().decode('UTF-8')
             self.sp.write(('VER' + '\r\n').encode())
             self.version = self.sp.readline().decode('UTF-8').replace('\r\n', '')
@@ -52,7 +51,7 @@ class TCLab(object):
             raise RuntimeError('Failed to Connect.')
         if self.sp.isOpen():
             print(self.version + ' (' + self.arduino + ') ' +
-                  ' on port ' + port + ' at ' + str(baudrate) + ' baud.')
+                  ' on port ' + port + ' at ' + str(baud) + ' baud.')
         self._P1 = 200.0
         self._P2 = 100.0
         self.Q1(0)
