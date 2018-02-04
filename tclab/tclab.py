@@ -25,7 +25,6 @@ def clip(val, lower=0, upper=100):
 class TCLab(object):
     def __init__(self, port='', debug=False):
         self.debug = debug
-        print('Connecting to TCLab.')
         for comport in list_ports.grep(port):
             for key,val in arduinos:
                 if comport[2].startswith(key):
@@ -50,8 +49,9 @@ class TCLab(object):
         else:
             raise RuntimeError('Failed to Connect.')
         if self.sp.isOpen():
-            print(self.version + ' (' + self.arduino + ') ' +
-                  ' on port ' + port + ' at ' + str(baud) + ' baud.')
+            print(self.arduino + ' on port ' + port
+                  + ' at ' + str(baud) + ' baud.')
+            print(self.version + '.')
         self._P1 = 200.0
         self._P2 = 100.0
         self.Q1(0)
