@@ -41,6 +41,11 @@ To upgrade an existing installation, use the command ::
 
    pip install tclab --upgrade
 
+
+To install the development version, use the command ::
+
+   pip install git+ssh://git@github.com/jckantor/TCLab.git@development
+
 Hardware setup
 --------------
 
