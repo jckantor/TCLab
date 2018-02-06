@@ -49,7 +49,7 @@ class TCLab(object):
         else:
             raise RuntimeError('Failed to Connect.')
         if self.sp.isOpen():
-            print(self.arduino + ' on port ' + port
+            print(self.arduino + ' connected on port ' + port
                   + ' at ' + str(baud) + ' baud.')
             print(self.version + '.')
         self._P1 = 200.0
@@ -148,6 +148,14 @@ class TCLab(object):
             msg = 'Q2' + sep + str(clip(val))
         return self.send_and_receive(msg, float)
 
+    def scan(self):
+        self.send('SCAN')
+        T1 = float(self.receive())
+        T2 = float(self.receive())
+        Q1 = float(self.receive())
+        Q2 = float(self.receive())
+        return T1, T2, Q1, Q2
+
     # Define properties for Q1 and Q2
     U1 = property(fget=Q1, fset=Q1, doc="Heater 1 value")
     U2 = property(fget=Q2, fset=Q2, doc="Heater 2 value")
@@ -245,6 +253,12 @@ class TCLabModel(object):
         if val is not None:
             self._Q2 = clip(val)
         return self._Q2
+
+    def scan(self):
+        self.update()
+        return self._T1 + random.normalvariate(0, 0.2),\
+               self._T2 + random.normalvariate(0, 0.2),\
+               self._Q1, self._Q2
 
     # Define properties for Q1 and Q2
     U1 = property(fget=Q1, fset=Q1, doc="Heater 1 value")
