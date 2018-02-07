@@ -2,6 +2,7 @@ from .tclab import TCLab, TCLabModel
 from .clock import clock, time
 from .historian import Historian, Plotter
 
+
 def setup(connected=True, speedup=1):
     """Set up a lab session with simple switching between real and model lab
 

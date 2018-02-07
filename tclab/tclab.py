@@ -26,13 +26,13 @@ class TCLab(object):
     def __init__(self, port='', debug=False):
         self.debug = debug
         for comport in list_ports.grep(port):
-            for key,val in arduinos:
+            for key, val in arduinos:
                 if comport[2].startswith(key):
                     self.arduino = val
                     break
             else:
-                continue # key not found in arduinos
-            break # key was found in arduinos
+                continue  # key not found in arduinos
+            break  # key was found in arduinos
         else:
             print('--- Serial Ports ---')
             for comport in list(list_ports.comports()):
@@ -40,7 +40,7 @@ class TCLab(object):
             raise RuntimeError('No Arduino device found.')
         port = comport[0]
         for baud in [115200, 9600]:
-            self.sp = serial.Serial(port=port, baudrate = baud, timeout=2)
+            self.sp = serial.Serial(port=port, baudrate=baud, timeout=2)
             self.sp.readline().decode('UTF-8')
             self.sp.write(('VER' + '\r\n').encode())
             self.version = self.sp.readline().decode('UTF-8').replace('\r\n', '')
@@ -49,8 +49,7 @@ class TCLab(object):
         else:
             raise RuntimeError('Failed to Connect.')
         if self.sp.isOpen():
-            print(self.arduino + ' connected on port ' + port
-                  + ' at ' + str(baud) + ' baud.')
+            print(self.arduino, 'connected on port', port, 'at', baud, 'baud.')
             print(self.version + '.')
         self._P1 = 200.0
         self._P2 = 100.0
@@ -226,7 +225,7 @@ class TCLabModel(object):
     def P1(self, val):
         """Set maximum power of heater 1 in pwm, range 0 to 255."""
         self.update()
-        self._P1 = clip(val,0,255)
+        self._P1 = clip(val, 0, 255)
 
     @property
     def P2(self):
@@ -238,7 +237,7 @@ class TCLabModel(object):
     def P2(self, val):
         """Set maximum power of heater 2 in pwm, range 0 to 255."""
         self.update()
-        self._P2 = clip(val,0,255)
+        self._P2 = clip(val, 0, 255)
 
     def Q1(self, val=None):
         """Simulate setting TCLab heater power Q1 with range limited to 0-100, return clipped value."""
@@ -256,9 +255,9 @@ class TCLabModel(object):
 
     def scan(self):
         self.update()
-        return self._T1 + random.normalvariate(0, 0.2),\
-               self._T2 + random.normalvariate(0, 0.2),\
-               self._Q1, self._Q2
+        return (self._T1 + random.normalvariate(0, 0.2),
+                self._T2 + random.normalvariate(0, 0.2),
+                self._Q1, self._Q2)
 
     # Define properties for Q1 and Q2
     U1 = property(fget=Q1, fset=Q1, doc="Heater 1 value")

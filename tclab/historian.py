@@ -7,12 +7,14 @@ from .clock import time
 import bisect
 import sqlite3
 
+
 class TagDB:
     """Interface to sqlite database containing tag values"""
     def __init__(self, filename=":memory:"):
         """Create or connect to a database
 
-        :param filename: The filename of the database. By default, values are stored in memory."""
+        :param filename: The filename of the database.
+                         By default, values are stored in memory."""
         self.db = sqlite3.connect(filename)
         self.cursor = self.db.cursor()
         creates = ["""CREATE TABLE IF NOT EXISTS tagvalues (
@@ -27,7 +29,8 @@ class TagDB:
         self.session = None
 
     def new_session(self):
-        self.cursor.execute("INSERT INTO SESSIONS (starttime) VALUES (datetime('now'))")
+        self.cursor.execute("""INSERT INTO SESSIONS (starttime) 
+                               VALUES (datetime('now'))""")
         self.session = self.cursor.lastrowid
         self.db.commit()
 
@@ -45,7 +48,8 @@ class TagDB:
     def get(self, name, timeseconds=None, session=None):
         if session is None:
             session = self.session
-        query = """SELECT timeseconds, value FROM tagvalues where session_id=? and name=?"""
+        query = """SELECT timeseconds, value FROM tagvalues 
+                   WHERE session_id=? AND name=?"""
         parameters = [session, name]
         if timeseconds is not None:
             query += " and timeseconds=?"
@@ -118,7 +122,7 @@ class Historian(object):
     def load_session(self, session):
         self.db.session = session
         self.build_fields()
-        #FIXME: The way time is handled here is a bit brittle
+        # FIXME: The way time is handled here is a bit brittle
         first = True
         for name in self.columns[1:]:
             for t, value in self.db.get(name):
@@ -151,7 +155,7 @@ class Plotter:
 
         line_options = {'where': 'post', 'lw': 2, 'alpha': 0.8}
         self.lines = {}
-        self.fig, self.axes = plt.subplots(len(layout), 1, figsize=(8,6))
+        self.fig, self.axes = plt.subplots(len(layout), 1, figsize=(8, 6))
         values = dict(zip(historian.columns, historian.at(0)))
         for axis, fields in zip(self.axes, self.layout):
             for field in fields:

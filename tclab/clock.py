@@ -56,5 +56,4 @@ def clock(tperiod, tstep=1, tol=0.25):
         else:
             tnow = k * tstep
 
-
     yield round(tnow, 1)

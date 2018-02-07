@@ -1,7 +1,9 @@
 from tclab import Historian
 
+
 def test_constructor():
     h = Historian(sources=())
+
 
 def test_logging():
     a = 0
