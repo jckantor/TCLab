@@ -131,6 +131,9 @@ class Historian(object):
                     self.t.append(t)
             first = False
 
+    def close(self):
+        self.db.close()
+
 
 class Plotter:
     def __init__(self, historian, twindow=120, layout=None):
