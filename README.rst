@@ -44,7 +44,8 @@ To upgrade an existing installation, use the command ::
 
 To install the development version, use the command ::
 
-   pip install git+https://github.com/jckantor/TCLab@development
+   pip install --upgrade https://github.com/jckantor/TCLab/archive/development.zip
+
 
 Hardware setup
 --------------
