@@ -13,13 +13,12 @@ def test_experiment_context():
 
 
 def test_experiment_run():
-    with Experiment(connected=False, plot=False) as experiment:
+    with Experiment(connected=False, plot=False, time=5) as experiment:
         for t in experiment.clock():
             pass
 
-@pytest.mark.skip
 def test_runexperiment():
     def function(t, lab):
         pass
 
-    runexperiment(function, connected=False, plot=False, time=10)
+    runexperiment(function, connected=False, plot=False, time=5)

@@ -1,10 +1,12 @@
 from .tclab import TCLab, TCLabModel
 from .historian import Historian, Plotter
-from .clock import clock
+from .clock import setup, clock
 
 
 class Experiment:
-    def __init__(self, connected=True, plot=True, twindow=200, time=500):
+    def __init__(self, connected=True, plot=True,
+                 twindow=200, time=500,
+                 speedup=1):
         self.connected = connected
         self.plot = plot
         self.twindow = twindow
@@ -12,7 +14,9 @@ class Experiment:
 
         self.lab = None
         self.historian = None
-        self.plot = None
+        self.plotter = None
+
+        setup(speedup)
 
     def __enter__(self):
         if self.connected:
@@ -35,10 +39,13 @@ class Experiment:
                 self.plotter.update(t)
             else:
                 self.historian.update(t)
+            yield t
 
 
-def runexperiment(function, connected=True, plot=True, twindow=200, time=500):
-    with Experiment(connected, plot, twindow, time) as experiment:
+def runexperiment(function, connected=True, plot=True,
+                  twindow=200, time=500,
+                  speedup=1):
+    with Experiment(connected, plot, twindow, time, speedup) as experiment:
         for t in experiment.clock():
             function(t, experiment.lab)
     return experiment
