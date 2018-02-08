@@ -1,6 +1,7 @@
 from .tclab import TCLab, TCLabModel
 from .clock import clock, time
 from .historian import Historian, Plotter
+from .experiment import Experiment, runexperiment
 
 
 def setup(connected=True, speedup=1):
@@ -38,3 +39,4 @@ def setup(connected=True, speedup=1):
 
     clocksetup(speedup=speedup)
     return lab
+
