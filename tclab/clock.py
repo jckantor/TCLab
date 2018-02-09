@@ -34,6 +34,7 @@ def clock(tperiod, tstep=1, tol=0.25):
          TCLabClockError: If clock becomes more than `tol` out of phase
              with real time clock.
     """
+    global tnow
     setnow(0)
     start_time = SPEEDUP * realtime.time()
     fuzz = 0.003
