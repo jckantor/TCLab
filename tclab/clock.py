@@ -14,6 +14,9 @@ def time():
     """Returns current clock time."""
     return tnow
 
+def setnow(t):
+    global tnow
+    tnow = t
 
 def clock(tperiod, tstep=1, tol=0.25):
     """Generator providing time values in sync with real time clock.
@@ -31,8 +34,7 @@ def clock(tperiod, tstep=1, tol=0.25):
          TCLabClockError: If clock becomes more than `tol` out of phase
              with real time clock.
     """
-    global tnow
-    tnow = 0
+    setnow(0)
     start_time = SPEEDUP * realtime.time()
     fuzz = 0.003
     k = 0
@@ -50,7 +52,7 @@ def clock(tperiod, tstep=1, tol=0.25):
             finally:
                 if gcold:
                     gc.enable()
-            tnow = SPEEDUP * realtime.time() - start_time
+            setnow(SPEEDUP * realtime.time() - start_time)
             if abs(tnow - k * tstep) > tol:
                 raise RuntimeError("TCLab clock lost synchronization.")
         else:

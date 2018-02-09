@@ -1,10 +1,11 @@
 import datetime
 import tornado
 
-from .tclab import TCLab
+from .tclab import TCLab, TCLabModel
 from .historian import Historian, Plotter
+from .clock import setnow, setup
 
-from ipywidgets import Button, Label, FloatSlider, HBox, VBox
+from ipywidgets import Button, Label, FloatSlider, HBox, VBox, Checkbox, IntText
 
 
 def actionbutton(description, action, disabled=True):
@@ -42,6 +43,13 @@ class NotebookUI:
         self.seconds = 0
         self.firstsession = True
 
+        # Model or real
+        self.usemodel = Checkbox(value=False, description='Use model')
+        speeduplabel = Label('Speedup')
+        self.speedup = IntText(value=1)
+        self.speedup.disabled = True
+        modelbox = HBox([self.usemodel, speeduplabel, self.speedup])
+
         # Buttons
         self.connect = actionbutton('Connect', self.action_connect, False)
         self.start = actionbutton('Start', self.action_start)
@@ -67,7 +75,8 @@ class NotebookUI:
 
         temperatures = VBox([T1box, T2box])
 
-        self.gui = VBox([buttons,
+        self.gui = VBox([modelbox,
+                         buttons,
                          statusbox,
                          HBox([heaters, temperatures]),
                          ])
@@ -75,7 +84,9 @@ class NotebookUI:
     def update(self):
         """Update GUI display."""
         timestamp = datetime.datetime.now().isoformat(timespec='seconds')
-        self.seconds += 1
+        self.seconds += self.speedup.value
+        if self.usemodel.value:
+            setnow(self.seconds)
         self.timewidget.value = timestamp
         self.T1widget.value = '{:2.1f}'.format(self.lab.T1)
         self.T2widget.value = '{:2.1f}'.format(self.lab.T2)
@@ -110,13 +121,17 @@ class NotebookUI:
 
     def action_connect(self, widget):
         """Connect to TCLab."""
-        self.lab = TCLab()
+        if self.usemodel.value:
+            self.lab = TCLabModel()
+        else:
+            self.lab = TCLab()
         self.historian = Historian(self.lab.sources)
         self.plotter = Plotter(self.historian,
                                layout=(('Q1', 'Q2'),
                                        ('T1', 'T2')))
         self.lab.connected = True
 
+        self.usemodel.disabled = True
         self.connect.disabled = True
         self.start.disabled = False
         self.disconnect.disabled = False
@@ -126,6 +141,7 @@ class NotebookUI:
         self.lab.close()
         self.lab.connected = False
 
+        self.usemodel.disabled = False
         self.connect.disabled = False
         self.disconnect.disabled = True
         self.start.disabled = True
