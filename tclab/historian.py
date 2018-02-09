@@ -80,8 +80,6 @@ class Historian(object):
 
         self.build_fields()
 
-        self.update(tnow=0)
-
     def build_fields(self):
         self.fields = [[] for _ in range(len(self.sources))]
         self.logdict = {c: f for c, f in zip(self.columns, self.fields)}

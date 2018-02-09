@@ -21,7 +21,7 @@ def test_logging():
 
     log = h.log
 
-    assert len(log) == 3
+    assert len(log) == 2
 
     assert h.at(1, ['a']) == [0.5]
 
