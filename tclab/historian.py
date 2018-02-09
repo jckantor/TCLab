@@ -70,17 +70,19 @@ class Historian(object):
                      - callable is evaluated to obtain the value
         """
         self.sources = [('Time', lambda: self.tnow)] + list(sources)
-        self.db = TagDB(dbfile)
-        self.db.new_session()
-        self.session = self.db.session
+        if dbfile:
+            self.db = TagDB(dbfile)
+            self.db.new_session()
+            self.session = self.db.session
+        else:
+            self.db = None
+            self.session = 1
 
         self.tstart = time()
 
         self.columns = [name for name, _ in self.sources]
 
         self.build_fields()
-
-        self.update(tnow=0)
 
     def build_fields(self):
         self.fields = [[] for _ in range(len(self.sources))]
@@ -96,7 +98,7 @@ class Historian(object):
         for name, valuefunction in self.sources:
             value = valuefunction()
             self.logdict[name].append(value)
-            if name != "Time":
+            if self.db and name != "Time":
                 self.db.record(self.tnow, name, value)
 
     @property
@@ -111,15 +113,21 @@ class Historian(object):
         return [self.logdict[c][i] for c in columns]
 
     def new_session(self):
+        if self.db is None:
+            raise NotImplemented("Sessions not supported without dbfile")
         self.db.new_session()
         self.session = self.db.session
         self.tstart = time()
         self.build_fields()
 
     def get_sessions(self):
+        if self.db is None:
+            raise NotImplemented("Sessions not supported without dbfile")
         return self.db.get_sessions()
 
     def load_session(self, session):
+        if self.db is None:
+            raise NotImplemented("Sessions not supported without dbfile")
         self.db.session = session
         self.build_fields()
         # FIXME: The way time is handled here is a bit brittle
@@ -132,7 +140,8 @@ class Historian(object):
             first = False
 
     def close(self):
-        self.db.close()
+        if self.db:
+            self.db.close()
 
 
 class Plotter:
@@ -159,7 +168,7 @@ class Plotter:
         line_options = {'where': 'post', 'lw': 2, 'alpha': 0.8}
         self.lines = {}
         self.fig, self.axes = plt.subplots(len(layout), 1, figsize=(8, 6))
-        values = dict(zip(historian.columns, historian.at(0)))
+        values = {c: 0 for c in historian.columns}
         for axis, fields in zip(self.axes, self.layout):
             for field in fields:
                 y = values[field]
