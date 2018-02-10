@@ -205,8 +205,10 @@ class Plotter:
 
         line_options = {'where': 'post', 'lw': 2, 'alpha': 0.8}
         self.lines = {}
-        self.fig, self.axes = plt.subplots(len(layout), 1, figsize=(8, 6))
+        self.fig, self.axes = plt.subplots(len(layout), 1, figsize=(8, 6),
+                                           gridspec_kw={'hspace': 0})
         values = {c: 0 for c in historian.columns}
+        plt.setp([a.get_xticklabels() for a in self.axes[:-1]], visible=False)
         for axis, fields in zip(self.axes, self.layout):
             for field in fields:
                 y = values[field]
