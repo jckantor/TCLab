@@ -62,19 +62,6 @@ class TagDB:
         self.db.close()
 
 
-class Reporter(object):
-    def __init__(self, name, valuefunction):
-        self.name = name
-        self.valuefunction = valuefunction
-
-    @property
-    def names(self):
-        return [self.name]
-
-    def valuetuples(self):
-        return [(self.name, self.valuefunction())]
-
-
 class Historian(object):
     """Generalised logging class"""
     def __init__(self, sources, dbfile=":memory:"):
