@@ -10,6 +10,9 @@ TCLab Documentation
    :maxdepth: 2
    :caption: Contents:
 
+   README.rst
+   DEVELOPMENT.rst
+
    notebooks/1_TCLab_Overview.ipynb
    notebooks/2_Accessing_the_Temperature_Control_Laboratory.ipynb
    notebooks/3_Synchronizing with Real Time.ipynb

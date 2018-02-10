@@ -97,7 +97,7 @@ todo_include_todos = False
 # a list of builtin themes.
 #
 
-tml_theme = 'sphinx_rtd_theme'
+html_theme = 'sphinx_rtd_theme'
 html_theme_options = {
         'collapse_navigation': False,
     }

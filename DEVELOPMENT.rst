@@ -13,10 +13,9 @@ During development
 After making changes
 ====================
 
-2. Update documentation and notebooks::
+1. Update documentation::
 
     python3 -m sphinx .  _build
-    npstripout *.ipynb
 	
 2. Change the version number in ``setup.py``
 3. Check the distribution::

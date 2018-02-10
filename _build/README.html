@@ -1,45 +1,264 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>TCLab: Temperature Control Laboratory &#8212; TCLab 0.4.0 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '0.4.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>TCLab: Temperature Control Laboratory &mdash; TCLab 0.4.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="TCLab 0.4.0 documentation" href="index.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
    
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  <div class="wy-grid-for-nav">
 
-  </head>
-  <body>
-  
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
+          
+            <a href="index.html" class="icon icon-home"> TCLab
+          
+
+          
+          </a>
+
+          
             
-  <div class="section" id="tclab-temperature-control-laboratory">
+            
+              <div class="version">
+                0.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/1_TCLab_Overview.html">TCLab Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/1_TCLab_Overview.html#TCLab-Architecture">TCLab Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/1_TCLab_Overview.html#Getting-Started">Getting Started</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/1_TCLab_Overview.html#Installation">Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/1_TCLab_Overview.html#Hardware-Setup">Hardware Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/1_TCLab_Overview.html#Checking-Everything-Works">Checking Everything Works</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/1_TCLab_Overview.html#Next-Steps">Next Steps</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/1_TCLab_Overview.html#Course-Web-Sites">Course Web Sites</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/2_Accessing_the_Temperature_Control_Laboratory.html">Accessing the Temperature Control Laboratory</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/2_Accessing_the_Temperature_Control_Laboratory.html#Importing-tclab">Importing <code class="docutils literal"><span class="pre">tclab</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/2_Accessing_the_Temperature_Control_Laboratory.html#Using-TCLab-with-Python's-with-statement">Using TCLab with Python’s <code class="docutils literal"><span class="pre">with</span></code> statement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/2_Accessing_the_Temperature_Control_Laboratory.html#Reading-Temperatures">Reading Temperatures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/2_Accessing_the_Temperature_Control_Laboratory.html#Setting-Heaters">Setting Heaters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/2_Accessing_the_Temperature_Control_Laboratory.html#Setting-Maximum-Heater-Power">Setting Maximum Heater Power</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/2_Accessing_the_Temperature_Control_Laboratory.html#tclab-Sampling-Speed"><code class="docutils literal"><span class="pre">tclab</span></code> Sampling Speed</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/2_Accessing_the_Temperature_Control_Laboratory.html#Temperature-Sampling-Speed">Temperature Sampling Speed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/2_Accessing_the_Temperature_Control_Laboratory.html#Heater-Sampling-Speed">Heater Sampling Speed</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/3_Synchronizing with Real Time.html">Synchronizing with Real Time</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/3_Synchronizing with Real Time.html#Simple-use-of-tclab.clock()">Simple use of <code class="docutils literal"><span class="pre">tclab.clock()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/3_Synchronizing with Real Time.html#Optional-Parameters">Optional Parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/3_Synchronizing with Real Time.html#tstep:-Clock-time-step"><code class="docutils literal"><span class="pre">tstep</span></code>: Clock time step</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/3_Synchronizing with Real Time.html#tol:-Clock-tolerance"><code class="docutils literal"><span class="pre">tol</span></code>: Clock tolerance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/3_Synchronizing with Real Time.html#Fixing-run-time-errors-due-to-loss-of-clock-synchronization.">Fixing run time errors due to loss of clock synchronization.</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/3_Synchronizing with Real Time.html#Using-tclab.clock()-with-TCLab">Using <code class="docutils literal"><span class="pre">tclab.clock()</span></code> with TCLab</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/4_Simulation_of_TCLab_for_Offline_Use.html">Simulation of TCLab for Offline Use</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/4_Simulation_of_TCLab_for_Offline_Use.html#Speedup-Factor-with-setup()">Speedup Factor with <code class="docutils literal"><span class="pre">setup()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/5_TCLab_Historian.html">TCLab <code class="docutils literal"><span class="pre">Historian</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/5_TCLab_Historian.html#Basic-logging">Basic logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/5_TCLab_Historian.html#Accessing-the-Data-Log-from-the-Historian">Accessing the Data Log from the Historian</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/5_TCLab_Historian.html#Accessing-log-data-using-Pandas">Accessing log data using Pandas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/5_TCLab_Historian.html#Specifying-Sources-for-tclab.Historian">Specifying Sources for <code class="docutils literal"><span class="pre">tclab.Historian</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/5_TCLab_Historian.html#Functions-with-multiple-returns">Functions with multiple returns</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/6_TCLab_Plotter.html">TCLab Plotter</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/6_TCLab_Plotter.html#Graphics-Testing">Graphics Testing</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/7_NotebookUI.html">NotebookUI</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/7_NotebookUI.html#Accessing-past-sessions">Accessing past sessions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/8_Experiment_Class.html">Experiment Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/9_Interactive_and_Nonblocking_Operation.html">Interactive and Non-blocking Operation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/9_Interactive_and_Nonblocking_Operation.html#Experiments-in-Non-blocking-Operation-with-threading-Library">Experiments in Non-blocking Operation with <code class="docutils literal"><span class="pre">threading</span></code> Library</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/9_Interactive_and_Nonblocking_Operation.html#Run-Class">Run Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/9_Interactive_and_Nonblocking_Operation.html#Working-with-Asyncio">Working with Asyncio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/9_Interactive_and_Nonblocking_Operation.html#Working-with-Tornado">Working with Tornado</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="notebooks/9_Interactive_and_Nonblocking_Operation.html#Adding-Widgets">Adding Widgets</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">TCLab</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>TCLab: Temperature Control Laboratory</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/README.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast,
+.nboutput.nblast {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast + .nbinput {
+    margin-top: -19px;
+}
+
+/* nice headers on first paragraph of info/warning boxes */
+.admonition .first {
+    margin: -12px;
+    padding: 6px 12px;
+    margin-bottom: 12px;
+    color: #fff;
+    line-height: 1;
+    display: block;
+}
+.admonition.warning .first {
+    background: #f0b37e;
+}
+.admonition.note .first {
+    background: #6ab0de;
+}
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+</style>
+<div class="section" id="tclab-temperature-control-laboratory">
 <h1>TCLab: Temperature Control Laboratory<a class="headerlink" href="#tclab-temperature-control-laboratory" title="Permalink to this headline">¶</a></h1>
 <p><code class="docutils literal"><span class="pre">TCLab</span></code> provides a Python interface to the
 <a class="reference external" href="http://apmonitor.com/pdc/index.php/Main/ArduinoTemperatureControl">Arduino Temperature Control Lab</a>
@@ -123,7 +342,8 @@ firmware and instructions are available from the
 </div>
 <div class="section" id="next-steps">
 <h2>Next Steps<a class="headerlink" href="#next-steps" title="Permalink to this headline">¶</a></h2>
-<p>The notebook directory provides examples on how to use the TCLab module.</p>
+<p>The notebook directory provides examples on how to use the TCLab module
+and which provides <a class="reference external" href="_build/index.html">documentation</a>.</p>
 </div>
 <div class="section" id="course-websites">
 <h2>Course Websites<a class="headerlink" href="#course-websites" title="Permalink to this headline">¶</a></h2>
@@ -138,45 +358,67 @@ Chemical Process Control course website.</li>
 </div>
 
 
+           </div>
+           <div class="articleComments">
+            
+           </div>
           </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jeffrey Kantor and Carl Sandrock.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="index.html">Documentation overview</a><ul>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2018, Jeffrey Kantor and Carl Sandrock.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
-      
-      |
-      <a href="_sources/README.rst.txt"
-          rel="nofollow">Page source</a>
-    </div>
 
-    
+    </section>
 
-    
-  </body>
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
 </html>
