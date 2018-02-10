@@ -56,10 +56,10 @@ class TCLab(object):
         self.Q1(0)
         self.Q2(0)
         self.tstart = time()
-        self.sources = [('T1', lambda: self.T1),
-                        ('T2', lambda: self.T2),
-                        ('Q1', self.Q1),
-                        ('Q2', self.Q2),
+        self.sources = [('T1', self.scan),
+                        ('T2', None),
+                        ('Q1', None),
+                        ('Q2', None),
                         ]
 
     def __enter__(self):
@@ -176,10 +176,10 @@ class TCLabModel(object):
         self._H1 = self.Ta            # temperature heater 1
         self._H2 = self.Ta            # temperature heater 2
         self.maxstep = 0.2            # maximum time step for integration
-        self.sources = [('T1', lambda: self.T1),
-                        ('T2', lambda: self.T2),
-                        ('Q1', self.Q1),
-                        ('Q2', self.Q2),
+        self.sources = [('T1', self.scan),
+                        ('T2', None),
+                        ('Q1', None),
+                        ('Q2', None),
                         ]
 
     def __enter__(self):

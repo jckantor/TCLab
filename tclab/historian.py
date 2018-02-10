@@ -3,6 +3,7 @@
 
 from __future__ import print_function
 from __future__ import division
+from collections import Iterable
 from .clock import time
 import bisect
 import sqlite3
@@ -66,8 +67,35 @@ class Historian(object):
     def __init__(self, sources, dbfile=":memory:"):
         """
         sources: an iterable of (name, callable) tuples
-                     - name (str) is the name of a signal and the
-                     - callable is evaluated to obtain the value
+            - name (str) is the name of a signal and the
+            - callable is evaluated to obtain the value.
+
+        Example:
+
+        >>> a = 1
+        >>> def getvalue():
+        ...     return a
+        >>> h = Historian([('a', getvalue)])
+        >>> h.update(0)
+        >>> h.log
+        [(0, 1)]
+
+
+        Sometimes, multiple values are obtained from one function call. In such
+        cases, names can still be specified as before, but callable can be passed
+        as None for the subsequent names which come from a previous callable.
+
+        Example:
+
+        >>> a = 1
+        >>> b = 2
+        >>> def getvalues():
+        ...     return [a, b]
+        >>> h = Historian([('a', getvalues),
+        ...                ('b', None)])
+        >>> h.update(0)
+        [(0, 1, 2)]
+
         """
         self.sources = [('Time', lambda: self.tnow)] + list(sources)
         if dbfile:
@@ -85,8 +113,8 @@ class Historian(object):
         self.build_fields()
 
     def build_fields(self):
-        self.fields = [[] for _ in range(len(self.sources))]
-        self.logdict = {c: f for c, f in zip(self.columns, self.fields)}
+        self.fields = [[] for _ in self.columns]
+        self.logdict = dict(zip(self.columns, self.fields))
         self.t = self.logdict['Time']
 
     def update(self, tnow=None):
@@ -96,7 +124,17 @@ class Historian(object):
             self.tnow = tnow
 
         for name, valuefunction in self.sources:
-            value = valuefunction()
+            if valuefunction:
+                v = valuefunction()
+                if isinstance(v, Iterable):
+                    values = iter(v)
+                else:
+                    values = iter([v])
+            try:
+                value = next(values)
+            except StopIteration:
+                raise ValueError("valuefunction did not return enough values")
+
             self.logdict[name].append(value)
             if self.db and name != "Time":
                 self.db.record(self.tnow, name, value)
@@ -167,8 +205,10 @@ class Plotter:
 
         line_options = {'where': 'post', 'lw': 2, 'alpha': 0.8}
         self.lines = {}
-        self.fig, self.axes = plt.subplots(len(layout), 1, figsize=(8, 6))
+        self.fig, self.axes = plt.subplots(len(layout), 1, figsize=(8, 6),
+                                           gridspec_kw={'hspace': 0})
         values = {c: 0 for c in historian.columns}
+        plt.setp([a.get_xticklabels() for a in self.axes[:-1]], visible=False)
         for axis, fields in zip(self.axes, self.layout):
             for field in fields:
                 y = values[field]
