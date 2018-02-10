@@ -83,3 +83,14 @@ def test_U2(lab):
     lab.U2 = 120
     assert lab.U2 == 100
 
+
+def test_scan(lab):
+    lab.Q1(10)
+    lab.Q2(20)
+
+    T1, T2, Q1, Q2 = lab.scan()
+
+    assert 0 < T1 < 200
+    assert 0 < T2 < 200
+    assert Q1 == 10
+    assert Q2 == 20

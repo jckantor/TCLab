@@ -90,8 +90,7 @@ The number returned is the temperature of sensor T1 in °C.
 Next Steps
 ----------
 
-The notebook directory provides examples on how to use the TCLab module
-and which provides `documentation <_build/index.html>`_.
+The notebook directory provides examples on how to use the TCLab module.
 
 Course Websites
 ---------------
