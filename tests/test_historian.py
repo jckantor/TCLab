@@ -25,3 +25,23 @@ def test_logging():
 
     assert h.at(1, ['a']) == [0.5]
 
+
+def test_logging_list():
+    a = 0
+    b = 0
+
+    h = Historian(sources=[('a', lambda: (a, b)),
+                           ('b', None)])
+
+    a = 0.5
+    h.update(1)
+    a = 1
+    h.update(2)
+
+    assert h.logdict['a'][-1] == 1
+
+    log = h.log
+
+    assert len(log) == 2
+
+    assert h.at(1, ['a']) == [0.5]
