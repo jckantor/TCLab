@@ -13,9 +13,8 @@ During development
 After making changes
 ====================
 
-2. Update documentation and notebooks::
+1. Strip outputs in notebooks::
 
-    python3 -m sphinx .  _build
     npstripout *.ipynb
 	
 2. Change the version number in ``setup.py``

@@ -1,0 +1,182 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>TCLab: Temperature Control Laboratory &#8212; TCLab 0.4.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.4.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="tclab-temperature-control-laboratory">
+<h1>TCLab: Temperature Control Laboratory<a class="headerlink" href="#tclab-temperature-control-laboratory" title="Permalink to this headline">¶</a></h1>
+<p><code class="docutils literal"><span class="pre">TCLab</span></code> provides a Python interface to the
+<a class="reference external" href="http://apmonitor.com/pdc/index.php/Main/ArduinoTemperatureControl">Arduino Temperature Control Lab</a>
+over a USB interface. <code class="docutils literal"><span class="pre">TCLab</span></code> is implemented as a Python class within
+the <code class="docutils literal"><span class="pre">tclab</span></code> package that also includes:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">clock</span></code> A Python generator for soft real-time implementation of
+process control algorithms.</li>
+<li><code class="docutils literal"><span class="pre">Historian</span></code> A Python class to log results of a process control
+experiment.</li>
+<li><code class="docutils literal"><span class="pre">Plotter</span></code> Provides an historian with real-time plotting within a
+Jupyter notebook.</li>
+<li><code class="docutils literal"><span class="pre">TCLabModel</span></code> An embedded model of the temperature control lab
+for off-line and faster-than-realtime simulation of process control
+experiments. No hardware needs to be attached to use <code class="docutils literal"><span class="pre">TCLabModel</span></code>.</li>
+</ul>
+<p>The necessary Arduino firmware for device operation is available at the
+<a class="reference external" href="https://github.com/jckantor/TCLab-sketch">TCLab-Sketch repository</a>.</p>
+<p>The <a class="reference external" href="http://apmonitor.com/pdc/index.php/Main/ArduinoTemperatureControl">Arduino Temperature Control Lab</a>
+is a modular, portable, and inexpensive solution for hands-on process
+control learning.  Heat output is adjusted by modulating current flow to
+each of two transistors. Thermistors measure the temperatures. Energy
+from the transistor output is transferred by conduction and convection
+to the temperature sensor. The dynamics of heat transfer provide rich
+opportunities to implement single and multivariable control systems.
+The lab is integrated into a small PCB shield which can be mounted to
+any <a class="reference external" href="https://www.arduino.cc/">Arduino</a> or Arduino compatible
+microcontroller.</p>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>Install using</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">tclab</span>
+</pre></div>
+</div>
+<p>To upgrade an existing installation, use the command</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">tclab</span> <span class="o">--</span><span class="n">upgrade</span>
+</pre></div>
+</div>
+<p>To install the development version, use the command</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">upgrade</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">jckantor</span><span class="o">/</span><span class="n">TCLab</span><span class="o">/</span><span class="n">archive</span><span class="o">/</span><span class="n">development</span><span class="o">.</span><span class="n">zip</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="hardware-setup">
+<h2>Hardware setup<a class="headerlink" href="#hardware-setup" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic">
+<li><p class="first">Plug a compatible Arduino device (UNO, Leonardo, NHduino) with the
+lab attached into your computer via the USB connection. Plug the DC
+power adapter into the wall.</p>
+</li>
+<li><p class="first">(optional) Install Arduino Drivers</p>
+<p><em>If you are using Windows 10, the Arduino board should connect
+without additional drivers required.</em></p>
+<p>Mac OS X users may need to install a serial driver. For arduino
+clones using the CH340G, CH34G or CH34X chipset, a suitable driver
+can be found <a class="reference external" href="https://github.com/MPParsley/ch340g-ch34g-ch34x-mac-os-x-driver">here</a>
+or <a class="reference external" href="https://github.com/adrianmihalko/ch340g-ch34g-ch34x-mac-os-x-driver">here</a>.</p>
+</li>
+<li><p class="first">(optional) Install Arduino Firmware</p>
+<p><code class="docutils literal"><span class="pre">TCLab</span></code> requires the one-time installation of custom firmware on
+an Arduino device. If it hasn’t been pre-installed, the necessary
+firmware and instructions are available from the
+<a class="reference external" href="https://github.com/jckantor/TCLab-sketch">TCLab-Sketch repository</a>.</p>
+</li>
+</ol>
+</div>
+<div class="section" id="checking-that-everything-works">
+<h2>Checking that everything works<a class="headerlink" href="#checking-that-everything-works" title="Permalink to this headline">¶</a></h2>
+<p>Execute the following code</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tclab</span>
+<span class="n">tclab</span><span class="o">.</span><span class="n">TCLab</span><span class="p">()</span><span class="o">.</span><span class="n">T1</span>
+</pre></div>
+</div>
+<p>If everything has worked, you should see the following output message</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Connecting</span> <span class="n">to</span> <span class="n">TCLab</span>
+<span class="n">TCLab</span> <span class="n">Firmware</span> <span class="n">Version</span> <span class="mf">1.2</span><span class="o">.</span><span class="mi">1</span> <span class="n">on</span> <span class="n">NHduino</span> <span class="n">connected</span> <span class="n">to</span> <span class="n">port</span> <span class="n">XXXX</span>
+<span class="mf">21.54</span>
+</pre></div>
+</div>
+<p>The number returned is the temperature of sensor T1 in °C.</p>
+</div>
+<div class="section" id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Permalink to this headline">¶</a></h2>
+<p>The notebook directory provides examples on how to use the TCLab module.</p>
+</div>
+<div class="section" id="course-websites">
+<h2>Course Websites<a class="headerlink" href="#course-websites" title="Permalink to this headline">¶</a></h2>
+<p>More information, instructional videos, and Jupyter notebook
+examples are available at the following course websites.</p>
+<ul class="simple">
+<li><a class="reference external" href="http://apmonitor.com/pdc/index.php/Main/ArduinoTemperatureControl">Arduino temperature control lab page</a> on the BYU Process Dynamics and Control course website.</li>
+<li><a class="reference external" href="http://jckantor.github.io/CBE30338/">CBE 30338</a> for the Notre Dame
+Chemical Process Control course website.</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Jeffrey Kantor and Carl Sandrock.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/README.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

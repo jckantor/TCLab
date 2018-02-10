@@ -1,0 +1,114 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Simulation of TCLab for Offline Use\n",
+    "\n",
+    "`TCLabModel` replaces `TCLab` for occasions where the TCLab hardware might not be available. To use, include the import\n",
+    "\n",
+    "    from tclab import TCLabModel as TCLab \n",
+    "    \n",
+    "The rest of your code will work without change. Be advised the underlying model used to approximate the behavior of the Temperature Control Laboratory is an approximation to the dynamics of the actual hardware."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from tclab import TCLabModel as TCLab\n",
+    "\n",
+    "with TCLab() as a:\n",
+    "    print(\"Temperature 1: {0:0.2f} °C\".format(a.T1))\n",
+    "    print(\"Temperature 2: {0:0.2f} °C\".format(a.T2))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "As an additional example."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "%matplotlib inline\n",
+    "from tclab import TCLabModel as TCLab\n",
+    "from tclab import clock, Historian, Plotter\n",
+    "\n",
+    "with TCLab() as a:\n",
+    "    h = Historian(a.sources)\n",
+    "    p = Plotter(h, twindow=200)\n",
+    "    for t in clock(200):\n",
+    "        a.Q1(100 if t < 100 else 0)\n",
+    "        p.update(t)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Speedup Factor with `setup()`\n",
+    "\n",
+    "The setup function provides control over the use of the TCLab hardware or model. If using a model, an option to run at a multiple of real-time.\n",
+    "\n",
+    "A speedup of 10 or greater causes the simulation to run as fast as possible."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "%matplotlib inline\n",
+    "from tclab import clock, Historian, Plotter, setup\n",
+    "\n",
+    "TCLab = setup(connected=False, speedup=20)\n",
+    "\n",
+    "with TCLab() as a:\n",
+    "    h = Historian(a.sources)\n",
+    "    p = Plotter(h, twindow=200)\n",
+    "    for t in clock(200):\n",
+    "        a.Q1(100 if t < 100 else 0)\n",
+    "        h.update(t)\n",
+    "    p.update()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.6.3"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}
