@@ -13,7 +13,7 @@ During development
 After making changes
 ====================
 
-1. Strip outputs in notebooks.
+1. Strip outputs in notebooks::
 
     npstripout *.ipynb
 	
