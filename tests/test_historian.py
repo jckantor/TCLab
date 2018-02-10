@@ -1,7 +1,9 @@
 from tclab import Historian
 
+
 def test_constructor():
     h = Historian(sources=())
+
 
 def test_logging():
     a = 0
@@ -19,7 +21,7 @@ def test_logging():
 
     log = h.log
 
-    assert len(log) == 3
+    assert len(log) == 2
 
     assert h.at(1, ['a']) == [0.5]
 

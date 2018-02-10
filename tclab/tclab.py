@@ -9,10 +9,12 @@ import random
 
 sep = ' '   # command/value separator in TCLab firmware
 
-arduinos = {'USB VID:PID=16D0:0613': 'Arduino Uno',
-            'USB VID:PID=1A86:7523': 'NHduino',
-            'USB VID:PID=2341:8036': 'Arduino Leonardo',
-            }
+arduinos = [('USB VID:PID=16D0:0613', 'Arduino Uno'),
+            ('USB VID:PID=1A86:7523', 'NHduino'),
+            ('USB VID:PID=2341:8036', 'Arduino Leonardo'),
+            ('USB VID:PID=2A03', 'Arduino.org device'),
+            ('USB VID:PID', 'unknown device'),
+            ]
 
 
 def clip(val, lower=0, upper=100):
@@ -21,28 +23,38 @@ def clip(val, lower=0, upper=100):
 
 
 class TCLab(object):
-    def __init__(self, port='', baud=9600, debug=False):
+    def __init__(self, port='', debug=False):
         self.debug = debug
-        print('Connecting to TCLab')
         for comport in list_ports.grep(port):
-            if comport[2][:21] in arduinos.keys():
-                self.arduino = arduinos[comport[2][:21]]
-                break
+            for key, val in arduinos:
+                if comport[2].startswith(key):
+                    self.arduino = val
+                    break
+            else:
+                continue  # key not found in arduinos
+            break  # key was found in arduinos
         else:
             print('--- Serial Ports ---')
             for comport in list(list_ports.comports()):
                 print(" ".join(comport))
-            raise RuntimeError('No compatible Arduino device found.')
+            raise RuntimeError('No Arduino device found.')
         port = comport[0]
-        self.sp = serial.Serial(port=port, baudrate=baud, timeout=2)
-        self.receive()
-        self.version = self.send_and_receive('VER')
+        for baud in [115200, 9600]:
+            self.sp = serial.Serial(port=port, baudrate=baud, timeout=2)
+            self.sp.readline().decode('UTF-8')
+            self.sp.write(('VER' + '\r\n').encode())
+            self.version = self.sp.readline().decode('UTF-8').replace('\r\n', '')
+            if self.version != '':
+                break
+        else:
+            raise RuntimeError('Failed to Connect.')
+        if self.sp.isOpen():
+            print(self.arduino, 'connected on port', port, 'at', baud, 'baud.')
+            print(self.version + '.')
         self._P1 = 200.0
         self._P2 = 100.0
         self.Q1(0)
         self.Q2(0)
-        if self.sp.isOpen():
-            print(self.version + ' on ' + self.arduino + ' connected to port ' + port)
         self.tstart = time()
         self.sources = [('T1', lambda: self.T1),
                         ('T2', lambda: self.T2),
@@ -135,13 +147,21 @@ class TCLab(object):
             msg = 'Q2' + sep + str(clip(val))
         return self.send_and_receive(msg, float)
 
+    def scan(self):
+        self.send('SCAN')
+        T1 = float(self.receive())
+        T2 = float(self.receive())
+        Q1 = float(self.receive())
+        Q2 = float(self.receive())
+        return T1, T2, Q1, Q2
+
     # Define properties for Q1 and Q2
     U1 = property(fget=Q1, fset=Q1, doc="Heater 1 value")
     U2 = property(fget=Q2, fset=Q2, doc="Heater 2 value")
 
 
 class TCLabModel(object):
-    def __init__(self, port=None, baud=9600, debug=False):
+    def __init__(self, port='', debug=False):
         self.debug = debug
         print('Simulated TCLab')
         self.Ta = 21                  # ambient temperature
@@ -173,7 +193,7 @@ class TCLabModel(object):
         """Simulate shutting down TCLab device."""
         self.Q1(0)
         self.Q2(0)
-        print('Surrogate TCLab disconnected successfully.')
+        print('TCLab Model disconnected successfully.')
         return
 
     def LED(self, val=100):
@@ -205,7 +225,7 @@ class TCLabModel(object):
     def P1(self, val):
         """Set maximum power of heater 1 in pwm, range 0 to 255."""
         self.update()
-        self._P1 = clip(val,0,255)
+        self._P1 = clip(val, 0, 255)
 
     @property
     def P2(self):
@@ -217,7 +237,7 @@ class TCLabModel(object):
     def P2(self, val):
         """Set maximum power of heater 2 in pwm, range 0 to 255."""
         self.update()
-        self._P2 = clip(val,0,255)
+        self._P2 = clip(val, 0, 255)
 
     def Q1(self, val=None):
         """Simulate setting TCLab heater power Q1 with range limited to 0-100, return clipped value."""
@@ -232,6 +252,12 @@ class TCLabModel(object):
         if val is not None:
             self._Q2 = clip(val)
         return self._Q2
+
+    def scan(self):
+        self.update()
+        return (self._T1 + random.normalvariate(0, 0.2),
+                self._T2 + random.normalvariate(0, 0.2),
+                self._Q1, self._Q2)
 
     # Define properties for Q1 and Q2
     U1 = property(fget=Q1, fset=Q1, doc="Heater 1 value")

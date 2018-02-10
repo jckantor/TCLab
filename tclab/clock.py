@@ -1,4 +1,4 @@
-import time as original_time
+import time as realtime
 import gc
 
 SPEEDUP = 1
@@ -14,18 +14,11 @@ def time():
     """Returns current clock time."""
     return tnow
 
+def setnow(t):
+    global tnow
+    tnow = t
 
-def speedtime():
-    """Returns time rescaled by factor SPEEDUP."""
-    return SPEEDUP*original_time.time()
-
-
-def speedsleep(tsleep):
-    """Sleeps for a period tsleep rescaled by factor SPEEDUP."""
-    return original_time.sleep(tsleep/SPEEDUP)
-
-
-def clock(tperiod, tstep=1, strict=True, tol=0.1):
+def clock(tperiod, tstep=1, tol=0.25):
     """Generator providing time values in sync with real time clock.
 
     Args:
@@ -42,31 +35,28 @@ def clock(tperiod, tstep=1, strict=True, tol=0.1):
              with real time clock.
     """
     global tnow
-    tnow = 0
-    start_time = speedtime()
+    setnow(0)
+    start_time = SPEEDUP * realtime.time()
     fuzz = 0.003
     k = 0
-    strict = False if SPEEDUP > 1 else strict
-    while tnow <= tperiod - tstep + tol + fuzz:
+    while tnow <= tperiod - tstep + tol:
         yield round(tnow, 1)
+        k += 1
         if SPEEDUP < 10:
-            if strict:
-                tsleep = max(0, (k+1)*tstep - (speedtime() - start_time) - fuzz*SPEEDUP)
-            else:
-                tsleep = max(0, tstep - (speedtime() - start_time - tnow) - fuzz*SPEEDUP)
+            tsleep = k * tstep\
+                     - (SPEEDUP * realtime.time() - start_time)\
+                     - SPEEDUP * fuzz
             gcold = gc.isenabled()
             gc.disable()
             try:
-                if tsleep >= fuzz:
-                    speedsleep(tsleep)
+                realtime.sleep(max(0, tsleep/SPEEDUP))
             finally:
                 if gcold:
                     gc.enable()
-            tnow = speedtime() - start_time
+            setnow(SPEEDUP * realtime.time() - start_time)
+            if abs(tnow - k * tstep) > tol:
+                raise RuntimeError("TCLab clock lost synchronization.")
         else:
-            tnow = (k+1)*tstep
-        k += 1
-        if strict and (abs(tnow - k * tstep) > tol + fuzz):
-            raise RuntimeError("TCLab clock lost real time synchronization.")
+            tnow = k * tstep
 
     yield round(tnow, 1)

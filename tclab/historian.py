@@ -5,34 +5,101 @@ from __future__ import print_function
 from __future__ import division
 from .clock import time
 import bisect
+import sqlite3
+
+
+class TagDB:
+    """Interface to sqlite database containing tag values"""
+    def __init__(self, filename=":memory:"):
+        """Create or connect to a database
+
+        :param filename: The filename of the database.
+                         By default, values are stored in memory."""
+        self.db = sqlite3.connect(filename)
+        self.cursor = self.db.cursor()
+        creates = ["""CREATE TABLE IF NOT EXISTS tagvalues (
+                           session_id REFERENCES session (id), 
+                           timeseconds, name, value)""",
+                   """CREATE TABLE IF NOT EXISTS sessions (
+                           id INTEGER PRIMARY KEY, 
+                           starttime)"""]
+        for statement in creates:
+            self.cursor.execute(statement)
+        self.db.commit()
+        self.session = None
+
+    def new_session(self):
+        self.cursor.execute("""INSERT INTO SESSIONS (starttime) 
+                               VALUES (datetime('now'))""")
+        self.session = self.cursor.lastrowid
+        self.db.commit()
+
+    def get_sessions(self):
+        result = self.cursor.execute("SELECT id, starttime FROM sessions")
+        return list(result)
+
+    def record(self, timeseconds, name, value):
+        if self.session is None:
+            self.new_session()
+        self.cursor.execute("INSERT INTO tagvalues VALUES (?, ?, ?, ?)",
+                            (self.session, timeseconds, name, value))
+        self.db.commit()
+
+    def get(self, name, timeseconds=None, session=None):
+        if session is None:
+            session = self.session
+        query = """SELECT timeseconds, value FROM tagvalues 
+                   WHERE session_id=? AND name=?"""
+        parameters = [session, name]
+        if timeseconds is not None:
+            query += " and timeseconds=?"
+            parameters.append(timeseconds)
+        query += " ORDER BY timeseconds"
+        return list(self.cursor.execute(query, parameters))
+
+    def close(self):
+        self.db.close()
+
 
 class Historian(object):
     """Generalised logging class"""
-    def __init__(self, sources):
+    def __init__(self, sources, dbfile=":memory:"):
         """
-
         sources: an iterable of (name, callable) tuples
                      - name (str) is the name of a signal and the
                      - callable is evaluated to obtain the value
         """
         self.sources = [('Time', lambda: self.tnow)] + list(sources)
+        if dbfile:
+            self.db = TagDB(dbfile)
+            self.db.new_session()
+            self.session = self.db.session
+        else:
+            self.db = None
+            self.session = 1
+
         self.tstart = time()
-        self.tnow = 0
+
         self.columns = [name for name, _ in self.sources]
+
+        self.build_fields()
+
+    def build_fields(self):
         self.fields = [[] for _ in range(len(self.sources))]
         self.logdict = {c: f for c, f in zip(self.columns, self.fields)}
         self.t = self.logdict['Time']
 
-        self.update(tnow=0)
-
     def update(self, tnow=None):
         if tnow is None:
-            self.tnow = time()
+            self.tnow = time() - self.tstart
         else:
             self.tnow = tnow
 
-        for n, c in self.sources:
-            self.logdict[n].append(c())
+        for name, valuefunction in self.sources:
+            value = valuefunction()
+            self.logdict[name].append(value)
+            if self.db and name != "Time":
+                self.db.record(self.tnow, name, value)
 
     @property
     def log(self):
@@ -45,53 +112,100 @@ class Historian(object):
         i = bisect.bisect(self.t, t) - 1
         return [self.logdict[c][i] for c in columns]
 
+    def new_session(self):
+        if self.db is None:
+            raise NotImplemented("Sessions not supported without dbfile")
+        self.db.new_session()
+        self.session = self.db.session
+        self.tstart = time()
+        self.build_fields()
+
+    def get_sessions(self):
+        if self.db is None:
+            raise NotImplemented("Sessions not supported without dbfile")
+        return self.db.get_sessions()
+
+    def load_session(self, session):
+        if self.db is None:
+            raise NotImplemented("Sessions not supported without dbfile")
+        self.db.session = session
+        self.build_fields()
+        # FIXME: The way time is handled here is a bit brittle
+        first = True
+        for name in self.columns[1:]:
+            for t, value in self.db.get(name):
+                self.logdict[name].append(value)
+                if first:
+                    self.t.append(t)
+            first = False
+
+    def close(self):
+        if self.db:
+            self.db.close()
+
 
 class Plotter:
-    def __init__(self, historian, tperiod=20):
-        self.historian = historian
+    def __init__(self, historian, twindow=120, layout=None):
+        """Generalised graphical output of a Historian
 
+        :param historian: An instance of the Historian class
+        :param twindow: Amount of time to show in the plot
+        :param layout: A tuple of tuples indicating how the fields should be
+                plotted. For example (("T1", "T2"), ("Q1", "Q2")) indicates that
+                there will be two subplots with the two indicated fields plotted
+                on each.
+        """
         import matplotlib.pyplot as plt
-        from IPython import display
+        from matplotlib import get_backend
+        self.backend = get_backend()
+        self.historian = historian
+        self.twindow = twindow
 
-        display.clear_output()
-        self.plt = plt
-        self.display = display
+        if layout is None:
+            layout = tuple((field,) for field in historian.columns[1:])
+        self.layout = layout
 
-        line_options = {'lw': 2, 'alpha': 0.8}
+        line_options = {'where': 'post', 'lw': 2, 'alpha': 0.8}
+        self.lines = {}
+        self.fig, self.axes = plt.subplots(len(layout), 1, figsize=(8, 6))
+        values = {c: 0 for c in historian.columns}
+        for axis, fields in zip(self.axes, self.layout):
+            for field in fields:
+                y = values[field]
+                self.lines[field] = axis.step(0, y, label=field,
+                                              **line_options)[0]
+            axis.set_xlim(0, self.twindow)
+            axis.autoscale(axis='y', tight=False)
+            axis.set_ylabel(', '.join(fields))
+            if len(fields) > 1:
+                axis.legend()
+            axis.grid()
 
-        self.fig = plt.figure(figsize=(8, 6))
-        nplots = len(self.historian.columns) - 1  
-        self.lines = []
-        self.axes = []
-        for n in range(0, nplots):
-            self.axes.append(self.fig.add_subplot(nplots,1,n+1))
-            y = self.historian.at(0,[self.historian.columns[n+1]])[0]
-            li, = plt.step(0, y, where='post', **line_options)          
-            self.lines.append(li)
-            plt.xlim(0, 1.05 * tperiod)
-            plt.ylim(y-2,y+2)
-            plt.ylabel(self.historian.columns[n+1])
-            plt.grid()
-        plt.xlabel('Time / Seconds')
+        self.axes[-1].set_xlabel('Time / Seconds')
         plt.tight_layout()
-        display.display(plt.gcf())
+        self.fig.canvas.draw()
+        self.fig.show()
+        if self.backend != 'nbAgg':
+            from IPython import display
+            self.display = display
+            self.display.clear_output(wait=True)
+            self.display.display(self.fig)
 
     def update(self, tnow=None):
         self.historian.update(tnow)
-
-        plt = self.plt
-        display = self.display
-
+        if self.historian.tnow > self.twindow:
+            tmin = self.historian.tnow - self.twindow
+            tmax = self.historian.tnow
+            for axis in self.axes:
+                axis.set_xlim(tmin, tmax)
         t = self.historian.fields[0]
-        for n in range(0, len(self.historian.columns)-1):
-            y = self.historian.fields[n+1]
-            self.lines[n].set_data(t,y)
-            ymax = max(y)
-            ymin = min(y)
-            if (ymax > self.axes[n].get_ylim()[1]) or (ymin < self.axes[n].get_ylim()[0]):
-                self.axes[n].set_ylim(ymin-1,ymax+2)
-            if self.historian.tnow > self.axes[n].get_xlim()[1]:
-                self.axes[n].set_xlim(0, 1.4 * self.axes[n].get_xlim()[1])
-        display.clear_output(wait=True)
-        display.display(plt.gcf())
-
+        for axis, fields in zip(self.axes, self.layout):
+            for field in fields:
+                y = self.historian.logdict[field]
+                self.lines[field].set_data(t, y)
+            axis.relim()
+            axis.autoscale_view()
+        self.fig.canvas.draw()
+        if self.backend != 'nbAgg':
+            self.display.clear_output(wait=True)
+            self.display.display(self.fig)

@@ -13,13 +13,17 @@ During development
 After making changes
 ====================
 
-1. Change the version number in ``setup.py``
-2. Check the distribution::
+1. Strip outputs in notebooks.
+
+    npstripout *.ipynb
+	
+2. Change the version number in ``setup.py``
+3. Check the distribution::
 
     python setup.py check
     
-3. Push changes through to the master branch on Github.
-4. Create and push tag for the version number::
+4. Push changes through to the master branch on Github.
+5. Create and push tag for the version number::
 
     git tag vX.Y.Z
     git push --tags
