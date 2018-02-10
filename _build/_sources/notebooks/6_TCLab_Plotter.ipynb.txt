@@ -1,0 +1,96 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# TCLab Plotter\n",
+    "\n",
+    "When operating in a Jupyter Notebook, a `Plotter` can be used together with the `Historian`.  \n",
+    "\n",
+    "    h = Historian(a)\n",
+    "    p = Plotter(h, tfinal)\n",
+    "    \n",
+    "where `a` is a `TCLab` instance as before and the optional parameter `tfinal` provides an initial scaling of the time axes. Each call to `p.update()` will automatically update both the historian and the plot."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "%matplotlib notebook\n",
+    "from tclab import TCLab, clock, Historian, Plotter\n",
+    "\n",
+    "with TCLab() as a:\n",
+    "    h = Historian(a.sources)\n",
+    "    p = Plotter(h, twindow=200)\n",
+    "    for t in clock(200):\n",
+    "        a.Q1(100 if t < 100 else 0)\n",
+    "        p.update(t)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Graphics Testing\n",
+    "\n",
+    "Notebook to test graphics during development."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "%matplotlib notebook\n",
+    "from tclab import setup\n",
+    "from tclab import Historian, Plotter, clock\n",
+    "import time\n",
+    "\n",
+    "tic = time.time()\n",
+    "lab = setup(connected=False, speedup=10)\n",
+    "with lab() as a:\n",
+    "    h = Historian(a.sources)\n",
+    "    p = Plotter(h, 200, layout=(('T1', 'T2'), ('Q1', 'Q2')))\n",
+    "    for t in clock(200):\n",
+    "        a.U1 = 80\n",
+    "        p.update(t)\n",
+    "toc = time.time()\n",
+    "\n",
+    "print(toc-tic, 'seconds')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.6.3"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}
