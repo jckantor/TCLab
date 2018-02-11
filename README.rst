@@ -5,7 +5,6 @@ Master:
 
 .. image:: https://readthedocs.org/projects/tclab/badge/?version=latest
 :target: http://tclab.readthedocs.io/en/latest/?badge=latest
-:alt: Documentation Status
 
 .. image:: https://travis-ci.org/jckantor/TCLab.svg?branch=master
     :target: https://travis-ci.org/jckantor/TCLab
@@ -14,7 +13,6 @@ Development:
 
 .. image:: https://readthedocs.org/projects/tclab/badge/?version=latest
 :target: http://tclab.readthedocs.io/en/latest/?badge=development
-:alt: Documentation Status
 
 .. image:: https://travis-ci.org/jckantor/TCLab.svg?branch=development
     :target: https://travis-ci.org/jckantor/TCLab
