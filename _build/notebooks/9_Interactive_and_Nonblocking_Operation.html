@@ -1,0 +1,971 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Interactive and Non-blocking Operation &mdash; TCLab 0.4.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="TCLab 0.4.0 documentation" href="../index.html"/>
+        <link rel="prev" title="Experiment Class" href="8_Experiment_Class.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> TCLab
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="1_TCLab_Overview.html">TCLab Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="1_TCLab_Overview.html#TCLab-Architecture">TCLab Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_TCLab_Overview.html#Getting-Started">Getting Started</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="1_TCLab_Overview.html#Installation">Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="1_TCLab_Overview.html#Hardware-Setup">Hardware Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="1_TCLab_Overview.html#Checking-Everything-Works">Checking Everything Works</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="1_TCLab_Overview.html#Next-Steps">Next Steps</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="1_TCLab_Overview.html#Course-Web-Sites">Course Web Sites</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="2_Accessing_the_Temperature_Control_Laboratory.html">Accessing the Temperature Control Laboratory</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="2_Accessing_the_Temperature_Control_Laboratory.html#Importing-tclab">Importing <code class="docutils literal"><span class="pre">tclab</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_Accessing_the_Temperature_Control_Laboratory.html#Using-TCLab-with-Python's-with-statement">Using TCLab with Python’s <code class="docutils literal"><span class="pre">with</span></code> statement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_Accessing_the_Temperature_Control_Laboratory.html#Reading-Temperatures">Reading Temperatures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_Accessing_the_Temperature_Control_Laboratory.html#Setting-Heaters">Setting Heaters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_Accessing_the_Temperature_Control_Laboratory.html#Setting-Maximum-Heater-Power">Setting Maximum Heater Power</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_Accessing_the_Temperature_Control_Laboratory.html#tclab-Sampling-Speed"><code class="docutils literal"><span class="pre">tclab</span></code> Sampling Speed</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="2_Accessing_the_Temperature_Control_Laboratory.html#Temperature-Sampling-Speed">Temperature Sampling Speed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="2_Accessing_the_Temperature_Control_Laboratory.html#Heater-Sampling-Speed">Heater Sampling Speed</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="3_Synchronizing with Real Time.html">Synchronizing with Real Time</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="3_Synchronizing with Real Time.html#Simple-use-of-tclab.clock()">Simple use of <code class="docutils literal"><span class="pre">tclab.clock()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="3_Synchronizing with Real Time.html#Optional-Parameters">Optional Parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="3_Synchronizing with Real Time.html#tstep:-Clock-time-step"><code class="docutils literal"><span class="pre">tstep</span></code>: Clock time step</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3_Synchronizing with Real Time.html#tol:-Clock-tolerance"><code class="docutils literal"><span class="pre">tol</span></code>: Clock tolerance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3_Synchronizing with Real Time.html#Fixing-run-time-errors-due-to-loss-of-clock-synchronization.">Fixing run time errors due to loss of clock synchronization.</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="3_Synchronizing with Real Time.html#Using-tclab.clock()-with-TCLab">Using <code class="docutils literal"><span class="pre">tclab.clock()</span></code> with TCLab</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="4_Simulation_of_TCLab_for_Offline_Use.html">Simulation of TCLab for Offline Use</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="4_Simulation_of_TCLab_for_Offline_Use.html#Speedup-Factor-with-setup()">Speedup Factor with <code class="docutils literal"><span class="pre">setup()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="5_TCLab_Historian.html">TCLab <code class="docutils literal"><span class="pre">Historian</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="5_TCLab_Historian.html#Basic-logging">Basic logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5_TCLab_Historian.html#Accessing-the-Data-Log-from-the-Historian">Accessing the Data Log from the Historian</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5_TCLab_Historian.html#Accessing-log-data-using-Pandas">Accessing log data using Pandas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5_TCLab_Historian.html#Specifying-Sources-for-tclab.Historian">Specifying Sources for <code class="docutils literal"><span class="pre">tclab.Historian</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="5_TCLab_Historian.html#Functions-with-multiple-returns">Functions with multiple returns</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="6_TCLab_Plotter.html">TCLab Plotter</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="6_TCLab_Plotter.html#Graphics-Testing">Graphics Testing</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="7_NotebookUI.html">NotebookUI</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="7_NotebookUI.html#Accessing-past-sessions">Accessing past sessions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="8_Experiment_Class.html">Experiment Class</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Interactive and Non-blocking Operation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Experiments-in-Non-blocking-Operation-with-threading-Library">Experiments in Non-blocking Operation with <code class="docutils literal"><span class="pre">threading</span></code> Library</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Run-Class">Run Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Working-with-Asyncio">Working with Asyncio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Working-with-Tornado">Working with Tornado</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Adding-Widgets">Adding Widgets</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">TCLab</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Interactive and Non-blocking Operation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/notebooks/9_Interactive_and_Nonblocking_Operation.ipynb.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput,
+div.nbinput div.prompt,
+div.nbinput div.input_area,
+div.nbinput div[class*=highlight],
+div.nbinput div[class*=highlight] pre,
+div.nboutput,
+div.nbinput div.prompt,
+div.nbinput div.output_area,
+div.nboutput div[class*=highlight],
+div.nboutput div[class*=highlight] pre {
+    background: none;
+    border: none;
+    padding: 0 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* avoid gaps between output lines */
+div.nboutput div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput,
+div.nboutput {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput,
+    div.nboutput {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput div.prompt pre {
+    color: #303F9F;
+}
+
+/* output prompt */
+div.nboutput div.prompt pre {
+    color: #D84315;
+}
+
+/* all prompts */
+div.nbinput div.prompt,
+div.nboutput div.prompt {
+    min-width: 8ex;
+    padding-top: 0.4em;
+    padding-right: 0.4em;
+    text-align: right;
+    flex: 0;
+}
+@media (max-width: 540px) {
+    div.nbinput div.prompt,
+    div.nboutput div.prompt {
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput div.prompt.empty {
+        padding: 0;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput div.prompt pre,
+div.nboutput div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput div.input_area,
+div.nboutput div.output_area {
+    padding: 0.4em;
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput div.input_area,
+    div.nboutput div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput div.input_area {
+    border: 1px solid #cfcfcf;
+    border-radius: 2px;
+    background: #f7f7f7;
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.pngmath center alignment in output cells */
+div.nboutput div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast,
+.nboutput.nblast {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast + .nbinput {
+    margin-top: -19px;
+}
+
+/* nice headers on first paragraph of info/warning boxes */
+.admonition .first {
+    margin: -12px;
+    padding: 6px 12px;
+    margin-bottom: 12px;
+    color: #fff;
+    line-height: 1;
+    display: block;
+}
+.admonition.warning .first {
+    background: #f0b37e;
+}
+.admonition.note .first {
+    background: #6ab0de;
+}
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+</style>
+<div class="section" id="Interactive-and-Non-blocking-Operation">
+<h1>Interactive and Non-blocking Operation<a class="headerlink" href="#Interactive-and-Non-blocking-Operation" title="Permalink to this headline">¶</a></h1>
+<p>The following sections in this notebook demonstrate methods for
+interacting with TCLab, for building non-blocking implementations of a
+control loop, and for various experiments and tests with the package.</p>
+<div class="section" id="Experiments-in-Non-blocking-Operation-with-threading-Library">
+<h2>Experiments in Non-blocking Operation with <code class="docutils literal"><span class="pre">threading</span></code> Library<a class="headerlink" href="#Experiments-in-Non-blocking-Operation-with-threading-Library" title="Permalink to this headline">¶</a></h2>
+<p>The current implementation of</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="k">def</span> <span class="nf">bar</span><span class="p">():</span>
+    <span class="n">clock</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">clock</span><span class="p">(</span><span class="n">tperiod</span><span class="p">):</span>
+    <span class="n">tstart</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">tfinish</span> <span class="o">=</span> <span class="n">tstart</span> <span class="o">+</span> <span class="n">tperiod</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">t</span> <span class="o">+</span> <span class="n">tstart</span> <span class="o">&lt;</span> <span class="n">tfinish</span><span class="p">:</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="k">yield</span> <span class="n">t</span>
+        <span class="n">t</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<span class="k">def</span> <span class="nf">bar</span><span class="p">():</span>
+    <span class="n">clock</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">threading</span><span class="o">,</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+
+<span class="n">next_call</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">k</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="k">def</span> <span class="nf">foo</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">next_call</span><span class="p">,</span> <span class="n">k</span>
+    <span class="k">if</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
+        <span class="n">next_call</span> <span class="o">=</span> <span class="n">next_call</span><span class="o">+</span><span class="mi">1</span>
+        <span class="n">threading</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span> <span class="n">next_call</span> <span class="o">-</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span> <span class="n">foo</span> <span class="p">)</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="s2">&quot;Last Call&quot;</span><span class="p">)</span>
+
+<span class="n">foo</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">tclab</span> <span class="k">import</span> <span class="n">TCLabModel</span><span class="p">,</span>  <span class="n">Historian</span><span class="p">,</span> <span class="n">Plotter</span>
+<span class="kn">import</span> <span class="nn">threading</span><span class="o">,</span> <span class="nn">time</span>
+
+<span class="n">tstep</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">tperiod</span> <span class="o">=</span> <span class="mi">20</span>
+
+<span class="n">tstart</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">tfinish</span> <span class="o">=</span> <span class="n">tstart</span> <span class="o">+</span> <span class="n">tperiod</span>
+<span class="n">tnext</span> <span class="o">=</span> <span class="n">tstart</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">TCLabModel</span><span class="p">()</span>
+<span class="n">h</span> <span class="o">=</span> <span class="n">Historian</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">sources</span><span class="p">)</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">Plotter</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">a</span><span class="o">.</span><span class="n">U1</span> <span class="o">=</span> <span class="mi">100</span>
+
+
+<span class="k">def</span> <span class="nf">tasks</span><span class="p">(</span><span class="n">tnext</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">tnext</span><span class="p">,</span> <span class="n">tfinish</span><span class="p">,</span> <span class="n">tstep</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">tnext</span><span class="o">-</span><span class="n">tstart</span><span class="p">)</span>
+    <span class="n">tnext</span> <span class="o">=</span> <span class="n">tnext</span> <span class="o">+</span> <span class="n">tstep</span>
+    <span class="k">if</span> <span class="n">tnext</span> <span class="o">&lt;=</span> <span class="n">tfinish</span><span class="p">:</span>
+        <span class="n">threading</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="n">tnext</span><span class="o">-</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span> <span class="n">update</span><span class="p">)</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">a</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="n">update</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area highlight-none"><div class="highlight"><pre>
+<span></span>&lt;matplotlib.figure.Figure at 0x10d108ba8&gt;
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-cyan-fg">  File </span><span class="ansi-green-fg">&#34;&lt;ipython-input-3-f49db311273e&gt;&#34;</span><span class="ansi-cyan-fg">, line </span><span class="ansi-green-fg">18</span>
+<span class="ansi-red-fg">    global tnext, tfinish, tstep</span>
+    ^
+<span class="ansi-red-fg">SyntaxError</span><span class="ansi-red-fg">:</span> name &#39;tnext&#39; is parameter and global
+
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+1 2018-02-10 14:08:05.355379
+2 2018-02-10 14:08:06.353722
+3 2018-02-10 14:08:07.353436
+4 2018-02-10 14:08:08.357000
+5 Last Call
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="o">%</span><span class="k">matplotlib</span> notebook
+
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">threading</span> <span class="k">import</span> <span class="n">Timer</span>
+<span class="kn">from</span> <span class="nn">tclab</span> <span class="k">import</span> <span class="n">setup</span><span class="p">,</span> <span class="n">Historian</span><span class="p">,</span> <span class="n">Plotter</span>
+
+<span class="n">lab</span> <span class="o">=</span> <span class="n">setup</span><span class="p">(</span><span class="n">connected</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">speedup</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">lab</span><span class="p">()</span>
+<span class="n">h</span> <span class="o">=</span> <span class="n">Historian</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">sources</span><span class="p">)</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">Plotter</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+
+<span class="n">SP</span> <span class="o">=</span> <span class="mi">40</span>
+
+<span class="n">tstart</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">loop</span><span class="p">():</span>
+    <span class="n">PV</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">T1</span>
+    <span class="n">MV</span> <span class="o">=</span> <span class="mi">100</span> <span class="k">if</span> <span class="n">PV</span> <span class="o">&lt;</span> <span class="n">SP</span> <span class="k">else</span> <span class="mi">0</span>
+    <span class="n">a</span><span class="o">.</span><span class="n">U1</span> <span class="o">=</span> <span class="n">MV</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">tstart</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">100</span><span class="p">):</span>
+    <span class="n">Timer</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">loop</span><span class="p">)</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+<span class="n">Timer</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="n">a</span><span class="o">.</span><span class="n">close</span><span class="p">)</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="n">SP</span> <span class="o">=</span> <span class="mi">20</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">threading</span><span class="o">,</span> <span class="nn">time</span><span class="o">,</span> <span class="nn">datetime</span>
+
+<span class="k">def</span> <span class="nf">loop</span><span class="p">():</span>
+    <span class="k">yield</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
+    <span class="n">threading</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="nb">next</span><span class="p">(</span><span class="n">loop_gen</span><span class="p">))</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+<span class="n">loop_gen</span> <span class="o">=</span> <span class="n">loop</span><span class="p">()</span>
+<span class="nb">next</span><span class="p">(</span><span class="n">loop_gen</span><span class="p">)</span>
+
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Run-Class">
+<h2>Run Class<a class="headerlink" href="#Run-Class" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">threading</span> <span class="k">import</span> <span class="n">Timer</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">tclab</span>
+
+<span class="k">class</span> <span class="nc">Run</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">tfinal</span><span class="p">,</span> <span class="n">tinterval</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lab</span>        <span class="o">=</span> <span class="n">tclab</span><span class="o">.</span><span class="n">TCLab</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tfinal</span>     <span class="o">=</span> <span class="n">tfinal</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tinterval</span>  <span class="o">=</span> <span class="n">tinterval</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">function</span>   <span class="o">=</span> <span class="n">function</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_timer</span>     <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tstart</span>     <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tnow</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tstart</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_running</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Start a new timer, then run the callback.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_running</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lab</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tnow</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_running</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tnow</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">tstart</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tnow</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">tfinal</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_timer</span> <span class="o">=</span> <span class="n">Timer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tinterval</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">tnow</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">tinterval</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_timer</span> <span class="o">=</span> <span class="n">Timer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tinterval</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">tnow</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">tinterval</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_timer</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">is_running</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_running</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_timer</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">is_running</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lab</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="n">SP</span> <span class="o">=</span> <span class="mi">40</span>
+<span class="n">Kp</span> <span class="o">=</span> <span class="mi">15</span>
+
+<span class="k">def</span> <span class="nf">loop</span><span class="p">(</span><span class="n">lab</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+    <span class="n">PV</span> <span class="o">=</span> <span class="n">lab</span><span class="o">.</span><span class="n">T1</span>
+    <span class="n">MV</span> <span class="o">=</span> <span class="n">Kp</span><span class="o">*</span><span class="p">(</span><span class="n">SP</span><span class="o">-</span><span class="n">PV</span><span class="p">)</span>
+    <span class="n">lab</span><span class="o">.</span><span class="n">U1</span> <span class="o">=</span> <span class="n">MV</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\r</span><span class="si">{0:8.2f}</span><span class="s2">   </span><span class="si">{1:6.2f}</span><span class="s2">   </span><span class="si">{2:6.0f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">PV</span><span class="p">,</span><span class="n">MV</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+<span class="n">expt</span> <span class="o">=</span> <span class="n">Run</span><span class="p">(</span><span class="n">loop</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">expt</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="n">expt</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">tclab</span>
+
+<span class="n">SP</span> <span class="o">=</span> <span class="mi">90</span>
+
+<span class="k">def</span> <span class="nf">ControlLoop</span><span class="p">(</span><span class="n">lab</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+    <span class="n">PV</span> <span class="o">=</span> <span class="n">lab</span><span class="o">.</span><span class="n">T1</span>
+    <span class="n">MV</span> <span class="o">=</span> <span class="mi">100</span> <span class="k">if</span> <span class="n">PV</span> <span class="o">&lt;</span> <span class="n">SP</span> <span class="k">else</span> <span class="mi">0</span>
+    <span class="n">lab</span><span class="o">.</span><span class="n">U1</span> <span class="o">=</span> <span class="n">MV</span>
+    <span class="nb">print</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="n">PV</span><span class="p">,</span> <span class="n">MV</span><span class="p">)</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+
+<span class="n">lab</span> <span class="o">=</span> <span class="n">tclab</span><span class="o">.</span><span class="n">TCLab</span><span class="p">()</span>
+<span class="n">h</span> <span class="o">=</span> <span class="n">tclab</span><span class="o">.</span><span class="n">Historian</span><span class="p">(</span><span class="n">lab</span><span class="o">.</span><span class="n">sources</span><span class="p">,</span> <span class="n">dbfile</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">tclab</span><span class="o">.</span><span class="n">Plotter</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+<span class="n">expt</span> <span class="o">=</span> <span class="n">PeriodicCallback</span><span class="p">(</span><span class="n">lab</span><span class="p">,</span> <span class="n">ControlLoop</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Working-with-Asyncio">
+<h2>Working with Asyncio<a class="headerlink" href="#Working-with-Asyncio" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">slow_op</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Slow Op:&quot;</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait</span><span class="p">([</span><span class="n">slow_op</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="n">slow_op</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="n">slow_op</span><span class="p">(</span><span class="mi">1</span><span class="p">)])</span>
+
+<span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+<span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Working-with-Tornado">
+<h2>Working with Tornado<a class="headerlink" href="#Working-with-Tornado" title="Permalink to this headline">¶</a></h2>
+<p>This is an experiment to build a non-blocking event loop for TCLab. The
+main idea is to implement the main event loop as a generator, then use
+Tornando’s non-blocking timer to send periodic messages to the
+generator.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="kn">import</span> <span class="nn">tornado</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">tclab</span> <span class="k">import</span> <span class="n">setup</span><span class="p">,</span> <span class="n">Historian</span><span class="p">,</span> <span class="n">Plotter</span>
+
+<span class="n">SP</span> <span class="o">=</span> <span class="mi">40</span>
+<span class="n">Kp</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="n">lab</span><span class="p">):</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">Historian</span><span class="p">(</span><span class="n">lab</span><span class="o">.</span><span class="n">sources</span><span class="p">)</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">Plotter</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="mi">120</span><span class="p">)</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">PV</span> <span class="o">=</span> <span class="n">lab</span><span class="o">.</span><span class="n">T1</span>
+        <span class="n">MV</span> <span class="o">=</span> <span class="n">Kp</span><span class="o">*</span><span class="p">(</span><span class="n">SP</span><span class="o">-</span><span class="n">PV</span><span class="p">)</span>
+        <span class="n">lab</span><span class="o">.</span><span class="n">U1</span> <span class="o">=</span> <span class="n">MV</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="k">yield</span>
+        <span class="n">t</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<span class="n">lab</span> <span class="o">=</span> <span class="n">setup</span><span class="p">(</span><span class="n">connected</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">lab</span><span class="p">()</span>
+<span class="n">update_gen</span> <span class="o">=</span> <span class="n">update</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="n">timer</span> <span class="o">=</span> <span class="n">tornado</span><span class="o">.</span><span class="n">ioloop</span><span class="o">.</span><span class="n">PeriodicCallback</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="nb">next</span><span class="p">(</span><span class="n">update_gen</span><span class="p">),</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="n">timer</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="n">timer</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+<span class="n">a</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="Adding-Widgets">
+<h3>Adding Widgets<a class="headerlink" href="#Adding-Widgets" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">tclab.clock</span></code> is based on a generator, which maintains a single thread
+of execution. One consequence is that there is no interaction with
+Jupyter widgets.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">ipywidgets</span> <span class="k">import</span> <span class="n">interactive</span>
+<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="k">import</span> <span class="n">display</span>
+<span class="kn">from</span> <span class="nn">tclab</span> <span class="k">import</span> <span class="n">clock</span>
+
+<span class="n">Kp</span> <span class="o">=</span> <span class="n">interactive</span><span class="p">(</span><span class="k">lambda</span> <span class="n">Kp</span><span class="p">:</span> <span class="n">Kp</span><span class="p">,</span> <span class="n">Kp</span> <span class="o">=</span> <span class="mi">12</span><span class="p">)</span>
+<span class="n">display</span><span class="p">(</span><span class="n">Kp</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">clock</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">Kp</span><span class="o">.</span><span class="n">result</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">tornado</span>
+<span class="kn">from</span> <span class="nn">ipywidgets</span> <span class="k">import</span> <span class="n">interactive</span>
+<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="k">import</span> <span class="n">display</span>
+<span class="kn">from</span> <span class="nn">tclab</span> <span class="k">import</span> <span class="n">TCLab</span><span class="p">,</span> <span class="n">Historian</span><span class="p">,</span> <span class="n">Plotter</span>
+
+<span class="n">Kp</span> <span class="o">=</span> <span class="n">interactive</span><span class="p">(</span><span class="k">lambda</span> <span class="n">Kp</span><span class="p">:</span> <span class="n">Kp</span><span class="p">,</span> <span class="n">Kp</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">20</span><span class="p">))</span>
+<span class="n">SP</span> <span class="o">=</span> <span class="n">interactive</span><span class="p">(</span><span class="k">lambda</span> <span class="n">SP</span><span class="p">:</span> <span class="n">SP</span><span class="p">,</span> <span class="n">SP</span> <span class="o">=</span> <span class="p">(</span><span class="mi">25</span><span class="p">,</span><span class="mi">55</span><span class="p">))</span>
+<span class="n">SP</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="s1">&#39;500px&#39;</span>
+
+<span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="n">tperiod</span><span class="p">):</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">with</span> <span class="n">TCLab</span><span class="p">()</span> <span class="k">as</span> <span class="n">a</span><span class="p">:</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">Historian</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">sources</span><span class="p">)</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">Plotter</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">t</span> <span class="o">&lt;=</span> <span class="n">tperiod</span><span class="p">:</span>
+            <span class="k">yield</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+            <span class="n">display</span><span class="p">(</span><span class="n">Kp</span><span class="p">)</span>
+            <span class="n">display</span><span class="p">(</span><span class="n">SP</span><span class="p">)</span>
+            <span class="n">a</span><span class="o">.</span><span class="n">U1</span> <span class="o">=</span> <span class="n">SP</span><span class="o">.</span><span class="n">result</span>
+            <span class="n">t</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">timer</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+<span class="n">update_gen</span> <span class="o">=</span> <span class="n">update</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">timer</span> <span class="o">=</span> <span class="n">tornado</span><span class="o">.</span><span class="n">ioloop</span><span class="o">.</span><span class="n">PeriodicCallback</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="nb">next</span><span class="p">(</span><span class="n">update_gen</span><span class="p">),</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="n">timer</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">ipywidgets</span> <span class="k">import</span> <span class="n">interactive</span>
+<span class="kn">from</span> <span class="nn">tclab</span> <span class="k">import</span> <span class="n">setup</span><span class="p">,</span> <span class="n">clock</span><span class="p">,</span> <span class="n">Historian</span><span class="p">,</span> <span class="n">Plotter</span>
+
+<span class="k">def</span> <span class="nf">proportional</span><span class="p">(</span><span class="n">Kp</span><span class="p">):</span>
+    <span class="n">MV</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">PV</span><span class="p">,</span> <span class="n">SP</span> <span class="o">=</span> <span class="k">yield</span> <span class="n">MV</span>
+        <span class="n">MV</span> <span class="o">=</span> <span class="n">Kp</span><span class="o">*</span><span class="p">(</span><span class="n">SP</span><span class="o">-</span><span class="n">PV</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">sim</span><span class="p">(</span><span class="n">Kp</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">SP</span><span class="o">=</span><span class="mi">40</span><span class="p">):</span>
+    <span class="n">controller</span> <span class="o">=</span> <span class="n">proportional</span><span class="p">(</span><span class="n">Kp</span><span class="p">)</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="n">lab</span> <span class="o">=</span> <span class="n">setup</span><span class="p">(</span><span class="n">connected</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">speedup</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">lab</span><span class="p">()</span> <span class="k">as</span> <span class="n">a</span><span class="p">:</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">Historian</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">sources</span><span class="p">)</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">Plotter</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="mi">200</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">clock</span><span class="p">(</span><span class="mi">200</span><span class="p">):</span>
+            <span class="n">PV</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">T1</span>
+            <span class="n">MV</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">send</span><span class="p">([</span><span class="n">PV</span><span class="p">,</span><span class="n">SP</span><span class="p">])</span>
+            <span class="n">a</span><span class="o">.</span><span class="n">U1</span> <span class="o">=</span> <span class="n">MV</span>
+            <span class="n">h</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+
+<span class="n">interactive_plot</span> <span class="o">=</span> <span class="n">interactive</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">Kp</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">SP</span><span class="o">=</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span><span class="mi">60</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="n">continuous_update</span><span class="o">=</span><span class="kc">False</span><span class="p">);</span>
+<span class="n">output</span> <span class="o">=</span> <span class="n">interactive_plot</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">output</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="s1">&#39;500px&#39;</span>
+<span class="n">interactive_plot</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="n">timer</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="8_Experiment_Class.html" class="btn btn-neutral" title="Experiment Class" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jeffrey Kantor and Carl Sandrock.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
