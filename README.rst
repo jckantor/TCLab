@@ -1,6 +1,12 @@
 TCLab: Temperature Control Laboratory
 =====================================
 
+.. image:: https://travis-ci.org/jckantor/TCLab.svg?branch=master
+    :target: https://travis-ci.org/jckantor/TCLab
+
+.. image:: https://travis-ci.org/jckantor/TCLab.svg?branch=development
+    :target: https://travis-ci.org/jckantor/TCLab
+
 ``TCLab`` provides a Python interface to the
 `Arduino Temperature Control Lab <http://apmonitor.com/pdc/index.php/Main/ArduinoTemperatureControl>`_
 over a USB interface. ``TCLab`` is implemented as a Python class within
