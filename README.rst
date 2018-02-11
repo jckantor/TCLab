@@ -1,6 +1,16 @@
 TCLab: Temperature Control Laboratory
 =====================================
 
+Master: 
+
+.. image:: https://travis-ci.org/jckantor/TCLab.svg?branch=master
+    :target: https://travis-ci.org/jckantor/TCLab
+
+Development:
+
+.. image:: https://travis-ci.org/jckantor/TCLab.svg?branch=development
+    :target: https://travis-ci.org/jckantor/TCLab
+
 ``TCLab`` provides a Python interface to the
 `Arduino Temperature Control Lab <http://apmonitor.com/pdc/index.php/Main/ArduinoTemperatureControl>`_
 over a USB interface. ``TCLab`` is implemented as a Python class within
@@ -102,3 +112,4 @@ examples are available at the following course websites.
 * `Arduino temperature control lab page <http://apmonitor.com/pdc/index.php/Main/ArduinoTemperatureControl>`__ on the BYU Process Dynamics and Control course website.
 * `CBE 30338 <http://jckantor.github.io/CBE30338/>`__ for the Notre Dame
   Chemical Process Control course website.
+* `Dynamics and Control <https://github.com/alchemyst/Dynamics-and-Control>`__ for notebooks developed at the University of Pretoria.
