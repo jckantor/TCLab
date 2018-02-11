@@ -1,9 +1,9 @@
 language: python
 python:
-- "3.6"
+  - "3.6"
 env:
-- TRAVIS=True
+  - TRAVIS=True
 install:
-python setup.py install
+  - python setup.py install
 script:
-- pytest
+  - pytest
