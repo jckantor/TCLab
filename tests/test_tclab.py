@@ -1,27 +1,36 @@
 import pytest
 
 from tclab import TCLabModel, TCLab
+import os
 
+TRAVIS = "TRAVIS" in os.environ
+skip_on_travis = pytest.mark.skipif(TRAVIS,
+                                    reason="Can't run this test on Travis")
 
-@pytest.fixture(scope="module", params=[TCLab, TCLabModel])
+def test_travis():
+    assert "TRAVIS" in os.environ
+
+@pytest.fixture(scope="module",
+                params=[TCLab,
+                        TCLabModel])
 def lab(request):
+    if TRAVIS and request.param is TCLab:
+        pytest.skip("Can't use real TCLab on Travis")
     a = request.param()
     yield a
     a.close()
 
 
-def test_constructor():
-    a = TCLab()
-    a.close()
-
-
+@skip_on_travis
 def test_constructor_port():
         """Raise RuntimeError for an unrecognized port."""
+        print("TRAVIS" in os.environ)
         with pytest.raises(RuntimeError):
             with TCLab(port='nonsense') as a:
                 pass
 
 
+@skip_on_travis
 def test_context():
     with TCLab() as _:
         pass
