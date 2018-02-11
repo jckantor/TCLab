@@ -7,8 +7,6 @@ TRAVIS = "TRAVIS" in os.environ
 skip_on_travis = pytest.mark.skipif(TRAVIS,
                                     reason="Can't run this test on Travis")
 
-def test_travis():
-    assert "TRAVIS" in os.environ
 
 @pytest.fixture(scope="module",
                 params=[TCLab,
