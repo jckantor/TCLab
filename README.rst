@@ -1,9 +1,11 @@
 TCLab: Temperature Control Laboratory
 =====================================
 
+Master: 
 .. image:: https://travis-ci.org/jckantor/TCLab.svg?branch=master
     :target: https://travis-ci.org/jckantor/TCLab
 
+Development:
 .. image:: https://travis-ci.org/jckantor/TCLab.svg?branch=development
     :target: https://travis-ci.org/jckantor/TCLab
 
