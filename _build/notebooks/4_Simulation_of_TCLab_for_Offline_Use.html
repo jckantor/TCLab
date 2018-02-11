@@ -1,0 +1,619 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Simulation of TCLab for Offline Use &mdash; TCLab 0.4.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="TCLab 0.4.0 documentation" href="../index.html"/>
+        <link rel="next" title="TCLab Historian" href="5_TCLab_Historian.html"/>
+        <link rel="prev" title="Synchronizing with Real Time" href="3_Synchronizing with Real Time.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> TCLab
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="1_TCLab_Overview.html">TCLab Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="1_TCLab_Overview.html#TCLab-Architecture">TCLab Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_TCLab_Overview.html#Getting-Started">Getting Started</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="1_TCLab_Overview.html#Installation">Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="1_TCLab_Overview.html#Hardware-Setup">Hardware Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="1_TCLab_Overview.html#Checking-Everything-Works">Checking Everything Works</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="1_TCLab_Overview.html#Next-Steps">Next Steps</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="1_TCLab_Overview.html#Course-Web-Sites">Course Web Sites</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="2_Accessing_the_Temperature_Control_Laboratory.html">Accessing the Temperature Control Laboratory</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="2_Accessing_the_Temperature_Control_Laboratory.html#Importing-tclab">Importing <code class="docutils literal"><span class="pre">tclab</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_Accessing_the_Temperature_Control_Laboratory.html#Using-TCLab-with-Python's-with-statement">Using TCLab with Python’s <code class="docutils literal"><span class="pre">with</span></code> statement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_Accessing_the_Temperature_Control_Laboratory.html#Reading-Temperatures">Reading Temperatures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_Accessing_the_Temperature_Control_Laboratory.html#Setting-Heaters">Setting Heaters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_Accessing_the_Temperature_Control_Laboratory.html#Setting-Maximum-Heater-Power">Setting Maximum Heater Power</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_Accessing_the_Temperature_Control_Laboratory.html#tclab-Sampling-Speed"><code class="docutils literal"><span class="pre">tclab</span></code> Sampling Speed</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="2_Accessing_the_Temperature_Control_Laboratory.html#Temperature-Sampling-Speed">Temperature Sampling Speed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="2_Accessing_the_Temperature_Control_Laboratory.html#Heater-Sampling-Speed">Heater Sampling Speed</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="3_Synchronizing with Real Time.html">Synchronizing with Real Time</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="3_Synchronizing with Real Time.html#Simple-use-of-tclab.clock()">Simple use of <code class="docutils literal"><span class="pre">tclab.clock()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="3_Synchronizing with Real Time.html#Optional-Parameters">Optional Parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="3_Synchronizing with Real Time.html#tstep:-Clock-time-step"><code class="docutils literal"><span class="pre">tstep</span></code>: Clock time step</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3_Synchronizing with Real Time.html#tol:-Clock-tolerance"><code class="docutils literal"><span class="pre">tol</span></code>: Clock tolerance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3_Synchronizing with Real Time.html#Fixing-run-time-errors-due-to-loss-of-clock-synchronization.">Fixing run time errors due to loss of clock synchronization.</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="3_Synchronizing with Real Time.html#Using-tclab.clock()-with-TCLab">Using <code class="docutils literal"><span class="pre">tclab.clock()</span></code> with TCLab</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Simulation of TCLab for Offline Use</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Speedup-Factor-with-setup()">Speedup Factor with <code class="docutils literal"><span class="pre">setup()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="5_TCLab_Historian.html">TCLab <code class="docutils literal"><span class="pre">Historian</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="5_TCLab_Historian.html#Basic-logging">Basic logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5_TCLab_Historian.html#Accessing-the-Data-Log-from-the-Historian">Accessing the Data Log from the Historian</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5_TCLab_Historian.html#Accessing-log-data-using-Pandas">Accessing log data using Pandas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5_TCLab_Historian.html#Specifying-Sources-for-tclab.Historian">Specifying Sources for <code class="docutils literal"><span class="pre">tclab.Historian</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="5_TCLab_Historian.html#Functions-with-multiple-returns">Functions with multiple returns</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="6_TCLab_Plotter.html">TCLab Plotter</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="6_TCLab_Plotter.html#Graphics-Testing">Graphics Testing</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="7_NotebookUI.html">NotebookUI</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="7_NotebookUI.html#Accessing-past-sessions">Accessing past sessions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="8_Experiment_Class.html">Experiment Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="9_Interactive_and_Nonblocking_Operation.html">Interactive and Non-blocking Operation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="9_Interactive_and_Nonblocking_Operation.html#Experiments-in-Non-blocking-Operation-with-threading-Library">Experiments in Non-blocking Operation with <code class="docutils literal"><span class="pre">threading</span></code> Library</a></li>
+<li class="toctree-l2"><a class="reference internal" href="9_Interactive_and_Nonblocking_Operation.html#Run-Class">Run Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="9_Interactive_and_Nonblocking_Operation.html#Working-with-Asyncio">Working with Asyncio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="9_Interactive_and_Nonblocking_Operation.html#Working-with-Tornado">Working with Tornado</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="9_Interactive_and_Nonblocking_Operation.html#Adding-Widgets">Adding Widgets</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">TCLab</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Simulation of TCLab for Offline Use</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/notebooks/4_Simulation_of_TCLab_for_Offline_Use.ipynb.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput,
+div.nbinput div.prompt,
+div.nbinput div.input_area,
+div.nbinput div[class*=highlight],
+div.nbinput div[class*=highlight] pre,
+div.nboutput,
+div.nbinput div.prompt,
+div.nbinput div.output_area,
+div.nboutput div[class*=highlight],
+div.nboutput div[class*=highlight] pre {
+    background: none;
+    border: none;
+    padding: 0 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* avoid gaps between output lines */
+div.nboutput div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput,
+div.nboutput {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput,
+    div.nboutput {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput div.prompt pre {
+    color: #303F9F;
+}
+
+/* output prompt */
+div.nboutput div.prompt pre {
+    color: #D84315;
+}
+
+/* all prompts */
+div.nbinput div.prompt,
+div.nboutput div.prompt {
+    min-width: 8ex;
+    padding-top: 0.4em;
+    padding-right: 0.4em;
+    text-align: right;
+    flex: 0;
+}
+@media (max-width: 540px) {
+    div.nbinput div.prompt,
+    div.nboutput div.prompt {
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput div.prompt.empty {
+        padding: 0;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput div.prompt pre,
+div.nboutput div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput div.input_area,
+div.nboutput div.output_area {
+    padding: 0.4em;
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput div.input_area,
+    div.nboutput div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput div.input_area {
+    border: 1px solid #cfcfcf;
+    border-radius: 2px;
+    background: #f7f7f7;
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.pngmath center alignment in output cells */
+div.nboutput div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast,
+.nboutput.nblast {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast + .nbinput {
+    margin-top: -19px;
+}
+
+/* nice headers on first paragraph of info/warning boxes */
+.admonition .first {
+    margin: -12px;
+    padding: 6px 12px;
+    margin-bottom: 12px;
+    color: #fff;
+    line-height: 1;
+    display: block;
+}
+.admonition.warning .first {
+    background: #f0b37e;
+}
+.admonition.note .first {
+    background: #6ab0de;
+}
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+</style>
+<div class="section" id="Simulation-of-TCLab-for-Offline-Use">
+<h1>Simulation of TCLab for Offline Use<a class="headerlink" href="#Simulation-of-TCLab-for-Offline-Use" title="Permalink to this headline">¶</a></h1>
+<p><code class="docutils literal"><span class="pre">TCLabModel</span></code> replaces <code class="docutils literal"><span class="pre">TCLab</span></code> for occasions where the TCLab hardware
+might not be available. To use, include the import</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tclab</span> <span class="k">import</span> <span class="n">TCLabModel</span> <span class="k">as</span> <span class="n">TCLab</span>
+</pre></div>
+</div>
+<p>The rest of your code will work without change. Be advised the
+underlying model used to approximate the behavior of the Temperature
+Control Laboratory is an approximation to the dynamics of the actual
+hardware.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">tclab</span> <span class="k">import</span> <span class="n">TCLabModel</span> <span class="k">as</span> <span class="n">TCLab</span>
+
+<span class="k">with</span> <span class="n">TCLab</span><span class="p">()</span> <span class="k">as</span> <span class="n">a</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Temperature 1: </span><span class="si">{0:0.2f}</span><span class="s2"> °C&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">T1</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Temperature 2: </span><span class="si">{0:0.2f}</span><span class="s2"> °C&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">T2</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<p>As an additional example.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="kn">from</span> <span class="nn">tclab</span> <span class="k">import</span> <span class="n">TCLabModel</span> <span class="k">as</span> <span class="n">TCLab</span>
+<span class="kn">from</span> <span class="nn">tclab</span> <span class="k">import</span> <span class="n">clock</span><span class="p">,</span> <span class="n">Historian</span><span class="p">,</span> <span class="n">Plotter</span>
+
+<span class="k">with</span> <span class="n">TCLab</span><span class="p">()</span> <span class="k">as</span> <span class="n">a</span><span class="p">:</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">Historian</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">sources</span><span class="p">)</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">Plotter</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">twindow</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">clock</span><span class="p">(</span><span class="mi">200</span><span class="p">):</span>
+        <span class="n">a</span><span class="o">.</span><span class="n">Q1</span><span class="p">(</span><span class="mi">100</span> <span class="k">if</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="mi">100</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_4_Simulation_of_TCLab_for_Offline_Use_3_0.png" src="../_images/notebooks_4_Simulation_of_TCLab_for_Offline_Use_3_0.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+TCLab Model disconnected successfully.
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_4_Simulation_of_TCLab_for_Offline_Use_3_2.png" src="../_images/notebooks_4_Simulation_of_TCLab_for_Offline_Use_3_2.png" />
+</div>
+</div>
+<div class="section" id="Speedup-Factor-with-setup()">
+<h2>Speedup Factor with <code class="docutils literal"><span class="pre">setup()</span></code><a class="headerlink" href="#Speedup-Factor-with-setup()" title="Permalink to this headline">¶</a></h2>
+<p>The setup function provides control over the use of the TCLab hardware
+or model. If using a model, an option to run at a multiple of real-time.</p>
+<p>A speedup of 10 or greater causes the simulation to run as fast as
+possible.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="kn">from</span> <span class="nn">tclab</span> <span class="k">import</span> <span class="n">clock</span><span class="p">,</span> <span class="n">Historian</span><span class="p">,</span> <span class="n">Plotter</span><span class="p">,</span> <span class="n">setup</span>
+
+<span class="n">TCLab</span> <span class="o">=</span> <span class="n">setup</span><span class="p">(</span><span class="n">connected</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">speedup</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">TCLab</span><span class="p">()</span> <span class="k">as</span> <span class="n">a</span><span class="p">:</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">Historian</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">sources</span><span class="p">)</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">Plotter</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">twindow</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">clock</span><span class="p">(</span><span class="mi">200</span><span class="p">):</span>
+        <span class="n">a</span><span class="o">.</span><span class="n">Q1</span><span class="p">(</span><span class="mi">100</span> <span class="k">if</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="mi">100</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">h</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_4_Simulation_of_TCLab_for_Offline_Use_5_0.png" src="../_images/notebooks_4_Simulation_of_TCLab_for_Offline_Use_5_0.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+TCLab Model disconnected successfully.
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_4_Simulation_of_TCLab_for_Offline_Use_5_2.png" src="../_images/notebooks_4_Simulation_of_TCLab_for_Offline_Use_5_2.png" />
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="5_TCLab_Historian.html" class="btn btn-neutral float-right" title="TCLab Historian" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="3_Synchronizing with Real Time.html" class="btn btn-neutral" title="Synchronizing with Real Time" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jeffrey Kantor and Carl Sandrock.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
