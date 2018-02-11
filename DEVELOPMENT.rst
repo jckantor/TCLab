@@ -11,7 +11,7 @@ During development
 
 
 After making changes
-====================
+--------------------
 
 1. Update documentation::
 
@@ -30,7 +30,7 @@ After making changes
 
 
 Uploading to PyPI
-=================
+-----------------
 
 1. Build the distribution::
 
