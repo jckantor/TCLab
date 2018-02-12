@@ -87,13 +87,15 @@ Checking that everything works
 Execute the following code ::
 
     import tclab
-    tclab.TCLab().T1
+    with tclab.TCLab() as lab:
+        print(lab.T1)
 
 If everything has worked, you should see the following output message ::
 
     Connecting to TCLab
     TCLab Firmware Version 1.2.1 on NHduino connected to port XXXX
     21.54
+    TCLab disconnected successfully.
 
 The number returned is the temperature of sensor T1 in °C.
 
