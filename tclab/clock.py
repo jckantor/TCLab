@@ -14,9 +14,11 @@ def time():
     """Returns current clock time."""
     return tnow
 
+
 def setnow(t):
     global tnow
     tnow = t
+
 
 def clock(tperiod, tstep=1, tol=0.25):
     """Generator providing time values in sync with real time clock.
@@ -36,24 +38,16 @@ def clock(tperiod, tstep=1, tol=0.25):
     """
     global tnow
     setnow(0)
-    start_time = SPEEDUP * realtime.time()
-    fuzz = 0.003
+    tstart = realtime.time()
+    tfuzz = 0.003
     k = 0
     while tnow <= tperiod - tstep + tol:
         yield round(tnow, 1)
         k += 1
         if SPEEDUP < 10:
-            tsleep = k * tstep\
-                     - (SPEEDUP * realtime.time() - start_time)\
-                     - SPEEDUP * fuzz
-            gcold = gc.isenabled()
-            gc.disable()
-            try:
-                realtime.sleep(max(0, tsleep/SPEEDUP))
-            finally:
-                if gcold:
-                    gc.enable()
-            setnow(SPEEDUP * realtime.time() - start_time)
+            tsleep = k * tstep - SPEEDUP * (realtime.time() - tstart - tfuzz)
+            realtime.sleep(max(0, tsleep/SPEEDUP))
+            setnow(SPEEDUP * (realtime.time() - tstart))
             if abs(tnow - k * tstep) > tol:
                 raise RuntimeError("TCLab clock lost synchronization.")
         else:
