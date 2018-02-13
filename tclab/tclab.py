@@ -257,22 +257,18 @@ class TCLabModel(object):
         self.update()
         return (self._T1 + random.normalvariate(0, 0.2),
                 self._T2 + random.normalvariate(0, 0.2),
-                self._Q1, self._Q2)
+                self._Q1,
+                self._Q2)
 
     # Define properties for Q1 and Q2
     U1 = property(fget=Q1, fset=Q1, doc="Heater 1 value")
     U2 = property(fget=Q2, fset=Q2, doc="Heater 2 value")
 
     def update(self):
-        # Time updates
         self.tnow = time() - self.tstart
-        trequired = self.tnow - self.tlast
-        self.tlast = self.tnow
+        fullsteps, remainder = divmod(self.tnow - self.tlast, self.maxstep)
 
-        fullsteps, remainder = divmod(trequired, self.maxstep)
-        steps = [self.maxstep]*int(fullsteps) + [remainder]
-
-        for dt in steps:
+        for dt in [self.maxstep]*int(fullsteps) + [remainder]:
             DeltaTaH1 = self.Ta - self._H1
             DeltaTaH2 = self.Ta - self._H2
             DeltaT12 = self._H1 - self._H2
@@ -285,3 +281,5 @@ class TCLabModel(object):
             self._H2 += dt * dH2
             self._T1 += dt * dT1
             self._T2 += dt * dT2
+
+        self.tlast = self.tnow
