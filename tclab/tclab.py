@@ -3,6 +3,8 @@
 
 from __future__ import print_function
 from .clock import time
+from time import sleep
+from .clock import setup as clocksetup
 import serial
 from serial.tools import list_ports
 import random
@@ -41,6 +43,7 @@ class TCLab(object):
         port = comport[0]
         for baud in [115200, 9600]:
             self.sp = serial.Serial(port=port, baudrate=baud, timeout=2)
+            sleep(2)
             self.sp.readline().decode('UTF-8')
             self.sp.write(('VER' + '\r\n').encode())
             self.version = self.sp.readline().decode('UTF-8').replace('\r\n', '')
@@ -55,6 +58,7 @@ class TCLab(object):
         self._P2 = 100.0
         self.Q1(0)
         self.Q2(0)
+        clocksetup(speedup=1)
         self.tstart = time()
         self.sources = [('T1', self.scan),
                         ('T2', None),
