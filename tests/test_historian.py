@@ -16,14 +16,18 @@ def test_logging():
     h.update(1)
     a = 1
     h.update(2)
+    b = 1
+    h.update(3)
 
     assert h.logdict['a'][-1] == 1
 
     log = h.log
 
-    assert len(log) == 2
+    assert len(log) == 3
 
     assert h.at(1, ['a']) == [0.5]
+
+    assert h.after(2) == [[2, 3], [1, 1], [0, 1]]
 
 
 def test_logging_list():

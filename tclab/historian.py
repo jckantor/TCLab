@@ -143,12 +143,27 @@ class Historian(object):
     def log(self):
         return list(zip(*[self.logdict[c] for c in self.columns]))
 
-    def at(self, t, columns=None):
-        """ Return the values of columns at or just before a certain time"""
+    def timeindex(self, t):
+        return max(bisect.bisect(self.t, t) - 1, 0)
+
+    def timeslice(self, tstart=0, tend=None, columns=None):
+        start = self.timeindex(tstart)
+        if tend is None:
+            stop = len(self.t) + 1
+        # Ensure that we always return at least one time's value
+        if tend == tstart:
+            stop = start + 1
         if columns is None:
             columns = self.columns
-        i = bisect.bisect(self.t, t) - 1
-        return [self.logdict[c][i] for c in columns]
+        return [self.logdict[c][start:stop] for c in columns]
+
+    def at(self, t, columns=None):
+        """ Return the values of columns at or just before a certain time"""
+        return [c[0] for c in self.timeslice(t, t, columns)]
+
+    def after(self, t, columns=None):
+        """ Return the values of columns after or just before a certain time"""
+        return self.timeslice(t, columns=columns)
 
     def new_session(self):
         if self.db is None:
@@ -233,15 +248,17 @@ class Plotter:
 
     def update(self, tnow=None):
         self.historian.update(tnow)
+        tmin = self.historian.tnow - self.twindow
+        tmax = self.historian.tnow
         if self.historian.tnow > self.twindow:
-            tmin = self.historian.tnow - self.twindow
-            tmax = self.historian.tnow
             for axis in self.axes:
                 axis.set_xlim(tmin, tmax)
-        t = self.historian.fields[0]
+        data = self.historian.after(tmin)
+        datadict = dict(zip(self.historian.columns, data))
+        t = datadict['Time']
         for axis, fields in zip(self.axes, self.layout):
             for field in fields:
-                y = self.historian.logdict[field]
+                y = datadict[field]
                 self.lines[field].set_data(t, y)
             axis.relim()
             axis.autoscale_view()
