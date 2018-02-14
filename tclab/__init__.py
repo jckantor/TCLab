@@ -1,5 +1,5 @@
 from .tclab import TCLab, TCLabModel
-from .clock import clock, time
+from .clock import clock, time, setnow
 from .historian import Historian, Plotter
 from .experiment import Experiment, runexperiment
 
