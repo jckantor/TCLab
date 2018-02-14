@@ -6,15 +6,19 @@ Master:
 .. image:: https://travis-ci.org/jckantor/TCLab.svg?branch=master
     :target: https://travis-ci.org/jckantor/TCLab
 
+.. image:: https://readthedocs.org/projects/tclab/badge/?version=latest
+    :target: http://tclab.readthedocs.io/en/latest/?badge=latest
+
 Development:
 
 .. image:: https://travis-ci.org/jckantor/TCLab.svg?branch=development
     :target: https://travis-ci.org/jckantor/TCLab
 
 ``TCLab`` provides a Python interface to the
-`Arduino Temperature Control Lab <http://apmonitor.com/pdc/index.php/Main/ArduinoTemperatureControl>`_
-over a USB interface. ``TCLab`` is implemented as a Python class within
-the ``tclab`` package that also includes:
+`Temperature Control Lab <http://apmonitor.com/pdc/index.php/Main/ArduinoTemperatureControl>`_
+implemented on an Arduino microcontroller over a USB interface.
+``TCLab`` is implemented as a Python class within
+the ``tclab`` package.  The ``tclab`` package also includes:
 
 * ``clock`` A Python generator for soft real-time implementation of
   process control algorithms.
@@ -26,7 +30,7 @@ the ``tclab`` package that also includes:
   for off-line and faster-than-realtime simulation of process control
   experiments. No hardware needs to be attached to use ``TCLabModel``.
 
-The necessary Arduino firmware for device operation is available at the
+The companion Arduino firmware for device operation is available at the
 `TCLab-Sketch repository <https://github.com/jckantor/TCLab-sketch>`_.
 
 The `Arduino Temperature Control Lab <http://apmonitor.com/pdc/index.php/Main/ArduinoTemperatureControl>`_
@@ -102,13 +106,14 @@ The number returned is the temperature of sensor T1 in °C.
 Next Steps
 ----------
 
-The notebook directory provides examples on how to use the TCLab module
-and which provides `documentation <_build/index.html>`_.
+The notebook directory provides examples on how to use the TCLab module.
+The latest documentation is available at
+`Read the Docs <http://tclab.readthedocs.io/en/latest/index.htmll>`_.
 
 Course Websites
 ---------------
 
-More information, instructional videos, and Jupyter notebook
+Additional information, instructional videos, and Jupyter notebook
 examples are available at the following course websites.
 
 * `Arduino temperature control lab page <http://apmonitor.com/pdc/index.php/Main/ArduinoTemperatureControl>`__ on the BYU Process Dynamics and Control course website.
