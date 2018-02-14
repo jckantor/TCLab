@@ -108,7 +108,7 @@ Next Steps
 
 The notebook directory provides examples on how to use the TCLab module.
 The latest documentation is available at
-`Read the Docs <http://tclab.readthedocs.io/en/latest/index.htmll>`_.
+`Read the Docs <http://tclab.readthedocs.io/en/latest/index.html>`_.
 
 Course Websites
 ---------------
