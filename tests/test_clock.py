@@ -21,12 +21,6 @@ def test_tolerance():
     assert t == 5.0
 
 
-def test_error():
-    with pytest.raises(RuntimeError):
-        for _ in clock(2, tol=0.2):
-            time.sleep(1.2)
-
-
 def test_sync():
     for t in clock(5, 1, tol=0.25):
         if 0.5 < t < 2.5:

@@ -1,7 +1,7 @@
 from .tclab import TCLab, TCLabModel
-from .clock import clock, time, setnow
 from .historian import Historian, Plotter
 from .experiment import Experiment, runexperiment
+from .scaletime import clock, Scaletime
 
 
 def setup(connected=True, speedup=1):
