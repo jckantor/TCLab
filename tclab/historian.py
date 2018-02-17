@@ -222,6 +222,7 @@ class Plotter:
         line_options = {'where': 'post', 'lw': 2, 'alpha': 0.8}
         self.lines = {}
         self.fig, self.axes = plt.subplots(len(layout), 1, figsize=(8, 6),
+                                           sharex=True,
                                            gridspec_kw={'hspace': 0})
         values = {c: 0 for c in historian.columns}
         plt.setp([a.get_xticklabels() for a in self.axes[:-1]], visible=False)
@@ -249,11 +250,10 @@ class Plotter:
 
     def update(self, tnow=None):
         self.historian.update(tnow)
-        tmin = self.historian.tnow - self.twindow
-        tmax = self.historian.tnow
-        if self.historian.tnow > self.twindow:
-            for axis in self.axes:
-                axis.set_xlim(tmin, tmax)
+        tmin = max(self.historian.tnow - self.twindow, 0)
+        tmax = max(self.historian.tnow, self.twindow)
+        for axis in self.axes:
+            axis.set_xlim(tmin, tmax)
         data = self.historian.after(tmin)
         datadict = dict(zip(self.historian.columns, data))
         t = datadict['Time']
