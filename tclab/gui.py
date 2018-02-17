@@ -94,7 +94,7 @@ class NotebookUI:
         self.seconds += 1
 
     def togglemodel(self, change):
-        """Speedup can only be enabled when not working with the model"""
+        """Speedup can only be enabled when working with the model"""
         self.speedup.disabled = not change['new']
         self.speedup.value = 1
 
