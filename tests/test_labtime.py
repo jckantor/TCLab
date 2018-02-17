@@ -1,7 +1,7 @@
 import pytest
 import time
 
-from tclab import labtime, clock
+from tclab import labtime, clock, setnow
 
 # labtime tests
 
@@ -85,6 +85,13 @@ def test_sleep_exception():
         labtime.stop()
         labtime.sleep(1)
     labtime.start()
+
+def test_setnow():
+    time.sleep(2)
+    setnow()
+    assert labtime.time() < 0.01
+    setnow(10)
+    assert labtime.time() < 10.01
 
 
 @pytest.mark.parametrize("rate", [1, 2, 5, 10, 20, 50])
