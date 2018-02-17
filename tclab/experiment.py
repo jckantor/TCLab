@@ -1,5 +1,6 @@
 from .tclab import TCLab, TCLabModel
 from .historian import Historian, Plotter
+from .scaletime import Scaletime, clock
 
 
 class Experiment:
@@ -15,7 +16,7 @@ class Experiment:
         self.historian = None
         self.plotter = None
 
-        setup(speedup)
+        Scaletime.scale(speedup)
 
     def __enter__(self):
         if self.connected:
