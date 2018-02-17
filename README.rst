@@ -56,7 +56,7 @@ To upgrade an existing installation, use the command ::
    pip install tclab --upgrade
 
 
-To install the development version, use the command ::
+The development version contains new features, but may be less stable. To install the development version use the command ::
 
    pip install --upgrade https://github.com/jckantor/TCLab/archive/development.zip
 
