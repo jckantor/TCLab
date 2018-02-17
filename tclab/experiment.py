@@ -16,7 +16,7 @@ class Experiment:
         self.historian = None
         self.plotter = None
 
-        Scaletime.scale(speedup)
+        labtime.set_rate(speedup)
 
     def __enter__(self):
         if self.connected:

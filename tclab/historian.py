@@ -106,8 +106,7 @@ class Historian(object):
             self.db = None
             self.session = 1
 
-        self.time = Scaletime().time
-        self.tstart = self.time()
+        self.tstart = labtime.time()
 
         self.columns = [name for name, _ in self.sources]
 
@@ -120,7 +119,7 @@ class Historian(object):
 
     def update(self, tnow=None):
         if tnow is None:
-            self.tnow = self.time() - self.tstart
+            self.tnow = labtime.time() - self.tstart
         else:
             self.tnow = tnow
 
@@ -171,7 +170,7 @@ class Historian(object):
             raise NotImplemented("Sessions not supported without dbfile")
         self.db.new_session()
         self.session = self.db.session
-        self.tstart = self.time()
+        self.tstart = labtime.time()
         self.build_fields()
 
     def get_sessions(self):

@@ -3,7 +3,7 @@ import tornado
 
 from .tclab import TCLab, TCLabModel
 from .historian import Historian, Plotter
-from .scaletime import Scaletime
+from .labtime import labtime, clock
 
 from ipywidgets import Button, Label, FloatSlider, HBox, VBox, Checkbox, IntText
 
@@ -132,7 +132,6 @@ class SimpleInteraction(NotebookInteraction):
 class NotebookUI:
     def __init__(self, Controller=SimpleInteraction):
         self.timer = tornado.ioloop.PeriodicCallback(self.update, 1000)
-        self.scaletime = Scaletime()
         self.lab = None
         self.plotter = None
         self.historian = None
@@ -141,14 +140,9 @@ class NotebookUI:
 
         # Model or real
         self.usemodel = Checkbox(value=False, description='Use model')
-<<<<<<< Updated upstream
         self.usemodel.observe(self.togglemodel, names='value')
         self.speedup = slider('Speedup', minvalue=1, maxvalue=10)
         modelbox = HBox([self.usemodel, self.speedup])
-=======
-        self.speedupwidget = slider('SPEEDUP', self.action_speedup, minvalue=1, maxvalue=50)
-        modelbox = HBox([self.usemodel, self.speedupwidget])
->>>>>>> Stashed changes
 
         # Buttons
         self.connect = actionbutton('Connect', self.action_connect, False)
@@ -173,19 +167,13 @@ class NotebookUI:
     def update(self):
         """Update GUI display."""
         timestamp = datetime.datetime.now().isoformat(timespec='seconds')
-<<<<<<< Updated upstream
         self.timer.callback_time = 1000/self.speedup.value
+        labtime.set_rate(self.speedup.value)
 
-=======
-        self.seconds += 1
->>>>>>> Stashed changes
-        if self.usemodel.value:
-            self.scaletime.reset(self.seconds)
-        self.timewidget.value = timestamp
-        self.controller.update(self.seconds)
-        self.plotter.update(self.seconds)
+        self.timewidget.value = str(labtime.time())
+        self.controller.update(labtime.time())
+        self.plotter.update(labtime.time())
 
-        self.seconds += 1
 
     def togglemodel(self, change):
         """Speedup can only be enabled when working with the model"""
@@ -194,7 +182,6 @@ class NotebookUI:
 
     def action_start(self, widget):
         """Start TCLab operation."""
-        self.seconds = 0
         if not self.firstsession:
             self.historian.new_session()
         self.firstsession = False
@@ -206,10 +193,13 @@ class NotebookUI:
 
         self.controller.start()
         self.timer.start()
+        labtime.reset()
+        labtime.start()
 
     def action_stop(self, widget):
         """Stop TCLab operation."""
         self.timer.stop()
+        labtime.stop()
 
         self.start.disabled = False
         self.stop.disabled = True
@@ -220,9 +210,10 @@ class NotebookUI:
         """Connect to TCLab."""
         if self.usemodel.value:
             self.lab = TCLabModel()
-            self.speedupwidget.disabled = False
         else:
             self.lab = TCLab()
+        labtime.stop()
+        labtime.reset()
 
         self.controller.connect(self.lab)
         self.historian = Historian(self.controller.sources)
@@ -245,17 +236,3 @@ class NotebookUI:
         self.disconnect.disabled = True
         self.start.disabled = True
 
-<<<<<<< Updated upstream
-=======
-    def action_Q1(self, change):
-        """Change heater 1 power."""
-        self.lab.Q1(change['new'])
-
-    def action_Q2(self, change):
-        """Change heater 2 power."""
-        self.lab.Q2(change['new'])
-
-    def action_speedup(self, change):
-        """Change Speedup factor."""
-        self.scaletime.scale(change['new'])
->>>>>>> Stashed changes

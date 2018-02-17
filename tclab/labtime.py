@@ -81,8 +81,8 @@ def clock(period, step=1, tol=0.5):
     start = labtime.time()
 
     while now <= period - step + tol:
-        yield round(now, 2)
+        yield round(now, 1)
         labtime.sleep(step - (labtime.time() - start) % step)
         now = labtime.time() - start
 
-    yield round(now, 2)
+    yield round(now, 1)
