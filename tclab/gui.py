@@ -26,11 +26,12 @@ def labelledvalue(label, value, units=''):
     return valuewidget, box
 
 
-def slider(label, action, minvalue=0, maxvalue=100, disabled=True):
+def slider(label, action=None, minvalue=0, maxvalue=100, disabled=True):
     """Return slider widget for specified label and action callback."""
     sliderwidget = FloatSlider(description=label, min=minvalue, max=maxvalue)
     sliderwidget.disabled = disabled
-    sliderwidget.observe(action, names='value')
+    if action:
+        sliderwidget.observe(action, names='value')
 
     return sliderwidget
 
@@ -45,10 +46,9 @@ class NotebookUI:
 
         # Model or real
         self.usemodel = Checkbox(value=False, description='Use model')
-        speeduplabel = Label('Speedup')
-        self.speedup = IntText(value=1)
-        self.speedup.disabled = True
-        modelbox = HBox([self.usemodel, speeduplabel, self.speedup])
+        self.usemodel.observe(self.togglemodel, names='value')
+        self.speedup = slider('Speedup', minvalue=1, maxvalue=10)
+        modelbox = HBox([self.usemodel, self.speedup])
 
         # Buttons
         self.connect = actionbutton('Connect', self.action_connect, False)
@@ -84,13 +84,19 @@ class NotebookUI:
     def update(self):
         """Update GUI display."""
         timestamp = datetime.datetime.now().isoformat(timespec='seconds')
-        self.seconds += self.speedup.value
+        self.timer.callback_time = 1000/self.speedup.value
         if self.usemodel.value:
             setnow(self.seconds)
         self.timewidget.value = timestamp
         self.T1widget.value = '{:2.1f}'.format(self.lab.T1)
         self.T2widget.value = '{:2.1f}'.format(self.lab.T2)
         self.plotter.update(self.seconds)
+        self.seconds += 1
+
+    def togglemodel(self, change):
+        """Speedup can only be enabled when not working with the model"""
+        self.speedup.disabled = not change['new']
+        self.speedup.value = 1
 
     def action_start(self, widget):
         """Start TCLab operation."""
