@@ -25,7 +25,7 @@ def setup(connected=True, speedup=1):
     will run the clock at twice real time (which means that the whole simulation
     will take half the time it would if connected to a real device).
     """
-    from .clock import setup as clocksetup
+    from .scaletime import Scaletime
 
     if connected:
         lab = TCLab
@@ -37,6 +37,6 @@ def setup(connected=True, speedup=1):
             raise ValueError('speedup must be positive. '
                              'You passed speedup={}'.format(speedup))
 
-    clocksetup(speedup=speedup)
+    Scaletime.scale(speedup)
     return lab
 

@@ -4,9 +4,9 @@
 from __future__ import print_function
 from __future__ import division
 from collections import Iterable
-from .clock import time
 import bisect
 import sqlite3
+from .scaletime import Scaletime
 
 
 class TagDB:
@@ -106,7 +106,8 @@ class Historian(object):
             self.db = None
             self.session = 1
 
-        self.tstart = time()
+        self.time = Scaletime().time
+        self.tstart = self.time()
 
         self.columns = [name for name, _ in self.sources]
 
@@ -119,7 +120,7 @@ class Historian(object):
 
     def update(self, tnow=None):
         if tnow is None:
-            self.tnow = time() - self.tstart
+            self.tnow = self.time() - self.tstart
         else:
             self.tnow = tnow
 
@@ -170,7 +171,7 @@ class Historian(object):
             raise NotImplemented("Sessions not supported without dbfile")
         self.db.new_session()
         self.session = self.db.session
-        self.tstart = time()
+        self.tstart = self.time()
         self.build_fields()
 
     def get_sessions(self):

@@ -3,7 +3,6 @@ import tornado
 
 from .tclab import TCLab, TCLabModel
 from .historian import Historian, Plotter
-from .clock import setnow, setup
 
 from ipywidgets import Button, Label, FloatSlider, HBox, VBox, Checkbox, IntText
 

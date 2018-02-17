@@ -1,6 +1,5 @@
 from .tclab import TCLab, TCLabModel
 from .historian import Historian, Plotter
-from .clock import setup, clock
 
 
 class Experiment:
