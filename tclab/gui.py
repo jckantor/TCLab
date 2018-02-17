@@ -36,8 +36,75 @@ def slider(label, action=None, minvalue=0, maxvalue=100, disabled=True):
     return sliderwidget
 
 
-class NotebookUI:
+class NotebookInteraction():
     def __init__(self):
+        self.lab = None
+
+    def update(self, t):
+        raise NotImplementedError
+
+    def connect(self, lab):
+        self.lab = lab
+        self.lab.connected = True
+
+    def start(self):
+        raise NotImplementedError
+
+    def stop(self):
+        raise NotImplementedError
+
+    def disconnect(self):
+        self.lab.connected = False
+
+
+class SimpleInteraction(NotebookInteraction):
+    def __init__(self):
+        super().__init__()
+
+        self.layout = (('Q1', 'Q2'),
+                       ('T1', 'T2'))
+
+        # Sliders for heaters
+        self.Q1widget = slider('Q1', self.action_Q1)
+        self.Q2widget = slider('Q2', self.action_Q2)
+
+        heaters = VBox([self.Q1widget, self.Q2widget])
+
+        # Temperature display
+        self.T1widget, T1box = labelledvalue('T1:', 0, '°C')
+        self.T2widget, T2box = labelledvalue('T2:', 0, '°C')
+
+        temperatures = VBox([T1box, T2box])
+
+        self.ui = HBox([heaters, temperatures])
+
+    def update(self, t):
+        self.T1widget.value = '{:2.1f}'.format(self.lab.T1)
+        self.T2widget.value = '{:2.1f}'.format(self.lab.T2)
+
+    def connect(self, lab):
+        super().connect(lab)
+        self.sources = self.lab.sources
+
+    def start(self):
+        self.Q1widget.disabled = False
+        self.Q2widget.disabled = False
+
+    def stop(self):
+        self.Q1widget.disabled = True
+        self.Q2widget.disabled = True
+
+    def action_Q1(self, change):
+        """Change heater 1 power."""
+        self.lab.Q1(change['new'])
+
+    def action_Q2(self, change):
+        """Change heater 2 power."""
+        self.lab.Q2(change['new'])
+
+
+class NotebookUI:
+    def __init__(self, Controller=SimpleInteraction):
         self.timer = tornado.ioloop.PeriodicCallback(self.update, 1000)
         self.lab = None
         self.plotter = None
@@ -63,34 +130,24 @@ class NotebookUI:
         self.sessionwidget, sessionbox = labelledvalue('Session:', 'No data')
         statusbox = HBox([timebox, sessionbox])
 
-        # Sliders for heaters
-        self.Q1widget = slider('Q1', self.action_Q1)
-        self.Q2widget = slider('Q2', self.action_Q2)
+        self.controller = Controller()
 
-        heaters = VBox([self.Q1widget, self.Q2widget])
-
-        # Temperature display
-        self.T1widget, T1box = labelledvalue('T1:', 0, '°C')
-        self.T2widget, T2box = labelledvalue('T2:', 0, '°C')
-
-        temperatures = VBox([T1box, T2box])
-
-        self.gui = VBox([modelbox,
-                         buttons,
+        self.gui = VBox([HBox([modelbox, buttons]),
                          statusbox,
-                         HBox([heaters, temperatures]),
+                         self.controller.ui,
                          ])
 
     def update(self):
         """Update GUI display."""
         timestamp = datetime.datetime.now().isoformat(timespec='seconds')
         self.timer.callback_time = 1000/self.speedup.value
+
         if self.usemodel.value:
             setnow(self.seconds)
         self.timewidget.value = timestamp
-        self.T1widget.value = '{:2.1f}'.format(self.lab.T1)
-        self.T2widget.value = '{:2.1f}'.format(self.lab.T2)
+        self.controller.update(self.seconds)
         self.plotter.update(self.seconds)
+
         self.seconds += 1
 
     def togglemodel(self, change):
@@ -110,9 +167,7 @@ class NotebookUI:
         self.stop.disabled = False
         self.disconnect.disabled = True
 
-        self.Q1widget.disabled = False
-        self.Q2widget.disabled = False
-
+        self.controller.start()
         self.timer.start()
 
     def action_stop(self, widget):
@@ -122,8 +177,7 @@ class NotebookUI:
         self.start.disabled = False
         self.stop.disabled = True
         self.disconnect.disabled = False
-        self.Q1widget.disabled = True
-        self.Q2widget.disabled = True
+        self.controller.stop()
 
     def action_connect(self, widget):
         """Connect to TCLab."""
@@ -131,11 +185,11 @@ class NotebookUI:
             self.lab = TCLabModel()
         else:
             self.lab = TCLab()
-        self.historian = Historian(self.lab.sources)
+
+        self.controller.connect(self.lab)
+        self.historian = Historian(self.controller.sources)
         self.plotter = Plotter(self.historian,
-                               layout=(('Q1', 'Q2'),
-                                       ('T1', 'T2')))
-        self.lab.connected = True
+                               layout=self.controller.layout)
 
         self.usemodel.disabled = True
         self.connect.disabled = True
@@ -145,17 +199,11 @@ class NotebookUI:
     def action_disconnect(self, widget):
         """Disconnect TCLab."""
         self.lab.close()
-        self.lab.connected = False
+
+        self.controller.disconnect()
 
         self.usemodel.disabled = False
         self.connect.disabled = False
         self.disconnect.disabled = True
         self.start.disabled = True
 
-    def action_Q1(self, change):
-        """Change heater 1 power."""
-        self.lab.Q1(change['new'])
-
-    def action_Q2(self, change):
-        """Change heater 2 power."""
-        self.lab.Q2(change['new'])
