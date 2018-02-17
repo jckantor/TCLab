@@ -37,27 +37,53 @@ def slider(label, action=None, minvalue=0, maxvalue=100, disabled=True):
 
 
 class NotebookInteraction():
+    """Base class for Notebook UI interaction controllers.
+
+    You should inherit from this class to build new interactions.
+    """
     def __init__(self):
         self.lab = None
+        self.ui = None
 
     def update(self, t):
+        """Called on a timer to update the interaction.
+
+        t is the current simulation time. """
         raise NotImplementedError
 
     def connect(self, lab):
+        """This is called when the interface connects to a lab
+
+        lab is an instance of TCLab or TCLabModel
+        """
         self.lab = lab
         self.lab.connected = True
 
     def start(self):
+        """Called when the Start button is pressed"""
         raise NotImplementedError
 
     def stop(self):
+        """Called when the Stop button is pressed"""
         raise NotImplementedError
 
     def disconnect(self):
+        """Called when the interface disconnects from a lab"""
         self.lab.connected = False
 
 
 class SimpleInteraction(NotebookInteraction):
+    """Simple interaction with the TCLab
+
+    Provides a ui with two sliders for the heaters and text boxes showing
+    the temperatures.
+
+    Notice that the class must define a "layout" property suitable to pass as
+    thelayout argument to Plotter. It must also define a "sources" property
+    suitable to pass to Historian. This is typically only possible after
+    connecting, so in this class we define sources in .connect()
+
+    """
     def __init__(self):
         super().__init__()
 
@@ -108,6 +134,7 @@ class NotebookUI:
         self.timer = tornado.ioloop.PeriodicCallback(self.update, 1000)
         self.lab = None
         self.plotter = None
+        self.historian = None
         self.seconds = 0
         self.firstsession = True
 
