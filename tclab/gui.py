@@ -95,7 +95,7 @@ class NotebookUI:
 
     def togglemodel(self, change):
         """Speedup can only be enabled when working with the model"""
-        self.speedup.disabled = not change['new']['value']
+        self.speedup.disabled = not change['new']
         self.speedup.value = 1
 
     def action_start(self, widget):
