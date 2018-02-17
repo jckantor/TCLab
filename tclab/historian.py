@@ -6,7 +6,7 @@ from __future__ import division
 from collections import Iterable
 import bisect
 import sqlite3
-from .scaletime import Scaletime
+from .labtime import labtime
 
 
 class TagDB:

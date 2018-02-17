@@ -3,6 +3,7 @@ import tornado
 
 from .tclab import TCLab, TCLabModel
 from .historian import Historian, Plotter
+from .scaletime import Scaletime
 
 from ipywidgets import Button, Label, FloatSlider, HBox, VBox, Checkbox, IntText
 
@@ -131,6 +132,7 @@ class SimpleInteraction(NotebookInteraction):
 class NotebookUI:
     def __init__(self, Controller=SimpleInteraction):
         self.timer = tornado.ioloop.PeriodicCallback(self.update, 1000)
+        self.scaletime = Scaletime()
         self.lab = None
         self.plotter = None
         self.historian = None
@@ -139,9 +141,14 @@ class NotebookUI:
 
         # Model or real
         self.usemodel = Checkbox(value=False, description='Use model')
+<<<<<<< Updated upstream
         self.usemodel.observe(self.togglemodel, names='value')
         self.speedup = slider('Speedup', minvalue=1, maxvalue=10)
         modelbox = HBox([self.usemodel, self.speedup])
+=======
+        self.speedupwidget = slider('SPEEDUP', self.action_speedup, minvalue=1, maxvalue=50)
+        modelbox = HBox([self.usemodel, self.speedupwidget])
+>>>>>>> Stashed changes
 
         # Buttons
         self.connect = actionbutton('Connect', self.action_connect, False)
@@ -166,10 +173,14 @@ class NotebookUI:
     def update(self):
         """Update GUI display."""
         timestamp = datetime.datetime.now().isoformat(timespec='seconds')
+<<<<<<< Updated upstream
         self.timer.callback_time = 1000/self.speedup.value
 
+=======
+        self.seconds += 1
+>>>>>>> Stashed changes
         if self.usemodel.value:
-            setnow(self.seconds)
+            self.scaletime.reset(self.seconds)
         self.timewidget.value = timestamp
         self.controller.update(self.seconds)
         self.plotter.update(self.seconds)
@@ -209,6 +220,7 @@ class NotebookUI:
         """Connect to TCLab."""
         if self.usemodel.value:
             self.lab = TCLabModel()
+            self.speedupwidget.disabled = False
         else:
             self.lab = TCLab()
 
@@ -233,3 +245,17 @@ class NotebookUI:
         self.disconnect.disabled = True
         self.start.disabled = True
 
+<<<<<<< Updated upstream
+=======
+    def action_Q1(self, change):
+        """Change heater 1 power."""
+        self.lab.Q1(change['new'])
+
+    def action_Q2(self, change):
+        """Change heater 2 power."""
+        self.lab.Q2(change['new'])
+
+    def action_speedup(self, change):
+        """Change Speedup factor."""
+        self.scaletime.scale(change['new'])
+>>>>>>> Stashed changes

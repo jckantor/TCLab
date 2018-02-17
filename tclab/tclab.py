@@ -3,10 +3,11 @@
 
 from __future__ import print_function
 import time
-from .scaletime import Scaletime
+import random
 import serial
 from serial.tools import list_ports
-import random
+from .labtime import labtime
+
 
 sep = ' '   # command/value separator in TCLab firmware
 
@@ -53,7 +54,7 @@ class TCLab(object):
         if self.sp.isOpen():
             print(self.arduino, 'connected on port', port, 'at', baud, 'baud.')
             print(self.version + '.')
-        Scaletime.scale(1)
+        labtime.set_rate(1)
         self._P1 = 200.0
         self._P2 = 100.0
         self.Q1(0)
@@ -166,9 +167,8 @@ class TCLabModel(object):
     def __init__(self, port='', debug=False):
         self.debug = debug
         print('Simulated TCLab')
-        self.time = Scaletime().time
         self.Ta = 21                  # ambient temperature
-        self.tstart = self.time()     # start time
+        self.tstart = labtime.time()  # start time
         self.tlast = self.tstart      # last update time
         self._P1 = 200.0              # max power heater 1
         self._P2 = 100.0              # max power heater 2
@@ -268,7 +268,7 @@ class TCLabModel(object):
     U2 = property(fget=Q2, fset=Q2, doc="Heater 2 value")
 
     def update(self):
-        self.tnow = self.time() - self.tstart
+        self.tnow = labtime.time() - self.tstart
         fullsteps, remainder = divmod(self.tnow - self.tlast, self.maxstep)
 
         for dt in [self.maxstep]*int(fullsteps) + [remainder]:
