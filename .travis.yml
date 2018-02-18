@@ -8,7 +8,7 @@ env:
 install:
   - python setup.py install
 before_script:
-  - pytest --cov=tclab tests/
+  - py.test --cov=tclab tests/
 script:
   - pytest
 after_success:
