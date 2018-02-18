@@ -24,7 +24,7 @@ def clip(val, lower=0, upper=100):
     return max(lower, min(val, upper))
 
 
-def command(name, argument, lower=0, upper=0):
+def command(name, argument, lower=0, upper=100):
     return name + sep + str(clip(argument, lower, upper))
 
 
