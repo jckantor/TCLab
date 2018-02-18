@@ -252,8 +252,8 @@ class Plotter:
 
     def update(self, tnow=None):
         self.historian.update(tnow)
-        if time.time() - self.last_plot_update >= 1:
-            self.time_last_plot_update = time.time()
+        if time.time() - self.last_plot_update >= 0.33:
+            self.last_plot_update = time.time()
             tmin = max(self.historian.tnow - self.twindow, 0)
             tmax = max(self.historian.tnow, self.twindow)
             for axis in self.axes:
@@ -271,4 +271,3 @@ class Plotter:
             if self.backend != 'nbAgg':
                 self.display.clear_output(wait=True)
                 self.display.display(self.fig)
-
