@@ -18,5 +18,3 @@ def test_connected_error():
         setup(connected=False, speedup=0)
     with pytest.raises(ValueError):
         setup(connected=False, speedup=-1)
-
-

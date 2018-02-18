@@ -41,17 +41,17 @@ def test_T1(lab):
 def test_T2(lab):
     assert -10 < lab.T2 < 110
 
-    
+
 def test_P1(lab):
     assert lab.P1 == 200
     lab.P1 = 100
     assert lab.P1 == 100
 
-    
+
 def test_P2(lab):
     assert lab.P2 == 100
     lab.P2 = 200
-    assert lab.P2 == 200    
+    assert lab.P2 == 200
 
 
 def test_LED(lab):

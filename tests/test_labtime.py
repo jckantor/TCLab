@@ -5,6 +5,7 @@ from tclab import labtime, clock, setnow
 
 # labtime tests
 
+
 def test_import():
     assert labtime.running
 
@@ -55,7 +56,7 @@ def test_stop():
     time.sleep(1)
     toc = labtime.time()
     assert tic == toc
-    assert labtime.running == False
+    assert labtime.running is False
 
 
 def test_start():
@@ -67,7 +68,7 @@ def test_start():
     time.sleep(delay)
     toc = labtime.time()
     assert abs(toc - tic - delay) < 0.1
-    assert labtime.running == True
+    assert labtime.running is True
 
 
 def test_reset():
@@ -96,7 +97,7 @@ def test_sleep_exception():
         labtime.stop()
         labtime.sleep(1)
     labtime.start()
-    
+
 
 def test_setnow():
     time.sleep(2)
@@ -136,4 +137,3 @@ def test_sync(rate):
         if 0.5 < t < 2.5:
             labtime.sleep(1.1)
     assert round(t) == 5.0
-
