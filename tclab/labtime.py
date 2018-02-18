@@ -23,7 +23,7 @@ class Labtime():
             return self.__class__.__labtime
 
 
-    def set_rate(self, rate):
+    def set_rate(self, rate=1):
         """Set the rate of labtime relative to real time."""
         if rate <= 0:
             raise ValueError("Labtime rates must be positive.")

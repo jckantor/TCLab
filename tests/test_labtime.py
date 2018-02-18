@@ -6,8 +6,11 @@ from tclab import labtime, clock, setnow
 # labtime tests
 
 def test_import():
-    assert labtime.get_rate() == 1
     assert labtime.running
+
+
+def test_get_rate_on_import():
+    assert labtime.get_rate() == 1
 
 
 def test_time():
@@ -22,6 +25,14 @@ def test_time():
 def test_set_rate():
     labtime.set_rate(2)
     assert labtime.get_rate() == 2
+
+
+def test_set_rate_default():
+    labtime.set_rate()
+    assert labtime.get_rate() == 1
+
+
+def test_set_rate_errors():
     with pytest.raises(ValueError):
         labtime.set_rate(0)
     with pytest.raises(ValueError):
@@ -85,6 +96,7 @@ def test_sleep_exception():
         labtime.stop()
         labtime.sleep(1)
     labtime.start()
+    
 
 def test_setnow():
     time.sleep(2)
