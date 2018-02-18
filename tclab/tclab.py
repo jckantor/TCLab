@@ -24,6 +24,10 @@ def clip(val, lower=0, upper=100):
     return max(lower, min(val, upper))
 
 
+def command(name, argument, lower=0, upper=0):
+    return name + sep + str(clip(argument, lower, upper))
+
+
 class TCLab(object):
     def __init__(self, port='', debug=False):
         self.debug = debug
@@ -101,8 +105,8 @@ class TCLab(object):
         return convert(self.receive())
 
     def LED(self, val=100):
-        """Flash TCLab LED at a specified brightness (default 100) for 10 seconds."""
-        return self.send_and_receive('LED' + sep + str(clip(val)), float)
+        """Flash TCLab LED at a specified brightness for 10 seconds."""
+        return self.send_and_receive(command('LED', val), float)
 
     @property
     def T1(self):
@@ -122,7 +126,7 @@ class TCLab(object):
     @P1.setter
     def P1(self, val):
         """Set maximum power of heater 1 in pwm, range 0 to 255."""
-        self._P1 = self.send_and_receive('P1' + sep + str(clip(val,0,255)), float)
+        self._P1 = self.send_and_receive(command('P1', val, 0, 255), float)
 
     @property
     def P2(self):
@@ -132,10 +136,14 @@ class TCLab(object):
     @P2.setter
     def P2(self, val):
         """Set maximum power of heater 2 in pwm, range 0 to 255."""
-        self._P2 = self.send_and_receive('P2' + sep + str(clip(val,0,255)), float)
+        self._P2 = self.send_and_receive(command('P2', val, 0, 255), float)
 
     def Q1(self, val=None):
-        """Set TCLab heater power Q1 with range limited to 0-100, return clipped value."""
+        """Get or set TCLab heater power Q1
+
+        val: Value of heater power, range is limited to 0-100
+
+        return clipped value."""
         if val is None:
             msg = 'R1'
         else:
@@ -143,7 +151,11 @@ class TCLab(object):
         return self.send_and_receive(msg, float)
 
     def Q2(self, val=None):
-        """Set TCLab heater power Q1 with range limited to 0-100, return clipped value."""
+        """Get or set TCLab heater power Q2
+
+        val: Value of heater power, range is limited to 0-100
+
+        return clipped value."""
         if val is None:
             msg = 'R2'
         else:
@@ -243,14 +255,22 @@ class TCLabModel(object):
         self._P2 = clip(val, 0, 255)
 
     def Q1(self, val=None):
-        """Simulate setting TCLab heater power Q1 with range limited to 0-100, return clipped value."""
+        """Get or set TCLabModel heater power Q1
+
+        val: Value of heater power, range is limited to 0-100
+
+        return clipped value."""
         self.update()
         if val is not None:
             self._Q1 = clip(val)
         return self._Q1
 
     def Q2(self, val=None):
-        """Simulate setting TCLab heater power Q2 with range limited to 0-100, return clipped value."""
+        """Get or set TCLabModel heater power Q2
+
+        val: Value of heater power, range is limited to 0-100
+
+        return clipped value."""
         self.update()
         if val is not None:
             self._Q2 = clip(val)
