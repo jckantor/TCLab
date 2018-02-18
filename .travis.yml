@@ -7,6 +7,8 @@ env:
   - TRAVIS=True
 install:
   - python setup.py install
+before_script:
+  - pytest --cov=tclab tests/
 script:
   - pytest
 after_success:
