@@ -1,7 +1,7 @@
 from .tclab import TCLab, TCLabModel
-from .clock import clock, time, setnow
 from .historian import Historian, Plotter
 from .experiment import Experiment, runexperiment
+from .labtime import clock, labtime, setnow
 
 
 def setup(connected=True, speedup=1):
@@ -15,17 +15,17 @@ def setup(connected=True, speedup=1):
     receive a TCLabModel class reference. This allows you to switch between
     the model and the real lab in your code easily.
 
-    The speedup option can only be used when `connected=False` and is a factor
-    by which the clock will be sped up during the simulation.
+    The speedup option can only be used when `connected=False` and is the
+    ratio by which the lab clock will be sped up relative to real time
+    during the simulation.
 
     For example
 
     >>> lab = setup(connected=False, speedup=2)
 
-    will run the clock at twice real time (which means that the whole simulation
+    will run the lab clock at twice real time (which means that the whole simulation
     will take half the time it would if connected to a real device).
     """
-    from .clock import setup as clocksetup
 
     if connected:
         lab = TCLab
@@ -37,6 +37,6 @@ def setup(connected=True, speedup=1):
             raise ValueError('speedup must be positive. '
                              'You passed speedup={}'.format(speedup))
 
-    clocksetup(speedup=speedup)
+    labtime.set_rate(speedup)
     return lab
 

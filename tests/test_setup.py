@@ -14,5 +14,9 @@ def test_connected_error():
         setup(connected=True, speedup=2)
     with pytest.raises(ValueError):
         setup(connected=True, speedup=10)
+    with pytest.raises(ValueError):
+        setup(connected=False, speedup=0)
+    with pytest.raises(ValueError):
+        setup(connected=False, speedup=-1)
 
 

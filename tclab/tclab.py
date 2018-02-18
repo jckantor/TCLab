@@ -2,12 +2,12 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import print_function
-from .clock import time
-from time import sleep
-from .clock import setup as clocksetup
+import time
+import random
 import serial
 from serial.tools import list_ports
-import random
+from .labtime import labtime
+
 
 sep = ' '   # command/value separator in TCLab firmware
 
@@ -43,7 +43,7 @@ class TCLab(object):
         port = comport[0]
         for baud in [115200, 9600]:
             self.sp = serial.Serial(port=port, baudrate=baud, timeout=2)
-            sleep(2)
+            time.sleep(2)
             self.sp.readline().decode('UTF-8')
             self.sp.write(('VER' + '\r\n').encode())
             self.version = self.sp.readline().decode('UTF-8').replace('\r\n', '')
@@ -54,12 +54,11 @@ class TCLab(object):
         if self.sp.isOpen():
             print(self.arduino, 'connected on port', port, 'at', baud, 'baud.')
             print(self.version + '.')
+        labtime.set_rate(1)
         self._P1 = 200.0
         self._P2 = 100.0
         self.Q1(0)
         self.Q2(0)
-        clocksetup(speedup=1)
-        self.tstart = time()
         self.sources = [('T1', self.scan),
                         ('T2', None),
                         ('Q1', None),
@@ -169,7 +168,7 @@ class TCLabModel(object):
         self.debug = debug
         print('Simulated TCLab')
         self.Ta = 21                  # ambient temperature
-        self.tstart = time()          # start time
+        self.tstart = labtime.time()  # start time
         self.tlast = self.tstart      # last update time
         self._P1 = 200.0              # max power heater 1
         self._P2 = 100.0              # max power heater 2
@@ -269,7 +268,7 @@ class TCLabModel(object):
     U2 = property(fget=Q2, fset=Q2, doc="Heater 2 value")
 
     def update(self):
-        self.tnow = time() - self.tstart
+        self.tnow = labtime.time() - self.tstart
         fullsteps, remainder = divmod(self.tnow - self.tlast, self.maxstep)
 
         for dt in [self.maxstep]*int(fullsteps) + [remainder]:

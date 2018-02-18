@@ -3,7 +3,7 @@ import tornado
 
 from .tclab import TCLab, TCLabModel
 from .historian import Historian, Plotter
-from .clock import setnow, setup
+from .labtime import labtime, clock
 
 from ipywidgets import Button, Label, FloatSlider, HBox, VBox, Checkbox, IntText
 
@@ -168,14 +168,12 @@ class NotebookUI:
         """Update GUI display."""
         timestamp = datetime.datetime.now().isoformat(timespec='seconds')
         self.timer.callback_time = 1000/self.speedup.value
+        labtime.set_rate(self.speedup.value)
 
-        if self.usemodel.value:
-            setnow(self.seconds)
-        self.timewidget.value = timestamp
-        self.controller.update(self.seconds)
-        self.plotter.update(self.seconds)
+        self.timewidget.value = str(labtime.time())
+        self.controller.update(labtime.time())
+        self.plotter.update(labtime.time())
 
-        self.seconds += 1
 
     def togglemodel(self, change):
         """Speedup can only be enabled when working with the model"""
@@ -184,7 +182,6 @@ class NotebookUI:
 
     def action_start(self, widget):
         """Start TCLab operation."""
-        self.seconds = 0
         if not self.firstsession:
             self.historian.new_session()
         self.firstsession = False
@@ -196,10 +193,13 @@ class NotebookUI:
 
         self.controller.start()
         self.timer.start()
+        labtime.reset()
+        labtime.start()
 
     def action_stop(self, widget):
         """Stop TCLab operation."""
         self.timer.stop()
+        labtime.stop()
 
         self.start.disabled = False
         self.stop.disabled = True
@@ -212,6 +212,8 @@ class NotebookUI:
             self.lab = TCLabModel()
         else:
             self.lab = TCLab()
+        labtime.stop()
+        labtime.reset()
 
         self.controller.connect(self.lab)
         self.historian = Historian(self.controller.sources)
