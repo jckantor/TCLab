@@ -169,7 +169,7 @@ class NotebookUI:
         self.timer.callback_time = 1000/self.speedup.value
         labtime.set_rate(self.speedup.value)
 
-        self.timewidget.value = str(labtime.time())
+        self.timewidget.value = '{:.2f}'.format(labtime.time())
         self.controller.update(labtime.time())
         self.plotter.update(labtime.time())
 
