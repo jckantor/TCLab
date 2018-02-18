@@ -217,6 +217,7 @@ class NotebookUI:
         self.controller.connect(self.lab)
         self.historian = Historian(self.controller.sources)
         self.plotter = Plotter(self.historian,
+                               twindow=500,
                                layout=self.controller.layout)
 
         self.usemodel.disabled = True
