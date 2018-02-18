@@ -166,7 +166,6 @@ class NotebookUI:
 
     def update(self):
         """Update GUI display."""
-        timestamp = datetime.datetime.now().isoformat(timespec='seconds')
         self.timer.callback_time = 1000/self.speedup.value
         labtime.set_rate(self.speedup.value)
 
