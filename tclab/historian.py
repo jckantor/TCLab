@@ -19,10 +19,10 @@ class TagDB:
         self.db = sqlite3.connect(filename)
         self.cursor = self.db.cursor()
         creates = ["""CREATE TABLE IF NOT EXISTS tagvalues (
-                           session_id REFERENCES session (id), 
+                           session_id REFERENCES session (id),
                            timeseconds, name, value)""",
                    """CREATE TABLE IF NOT EXISTS sessions (
-                           id INTEGER PRIMARY KEY, 
+                           id INTEGER PRIMARY KEY,
                            starttime)"""]
         for statement in creates:
             self.cursor.execute(statement)
@@ -30,7 +30,7 @@ class TagDB:
         self.session = None
 
     def new_session(self):
-        self.cursor.execute("""INSERT INTO SESSIONS (starttime) 
+        self.cursor.execute("""INSERT INTO SESSIONS (starttime)
                                VALUES (datetime('now'))""")
         self.session = self.cursor.lastrowid
         self.db.commit()
@@ -49,7 +49,7 @@ class TagDB:
     def get(self, name, timeseconds=None, session=None):
         if session is None:
             session = self.session
-        query = """SELECT timeseconds, value FROM tagvalues 
+        query = """SELECT timeseconds, value FROM tagvalues
                    WHERE session_id=? AND name=?"""
         parameters = [session, name]
         if timeseconds is not None:
@@ -82,8 +82,9 @@ class Historian(object):
 
 
         Sometimes, multiple values are obtained from one function call. In such
-        cases, names can still be specified as before, but callable can be passed
-        as None for the subsequent names which come from a previous callable.
+        cases, names can still be specified as before, but callable can be
+        passed as None for the subsequent names which come from a previous
+        callable.
 
         Example:
 
@@ -204,9 +205,9 @@ class Plotter:
         :param historian: An instance of the Historian class
         :param twindow: Amount of time to show in the plot
         :param layout: A tuple of tuples indicating how the fields should be
-                plotted. For example (("T1", "T2"), ("Q1", "Q2")) indicates that
-                there will be two subplots with the two indicated fields plotted
-                on each.
+                plotted. For example (("T1", "T2"), ("Q1", "Q2")) indicates
+                that there will be two subplots with the two indicated fields
+                plotted on each.
         """
         import matplotlib.pyplot as plt
         from matplotlib import get_backend

@@ -1,7 +1,7 @@
 from .tclab import TCLab, TCLabModel
 from .historian import Historian, Plotter
 from .experiment import Experiment, runexperiment
-from .labtime import clock, labtime, setnow
+from .labtime import clock, labtime, setnow, Labtime
 
 
 def setup(connected=True, speedup=1):
@@ -23,8 +23,8 @@ def setup(connected=True, speedup=1):
 
     >>> lab = setup(connected=False, speedup=2)
 
-    will run the lab clock at twice real time (which means that the whole simulation
-    will take half the time it would if connected to a real device).
+    will run the lab clock at twice real time (which means that the whole
+    simulation will take half the time it would if connected to a real device).
     """
 
     if connected:
@@ -39,4 +39,3 @@ def setup(connected=True, speedup=1):
 
     labtime.set_rate(speedup)
     return lab
-

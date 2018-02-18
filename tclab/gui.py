@@ -5,7 +5,8 @@ from .tclab import TCLab, TCLabModel
 from .historian import Historian, Plotter
 from .labtime import labtime, clock
 
-from ipywidgets import Button, Label, FloatSlider, HBox, VBox, Checkbox, IntText
+from ipywidgets import Button, Label, FloatSlider, HBox, VBox, Checkbox,\
+    IntText
 
 
 def actionbutton(description, action, disabled=True):
@@ -173,7 +174,6 @@ class NotebookUI:
         self.controller.update(labtime.time())
         self.plotter.update(labtime.time())
 
-
     def togglemodel(self, change):
         """Speedup can only be enabled when working with the model"""
         self.speedup.disabled = not change['new']
@@ -235,4 +235,3 @@ class NotebookUI:
         self.connect.disabled = False
         self.disconnect.disabled = True
         self.start.disabled = True
-

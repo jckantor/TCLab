@@ -50,7 +50,8 @@ class TCLab(object):
             time.sleep(2)
             self.sp.readline().decode('UTF-8')
             self.sp.write(('VER' + '\r\n').encode())
-            self.version = self.sp.readline().decode('UTF-8').replace('\r\n', '')
+            self.version = self.sp.readline()
+            self.version = self.version.decode('UTF-8').replace('\r\n', '')
             if self.version != '':
                 break
         else:
@@ -117,12 +118,12 @@ class TCLab(object):
     def T2(self):
         """Return a float denoting TCLab temperature T2 in degrees C."""
         return self.send_and_receive('T2', float)
-    
+
     @property
     def P1(self):
         """Return a float denoting maximum power of heater 1 in pwm."""
         return self._P1
-    
+
     @P1.setter
     def P1(self, val):
         """Set maximum power of heater 1 in pwm, range 0 to 255."""
@@ -235,7 +236,7 @@ class TCLabModel(object):
         """Return a float denoting maximum power of heater 1 in pwm."""
         self.update()
         return self._P1
-    
+
     @P1.setter
     def P1(self, val):
         """Set maximum power of heater 1 in pwm, range 0 to 255."""

@@ -7,12 +7,10 @@ class Labtime():
     __rate = 1
     __running = True
 
-
     @property
     def running(self):
         """Returns variable indicating whether labtime is running."""
         return self.__class__.__running
-
 
     def time(self):
         """Return current labtime."""
@@ -22,7 +20,6 @@ class Labtime():
         else:
             return self.__class__.__labtime
 
-
     def set_rate(self, rate=1):
         """Set the rate of labtime relative to real time."""
         if rate <= 0:
@@ -31,19 +28,16 @@ class Labtime():
         self.__class__.__realtime = time.time()
         self.__class__.__rate = rate
 
-
     def get_rate(self):
         """Return the rate of labtime relative to real time."""
         return self.__class__.__rate
-
 
     def sleep(self, delay):
         """Sleep in labtime for a period delay."""
         if self.__class__.__running:
             time.sleep(delay / self.__class__.__rate)
         else:
-            raise RuntimeWarning( "labtime.sleep ignored when labtime is stopped.")
-
+            raise RuntimeWarning("sleep is not valid when labtime is stopped.")
 
     def stop(self):
         """Stop labtime."""
@@ -51,12 +45,10 @@ class Labtime():
         self.__class__.__realtime = time.time()
         self.__class__.__running = False
 
-
     def start(self):
         """Restart labtime."""
         self.__class__.__realtime = time.time()
         self.__class__.__running = True
-
 
     def reset(self, val=0):
         """Reset labtime to a specified value."""
