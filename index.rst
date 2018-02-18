@@ -13,15 +13,16 @@ TCLab Documentation
    README.rst
    DEVELOPMENT.rst
 
-   notebooks/1_TCLab_Overview.ipynb
-   notebooks/2_Accessing_the_Temperature_Control_Laboratory.ipynb
-   notebooks/3_Synchronizing with Real Time.ipynb
-   notebooks/4_Simulation_of_TCLab_for_Offline_Use.ipynb
-   notebooks/5_TCLab_Historian.ipynb
-   notebooks/6_TCLab_Plotter.ipynb
-   notebooks/7_NotebookUI.ipynb
-   notebooks/8_Experiment_Class.ipynb
-   notebooks/9_Interactive_and_Nonblocking_Operation.ipynb
+   notebooks/01_TCLab_Overview.ipynb
+   notebooks/02_Accessing_the_Temperature_Control_Laboratory.ipynb
+   notebooks/03_Synchronizing_with_Real_Time.ipynb
+   notebooks/04_Emulation_of_TCLab_for_Offline_Use.ipynb
+   notebooks/05_TCLab_Historian.ipynb
+   notebooks/06_TCLab_Plotter.ipynb
+   notebooks/07_NotebookUI.ipynb
+   notebooks/08_Experiment_Class.ipynb
+   notebooks/09_Labtime_Class.ipynb
+   notebooks/10_Interactive_and_Nonblocking_Operation.ipynb
 
 
 Search Page
