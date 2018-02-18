@@ -39,9 +39,10 @@ class Labtime():
 
     def sleep(self, delay):
         """Sleep in labtime for a period delay."""
-        if not self.__class__.__running:
-            raise RuntimeError( "Can't sleep when labtime is stopped.")
-        time.sleep(delay / self.__class__.__rate)
+        if self.__class__.__running:
+            time.sleep(delay / self.__class__.__rate)
+        else:
+            raise RuntimeWarning( "labtime.sleep ignored when labtime is stopped.")
 
 
     def stop(self):

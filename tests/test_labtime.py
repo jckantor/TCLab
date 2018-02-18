@@ -92,7 +92,7 @@ def test_sleep():
 
 
 def test_sleep_exception():
-    with pytest.raises(RuntimeError):
+    with pytest.raises(RuntimeWarning):
         labtime.stop()
         labtime.sleep(1)
     labtime.start()
