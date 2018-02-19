@@ -215,7 +215,7 @@ class Plotter:
         self.backend = get_backend()
         self.historian = historian
         self.twindow = twindow
-        self.last_plot_update = time.time()
+        self.last_plot_update = 0
 
         if layout is None:
             layout = tuple((field,) for field in historian.columns[1:])
@@ -224,6 +224,7 @@ class Plotter:
         line_options = {'where': 'post', 'lw': 2, 'alpha': 0.8}
         self.lines = {}
         self.fig, self.axes = plt.subplots(len(layout), 1, figsize=(8, 6),
+                                           dpi = 72,
                                            sharex=True,
                                            gridspec_kw={'hspace': 0})
         values = {c: 0 for c in historian.columns}
