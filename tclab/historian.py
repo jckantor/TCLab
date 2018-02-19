@@ -253,22 +253,25 @@ class Plotter:
 
     def update(self, tnow=None):
         self.historian.update(tnow)
-        if time.time() - self.last_plot_update >= 0.33:
-            self.last_plot_update = time.time()
-            tmin = max(self.historian.tnow - self.twindow, 0)
-            tmax = max(self.historian.tnow, self.twindow)
-            for axis in self.axes:
-                axis.set_xlim(tmin, tmax)
-            data = self.historian.after(tmin)
-            datadict = dict(zip(self.historian.columns, data))
-            t = datadict['Time']
-            for axis, fields in zip(self.axes, self.layout):
-                for field in fields:
-                    y = datadict[field]
-                    self.lines[field].set_data(t, y)
-                axis.relim()
-                axis.autoscale_view()
-            self.fig.canvas.draw()
-            if self.backend != 'nbAgg':
-                self.display.clear_output(wait=True)
-                self.display.display(self.fig)
+
+        if time.time() - self.last_plot_update <= 0.33:
+            return
+
+        self.last_plot_update = time.time()
+        tmin = max(self.historian.tnow - self.twindow, 0)
+        tmax = max(self.historian.tnow, self.twindow)
+        for axis in self.axes:
+            axis.set_xlim(tmin, tmax)
+        data = self.historian.after(tmin)
+        datadict = dict(zip(self.historian.columns, data))
+        t = datadict['Time']
+        for axis, fields in zip(self.axes, self.layout):
+            for field in fields:
+                y = datadict[field]
+                self.lines[field].set_data(t, y)
+            axis.relim()
+            axis.autoscale_view()
+        self.fig.canvas.draw()
+        if self.backend != 'nbAgg':
+            self.display.clear_output(wait=True)
+            self.display.display(self.fig)
