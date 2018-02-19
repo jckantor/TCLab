@@ -8,6 +8,7 @@ During development
 2. Test changes using::
 
     pytest -v
+    pytest --cov=tclab tests/
 
 
 After making changes

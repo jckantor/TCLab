@@ -46,14 +46,22 @@ def test_T2(lab):
 
 def test_P1(lab):
     assert lab.P1 == 200
-    lab.P1 = 100
-    assert lab.P1 == 100
+    lab.P1 = -10
+    assert lab.P1 == 0
+    lab.P1 = 300
+    assert lab.P1 == 255
+    lab.P1 = 200
+    assert lab.P1 == 200
 
 
 def test_P2(lab):
     assert lab.P2 == 100
-    lab.P2 = 200
-    assert lab.P2 == 200
+    lab.P2 = -10
+    assert lab.P2 == 0
+    lab.P2 = 300
+    assert lab.P2 == 255
+    lab.P2 = 100
+    assert lab.P2 == 100
 
 
 def test_LED(lab):
@@ -103,3 +111,16 @@ def test_scan(lab):
     assert 0 < T2 < 200
     assert Q1 == 10
     assert Q2 == 20
+
+
+def test_quantize():
+    lab = TCLabModel()
+    assert lab.quantize(-100) > -100
+    assert lab.quantize(300) < 300
+    assert lab.quantize(20.0) != 20.0
+
+
+def test_measurement():
+    lab = TCLabModel()
+    for n in range(100):
+        assert abs(lab.measurement(n) - n) <= 1.0
