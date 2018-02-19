@@ -35,10 +35,12 @@ def test_context():
 
 
 def test_T1(lab):
+    assert type(lab.T1) == float
     assert -10 < lab.T1 < 110
 
 
 def test_T2(lab):
+    assert type(lab.T2) == float
     assert -10 < lab.T2 < 110
 
 

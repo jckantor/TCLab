@@ -25,7 +25,17 @@ def clip(val, lower=0, upper=100):
 
 
 def command(name, argument, lower=0, upper=100):
+    """Construct command to TCLab-sketch."""
     return name + sep + str(clip(argument, lower, upper))
+
+
+def quantize(T):
+    """Quantize model temperatures to mimic Arduino A/D conversion."""
+    return max(-50, min(132.2, T - T % 0.3223))
+
+
+def measurement(T):
+    return quantize(T + random.normalvariate(0, 0.043))
 
 
 class TCLab(object):
@@ -223,13 +233,13 @@ class TCLabModel(object):
     def T1(self):
         """Return a float denoting TCLab temperature T1 in degrees C."""
         self.update()
-        return self._T1 + random.normalvariate(0, 0.2)
+        return measurement(self._T1)
 
     @property
     def T2(self):
         """Return a float denoting TCLab temperature T2 in degrees C."""
         self.update()
-        return self._T2 + random.normalvariate(0, 0.2)
+        return measurement(self._T2)
 
     @property
     def P1(self):
@@ -279,8 +289,8 @@ class TCLabModel(object):
 
     def scan(self):
         self.update()
-        return (self._T1 + random.normalvariate(0, 0.2),
-                self._T2 + random.normalvariate(0, 0.2),
+        return (measurement(self._T1),
+                measurement(self._T2),
                 self._Q1,
                 self._Q2)
 
