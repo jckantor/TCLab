@@ -8,22 +8,19 @@ During development
 2. Test changes using::
 
     pytest -v
+    pytest --cov=tclab tests/
 
 
 After making changes
 --------------------
-
-1. Update documentation::
-
-    python3 -m sphinx .  _build
 	
-2. Change the version number in ``setup.py``
-3. Check the distribution::
+1. Change the version number in ``setup.py``
+2. Check the distribution::
 
     python setup.py check
     
-4. Push changes through to the master branch on Github.
-5. Create and push tag for the version number::
+3. Push changes through to the master branch on Github.
+4. Create and push tag for the version number::
 
     git tag vX.Y.Z
     git push --tags

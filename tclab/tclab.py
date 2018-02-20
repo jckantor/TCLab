@@ -29,15 +29,6 @@ def command(name, argument, lower=0, upper=100):
     return name + sep + str(clip(argument, lower, upper))
 
 
-def quantize(T):
-    """Quantize model temperatures to mimic Arduino A/D conversion."""
-    return max(-50, min(132.2, T - T % 0.3223))
-
-
-def measurement(T):
-    return quantize(T + random.normalvariate(0, 0.043))
-
-
 class TCLab(object):
     def __init__(self, port='', debug=False):
         self.debug = debug
@@ -233,13 +224,13 @@ class TCLabModel(object):
     def T1(self):
         """Return a float denoting TCLab temperature T1 in degrees C."""
         self.update()
-        return measurement(self._T1)
+        return self.measurement(self._T1)
 
     @property
     def T2(self):
         """Return a float denoting TCLab temperature T2 in degrees C."""
         self.update()
-        return measurement(self._T2)
+        return self.measurement(self._T2)
 
     @property
     def P1(self):
@@ -289,14 +280,21 @@ class TCLabModel(object):
 
     def scan(self):
         self.update()
-        return (measurement(self._T1),
-                measurement(self._T2),
+        return (self.measurement(self._T1),
+                self.measurement(self._T2),
                 self._Q1,
                 self._Q2)
 
     # Define properties for Q1 and Q2
     U1 = property(fget=Q1, fset=Q1, doc="Heater 1 value")
     U2 = property(fget=Q2, fset=Q2, doc="Heater 2 value")
+
+    def quantize(self, T):
+        """Quantize model temperatures to mimic Arduino A/D conversion."""
+        return max(-50, min(132.2, T - T % 0.3223))
+
+    def measurement(self, T):
+        return self.quantize(T + random.normalvariate(0, 0.043))
 
     def update(self):
         self.tnow = labtime.time() - self.tstart
