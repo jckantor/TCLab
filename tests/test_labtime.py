@@ -3,8 +3,6 @@ import time
 
 from tclab import labtime, clock, setnow
 
-# labtime tests
-
 
 def test_import():
     assert labtime.running
