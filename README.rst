@@ -74,6 +74,7 @@ Hardware setup
    without additional drivers required.*
 
    For Arduino clones using the CH340G, CH34G or CH34X chipset you may need additional drivers. Only install these if you see a message saying "No Arduino device found." when connecting.
+
    * `macOS <https://github.com/adrianmihalko/ch340g-ch34g-ch34x-mac-os-x-driver>`__.
    * `Windows <http://www.wch.cn/downfile/65>`__.
 
