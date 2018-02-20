@@ -73,10 +73,9 @@ Hardware setup
    *If you are using Windows 10, the Arduino board should connect
    without additional drivers required.*
 
-   Mac OS X users may need to install a serial driver. For arduino
-   clones using the CH340G, CH34G or CH34X chipset, a suitable driver
-   can be found `here <https://github.com/MPParsley/ch340g-ch34g-ch34x-mac-os-x-driver>`__
-   or `here <https://github.com/adrianmihalko/ch340g-ch34g-ch34x-mac-os-x-driver>`__.
+   For Arduino clones using the CH340G, CH34G or CH34X chipset you may need additional drivers. Only install these if you see a message saying "No Arduino device found." when connecting.
+   * `macOS <https://github.com/adrianmihalko/ch340g-ch34g-ch34x-mac-os-x-driver>`__.
+   * `Windows <http://www.wch.cn/downfile/65>`__.
 
 3. (optional) Install Arduino Firmware
 
