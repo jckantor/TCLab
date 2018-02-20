@@ -11,7 +11,6 @@ TCLab Documentation
    :caption: Contents:
 
    README.rst
-   DEVELOPMENT.rst
 
    notebooks/01_TCLab_Overview.ipynb
    notebooks/02_Accessing_the_Temperature_Control_Laboratory.ipynb
