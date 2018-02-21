@@ -5,19 +5,6 @@ from unittest import mock
 from tclab.gui import NotebookInteraction, actionbutton, NotebookUI
 
 
-def test_actionbutton():
-    with pytest.raises(TypeError):
-        btn = actionbutton()
-    with pytest.raises(TypeError):
-        btn = actionbutton(lambda : print("Hi"))
-    with pytest.raises(TypeError):
-        btn = actionbutton("Hi")
-    action = mock.Mock()
-    btn = actionbutton("Hi", action)
-    assert btn.disabled
-    assert btn.description == "Hi"
-    # need to test on_click callback action
-
 # add tests for slider and labelled values
 
 
