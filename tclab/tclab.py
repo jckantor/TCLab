@@ -75,6 +75,7 @@ class TCLab(object):
             print(self.arduino, 'connected on port', port, 'at', baud, 'baud.')
             print(self.version + '.')
         labtime.set_rate(1)
+        labtime.start()
         self._P1 = 200.0
         self._P2 = 100.0
         self.Q1(0)
@@ -178,11 +179,11 @@ class TCLab(object):
         return self.send_and_receive(msg, float)
 
     def scan(self):
-        self.send('SCAN')
-        T1 = float(self.receive())
-        T2 = float(self.receive())
-        Q1 = float(self.receive())
-        Q2 = float(self.receive())
+        #self.send('SCAN')
+        T1 = self.T1()  # float(self.receive())
+        T2 = self.T2()  # float(self.receive())
+        Q1 = self.Q1()  # float(self.receive())
+        Q2 = self.Q2()  # float(self.receive())
         return T1, T2, Q1, Q2
 
     # Define properties for Q1 and Q2
@@ -193,6 +194,7 @@ class TCLab(object):
 class TCLabModel(object):
     def __init__(self, port='', debug=False):
         self.debug = debug
+        labtime.start()
         print('Simulated TCLab')
         self.Ta = 21                  # ambient temperature
         self.tstart = labtime.time()  # start time
