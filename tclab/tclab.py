@@ -3,6 +3,7 @@
 
 from __future__ import print_function
 import time
+import os
 import random
 import serial
 from serial.tools import list_ports
@@ -32,10 +33,15 @@ def command(name, argument, lower=0, upper=100):
 class TCLab(object):
     def __init__(self, port='', debug=False):
         self.debug = debug
-        for comport in list_ports.grep(port):
+        if os.name == 'nt':
+            port_list = list_ports.comports()
+        else:
+            port_list = list_ports.grep(port)
+        for comport in port_list:
             for key, val in arduinos:
                 if comport[2].startswith(key):
                     self.arduino = val
+                    port = comport[0]
                     break
             else:
                 continue  # key not found in arduinos
@@ -45,18 +51,26 @@ class TCLab(object):
             for comport in list(list_ports.comports()):
                 print(" ".join(comport))
             raise RuntimeError('No Arduino device found.')
-        port = comport[0]
-        for baud in [115200, 9600]:
-            self.sp = serial.Serial(port=port, baudrate=baud, timeout=2)
-            time.sleep(2)
-            self.sp.readline().decode('UTF-8')
-            self.sp.write(('VER' + '\r\n').encode())
-            self.version = self.sp.readline()
-            self.version = self.version.decode('UTF-8').replace('\r\n', '')
-            if self.version != '':
-                break
-        else:
+        try:
+            try:
+                baud = 115200
+                self.sp = serial.Serial(port=port, baudrate=baud, timeout=2)
+                time.sleep(2)
+                self.Q1(0)
+            except:
+                self.sp.close()
+                baud = 9600
+                self.sp = serial.Serial(port=port, baudrate=baud, timeout=2)
+                time.sleep(2)
+                self.Q1(0)  # fails if not connected
+                print('New Arduino TCLab firmware available at:')
+                print(' https://github.com/jckantor/TCLab-sketch')
+        except:
             raise RuntimeError('Failed to Connect.')
+        self.sp.readline().decode('UTF-8')
+        self.sp.write(('VER' + '\r\n').encode())
+        self.version = self.sp.readline()
+        self.version = self.version.decode('UTF-8').replace('\r\n', '')
         if self.sp.isOpen():
             print(self.arduino, 'connected on port', port, 'at', baud, 'baud.')
             print(self.version + '.')
@@ -64,7 +78,6 @@ class TCLab(object):
         self._P1 = 200.0
         self._P2 = 100.0
         self.Q1(0)
-        self.Q2(0)
         self.sources = [('T1', self.scan),
                         ('T2', None),
                         ('Q1', None),
