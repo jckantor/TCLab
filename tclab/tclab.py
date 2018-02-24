@@ -180,8 +180,8 @@ class TCLab(object):
 
     def scan(self):
         #self.send('SCAN')
-        T1 = self.T1()  # float(self.receive())
-        T2 = self.T2()  # float(self.receive())
+        T1 = self.T1  # float(self.receive())
+        T2 = self.T2  # float(self.receive())
         Q1 = self.Q1()  # float(self.receive())
         Q2 = self.Q2()  # float(self.receive())
         return T1, T2, Q1, Q2
