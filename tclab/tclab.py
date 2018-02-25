@@ -50,22 +50,18 @@ class TCLab(object):
     def __init__(self, port='', debug=False):
         self.debug = debug
 
-        port, self.arduino = find_arduino(port)
-        if port is None:
+        self.port, self.arduino = find_arduino(port)
+        if self.port is None:
             raise RuntimeError('No Arduino device found.')
 
         try:
             try:
-                baud = 115200
-                self.sp = serial.Serial(port=port, baudrate=baud, timeout=2)
-                time.sleep(2)
-                self.Q1(0)
+                self.connect(baud=115200)
             except:
                 self.sp.close()
-                baud = 9600
-                self.sp = serial.Serial(port=port, baudrate=baud, timeout=2)
-                time.sleep(2)
-                self.Q1(0)  # fails if not connected
+                self.connect(baud=9600)
+                print('Could not connect at high speed, but succeeded at low speed.')
+                print('This may be due to an old TCLab firmware.')
                 print('New Arduino TCLab firmware available at:')
                 print(' https://github.com/jckantor/TCLab-sketch')
         except:
@@ -75,7 +71,8 @@ class TCLab(object):
         self.version = self.sp.readline()
         self.version = self.version.decode('UTF-8').replace('\r\n', '')
         if self.sp.isOpen():
-            print(self.arduino, 'connected on port', port, 'at', baud, 'baud.')
+            print(self.arduino, 'connected on port', self.port,
+                  'at', self.baud, 'baud.')
             print(self.version + '.')
         labtime.set_rate(1)
         labtime.start()
@@ -94,6 +91,15 @@ class TCLab(object):
     def __exit__(self, exc_type, exc_value, traceback):
         self.close()
         return
+
+    def connect(self, baud):
+        """Establish a connection to the arduino
+
+        baud: baud rate"""
+        self.sp = serial.Serial(port=self.port, baudrate=baud, timeout=2)
+        time.sleep(2)
+        self.Q1(0)  # fails if not connected
+        self.baud = baud
 
     def close(self):
         """Shut down TCLab device and close serial connection."""
