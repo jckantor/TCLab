@@ -169,7 +169,7 @@ class Historian(object):
 
     def new_session(self):
         if self.db is None:
-            raise NotImplemented("Sessions not supported without dbfile")
+            raise NotImplementedError("Sessions not supported without dbfile")
         self.db.new_session()
         self.session = self.db.session
         self.tstart = labtime.time()
@@ -177,12 +177,12 @@ class Historian(object):
 
     def get_sessions(self):
         if self.db is None:
-            raise NotImplemented("Sessions not supported without dbfile")
+            raise NotImplementedError("Sessions not supported without dbfile")
         return self.db.get_sessions()
 
     def load_session(self, session):
         if self.db is None:
-            raise NotImplemented("Sessions not supported without dbfile")
+            raise NotImplementedError("Sessions not supported without dbfile")
         self.db.session = session
         self.build_fields()
         # FIXME: The way time is handled here is a bit brittle
