@@ -1,3 +1,5 @@
+import pytest
+
 from tclab import Historian
 
 
@@ -30,6 +32,25 @@ def test_logging():
     assert h.after(2) == [[2, 3], [1, 1], [0, 1]]
 
 
+def test_implicit_time():
+    h = Historian(sources=[('a', lambda: a)])
+
+    a = 0
+    h.update()
+    a = 1
+    h.update()
+
+    assert len(h.log) == 2
+
+
+def test_wrong_arguments():
+    h = Historian(sources=[('a', lambda: [1]),
+                           ('b', None)])
+
+    with pytest.raises(ValueError):
+        h.update()
+
+
 def test_logging_list():
     a = 0
     b = 0
@@ -49,3 +70,47 @@ def test_logging_list():
     assert len(log) == 2
 
     assert h.at(1, ['a']) == [0.5]
+
+
+def test_sessions():
+    h = Historian(sources=[('a', lambda: a)])
+
+    a = 0
+    h.update(1)
+    a = 2
+    h.update(2)
+
+    assert h.session == 1
+    assert len(h.get_sessions()) == 1
+
+    h.new_session()
+
+    assert h.session == 2
+
+    a = 2
+    h.update(1)
+    a = 3
+    h.update(2)
+    h.update(3)
+
+    assert len(h.get_sessions()) == 2
+
+    assert h.at(1, ['a']) == [2]
+
+    h.load_session(1)
+
+    assert h.at(1, ['a']) == [0]
+
+
+def test_error_handling():
+    h = Historian(sources=[('a', lambda: a)], dbfile=None)
+
+    with pytest.raises(NotImplementedError):
+        h.new_session()
+
+    with pytest.raises(NotImplementedError):
+        h.get_sessions()
+
+    with pytest.raises(NotImplementedError):
+        h.load_session(1)
+
