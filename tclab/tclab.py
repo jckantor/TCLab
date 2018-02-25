@@ -30,27 +30,30 @@ def command(name, argument, lower=0, upper=100):
     return name + sep + str(clip(argument, lower, upper))
 
 
+def find_arduino(port=''):
+    if os.name == 'nt':
+        port_list = list_ports.comports()
+    else:
+        port_list = list_ports.grep(port)
+    for port, desc, hwid in port_list:
+        for identifier, arduino in arduinos:
+            if hwid.startswith(identifier):
+                return port, arduino
+    else:
+        print('--- Serial Ports ---')
+        for comport in list_ports.comports():
+            print(" ".join(comport))
+        return None, None
+
+
 class TCLab(object):
     def __init__(self, port='', debug=False):
         self.debug = debug
-        if os.name == 'nt':
-            port_list = list_ports.comports()
-        else:
-            port_list = list_ports.grep(port)
-        for comport in port_list:
-            for key, val in arduinos:
-                if comport[2].startswith(key):
-                    self.arduino = val
-                    port = comport[0]
-                    break
-            else:
-                continue  # key not found in arduinos
-            break  # key was found in arduinos
-        else:
-            print('--- Serial Ports ---')
-            for comport in list(list_ports.comports()):
-                print(" ".join(comport))
+
+        port, self.arduino = find_arduino(port)
+        if port is None:
             raise RuntimeError('No Arduino device found.')
+
         try:
             try:
                 baud = 115200
