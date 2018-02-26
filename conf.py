@@ -64,7 +64,7 @@ author = 'Jeffrey Kantor and Carl Sandrock'
 exec(open('yourpackage/version.py').read())
 
 # The short X.Y version.
-version = '.'.join(__version__.split(".")[0:2])
+version = '.'.join(__version__.split('.')[0:2])
 
 # The full version, including alpha/beta/rc tags.
 release = __version__
