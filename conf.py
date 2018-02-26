@@ -61,7 +61,7 @@ author = 'Jeffrey Kantor and Carl Sandrock'
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
-exec(open('yourpackage/version.py').read())
+exec(open('tclab/version.py').read())
 
 # The short X.Y version.
 version = '.'.join(__version__.split('.')[0:2])
