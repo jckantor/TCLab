@@ -77,7 +77,7 @@ class TCLab(object):
         labtime.start()
         self._P1 = 200.0
         self._P2 = 100.0
-        self.Q1(0)
+        self.Q2(0)
         self.sources = [('T1', self.scan),
                         ('T2', None),
                         ('Q1', None),
