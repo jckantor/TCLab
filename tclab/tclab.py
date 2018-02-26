@@ -66,10 +66,9 @@ class TCLab(object):
                 print(' https://github.com/jckantor/TCLab-sketch')
         except:
             raise RuntimeError('Failed to Connect.')
+
         self.sp.readline().decode('UTF-8')
-        self.sp.write(('VER' + '\r\n').encode())
-        self.version = self.sp.readline()
-        self.version = self.version.decode('UTF-8').replace('\r\n', '')
+        self.version = self.send_and_receive('VER')
         if self.sp.isOpen():
             print(self.arduino, 'connected on port', self.port,
                   'at', self.baud, 'baud.')
@@ -339,3 +338,68 @@ class TCLabModel(object):
             self._T2 += dt * dT2
 
         self.tlast = self.tnow
+
+
+def diagnose():
+    def countdown(t=10):
+        for i in reversed(range(t)):
+            print(i, end='', flush=True)
+            time.sleep(1)
+        print()
+
+    print('Finding Arduino...')
+    port, name = find_arduino()
+
+    if port is None:
+        print('''
+No known Arduino was found in the ports listed above.
+''')
+        return
+
+    print(name, 'found on port', port)
+
+    print()
+    print('Testing TCLab object in debug mode')
+    print('----------------------------------')
+
+    with TCLab(debug=True) as lab:
+        print('Reading temperature')
+        print(lab.T1)
+
+    print()
+    print('Testing TCLab functions')
+    print('-----------------------')
+
+    with TCLab() as lab:
+        print('Testing LED. Should turn on for 10 seconds. ', end='', flush=True)
+        lab.LED(100)
+        countdown()
+
+        print()
+        print('Reading temperatures')
+        T1 = lab.T1
+        T2 = lab.T2
+        print('T1 = {} °C, T2 = {} °C'.format(T1, T2))
+        
+        print()
+        print('We will now turn on the heaters, wait 30 seconds '
+              'and see if the temperatures have gone up. ')
+        lab.Q1(100)
+        lab.Q2(100)
+        countdown(30)
+
+        print()
+        def tempcheck(name, T_initial, T_final):
+            print('{} started a {} °C and went to {} °C'
+                  .format(name, T_initial, T_final))
+            if T_final - T_initial < 0.8:
+                print('The temperature went up less than expected.')
+                print('Check the heater power supply.')
+
+        T1_final = lab.T1
+        T2_final = lab.T2
+
+        tempcheck('T1', T1, T1_final)
+        tempcheck('T2', T2, T2_final)
+
+    print('Diagnostics complete')

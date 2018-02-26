@@ -103,6 +103,13 @@ If everything has worked, you should see the following output message ::
 
 The number returned is the temperature of sensor T1 in °C.
 
+
+Troubleshooting
+---------------
+
+If something went wrong in the above process, refer to our troubleshooting guide
+in TROUBLESHOOTING.md.
+
 Next Steps
 ----------
 
