@@ -402,4 +402,7 @@ No known Arduino was found in the ports listed above.
         tempcheck('T1', T1, T1_final)
         tempcheck('T2', T2, T2_final)
 
+        print()
+
+    print()
     print('Diagnostics complete')
