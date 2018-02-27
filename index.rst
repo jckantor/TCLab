@@ -11,6 +11,7 @@ TCLab Documentation
    :caption: Contents:
 
    README.rst
+   TROUBLESHOOTING.md
 
    notebooks/01_TCLab_Overview.ipynb
    notebooks/02_Accessing_the_Temperature_Control_Laboratory.ipynb

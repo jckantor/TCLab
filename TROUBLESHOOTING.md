@@ -1,4 +1,5 @@
-# Diagnose
+# Diagnose and Troubleshooting
+
 The library supplies a simple way to diagnose errors with the TCLab device in 
 a function called `diagnose`, which is called as follows:
 
@@ -19,9 +20,9 @@ python -m tclab
 ```
 
 
-# Problems and solutions
+## Problems and solutions
 
-## No Arduino device found
+### No Arduino device found
 
 1. First confirm that the device is correctly plugged in.
 2. Plug it out and back in
@@ -29,7 +30,7 @@ python -m tclab
 4. If no configuration has worked, you may need to install drivers (see below)
 
 
-## Access denied
+### Access denied
 
 A device has been found but you get an error which mentions "Access denied".
 
@@ -38,22 +39,22 @@ selecting a different port for the device. If the device shows up incorrecty
 in the Device Manager, you may need to install drivers (see below)
 
 
-## Setting heaters makes temperature jump
+### Setting heaters makes temperature jump
 
 You may have plugged both of the USB leads into one computer. The device works
 best when the barrel-ended jack is plugged into a separate power supply or 
 a different computer.
 
 
-## Setting heater to 100 doesn't raise temperature
+### Setting heater to 100 doesn't raise temperature
 
 You may only have plugged in your device into your computer using one cable.
 Your device needs to be plugged in to your computer *and* requires another
 connection to a power supply to power the heaters. 
  
 
-# Software fixes
-## Install Drivers
+## Software fixes
+### Install Drivers
 *If you are using Windows 10, the Arduino board should connect without additional drivers required.*
 
 For Arduino clones using the CH340G, CH34G or CH34X chipset you may need additional drivers. Only install these if you see a message saying "No Arduino device found." when connecting.
@@ -62,12 +63,12 @@ For Arduino clones using the CH340G, CH34G or CH34X chipset you may need additio
    * [Windows](http://www.wch.cn/downfile/65)
 
 
-## Update Firmware
+### Update Firmware
 It is usually best to use the most recent version of the Arduino firmware, 
 available from the [TCLab-Sketch repository](https://github.com/jckantor/TCLab-sketch).
 
 
-## Update TCLab python library
+### Update TCLab python library
 If you find that the code supplied in the documentation gives errors about 
 functions not being found, or if you installed tclab a long time ago, you need 
 to update the TCLab library. This can be done with the command

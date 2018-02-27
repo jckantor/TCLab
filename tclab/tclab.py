@@ -8,6 +8,7 @@ import random
 import serial
 from serial.tools import list_ports
 from .labtime import labtime
+from .version import __version__
 
 
 sep = ' '   # command/value separator in TCLab firmware
@@ -49,7 +50,7 @@ def find_arduino(port=''):
 class TCLab(object):
     def __init__(self, port='', debug=False):
         self.debug = debug
-
+        print("TCLab version", __version__)
         self.port, self.arduino = find_arduino(port)
         if self.port is None:
             raise RuntimeError('No Arduino device found.')
@@ -77,7 +78,7 @@ class TCLab(object):
         labtime.start()
         self._P1 = 200.0
         self._P2 = 100.0
-        self.Q1(0)
+        self.Q2(0)
         self.sources = [('T1', self.scan),
                         ('T2', None),
                         ('Q1', None),
@@ -202,6 +203,7 @@ class TCLab(object):
 class TCLabModel(object):
     def __init__(self, port='', debug=False):
         self.debug = debug
+        print("TCLab version", __version__)
         labtime.start()
         print('Simulated TCLab')
         self.Ta = 21                  # ambient temperature
@@ -343,7 +345,7 @@ class TCLabModel(object):
 def diagnose():
     def countdown(t=10):
         for i in reversed(range(t)):
-            print(i, end='', flush=True)
+            print('\r' + "Countdown: {0:d}  ".format(i), end='', flush=True)
             time.sleep(1)
         print()
 
@@ -371,7 +373,7 @@ No known Arduino was found in the ports listed above.
     print('-----------------------')
 
     with TCLab() as lab:
-        print('Testing LED. Should turn on for 10 seconds. ', end='', flush=True)
+        print('Testing LED. Should turn on for 10 seconds.')
         lab.LED(100)
         countdown()
 
