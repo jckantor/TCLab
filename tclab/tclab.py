@@ -32,16 +32,16 @@ def command(name, argument, lower=0, upper=100):
 
 
 def find_arduino(port=''):
-    port_list = list_ports.comports()
-    for port, desc, hwid in port_list:
+    """Locates Arduino and returns port and device."""
+    comports = [tuple for tuple in list_ports.comports() if port in tuple[0]]
+    for port, desc, hwid in comports:
         for identifier, arduino in arduinos:
             if hwid.startswith(identifier):
                 return port, arduino
-    else:
-        print('--- Serial Ports ---')
-        for comport in list_ports.comports():
-            print(" ".join(comport))
-        return None, None
+    print('--- Serial Ports ---')
+    for port, desc, hwid in list_ports.comports():
+        print(port, desc, hwid)
+    return None, None
 
 
 class TCLab(object):
@@ -339,29 +339,29 @@ class TCLabModel(object):
         self.tlast = self.tnow
 
 
-def diagnose():
+def diagnose(port=''):
     def countdown(t=10):
         for i in reversed(range(t)):
             print('\r' + "Countdown: {0:d}  ".format(i), end='', flush=True)
             time.sleep(1)
         print()
 
-    print('Finding Arduino...')
-    port, name = find_arduino()
+    print('Looking for Arduino on', port, '...')
+    comport, name = find_arduino(port=port)
 
-    if port is None:
+    if comport is None:
         print('''
 No known Arduino was found in the ports listed above.
 ''')
         return
 
-    print(name, 'found on port', port)
+    print(name, 'found on port', comport)
 
     print()
     print('Testing TCLab object in debug mode')
     print('----------------------------------')
 
-    with TCLab(debug=True) as lab:
+    with TCLab(port=port, debug=True) as lab:
         print('Reading temperature')
         print(lab.T1)
 
@@ -369,7 +369,7 @@ No known Arduino was found in the ports listed above.
     print('Testing TCLab functions')
     print('-----------------------')
 
-    with TCLab() as lab:
+    with TCLab(port=port) as lab:
         print('Testing LED. Should turn on for 10 seconds.')
         lab.LED(100)
         countdown()
