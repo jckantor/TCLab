@@ -345,7 +345,7 @@ class TCLabModel(object):
 def diagnose():
     def countdown(t=10):
         for i in reversed(range(t)):
-            print(i, end='', flush=True)
+            print('\r' + "Countdown: {0:d}  ".format(i), end='', flush=True)
             time.sleep(1)
         print()
 
@@ -373,7 +373,7 @@ No known Arduino was found in the ports listed above.
     print('-----------------------')
 
     with TCLab() as lab:
-        print('Testing LED. Should turn on for 10 seconds. ', end='', flush=True)
+        print('Testing LED. Should turn on for 10 seconds.')
         lab.LED(100)
         countdown()
 
