@@ -32,10 +32,7 @@ def command(name, argument, lower=0, upper=100):
 
 
 def find_arduino(port=''):
-    if os.name == 'nt':
-        port_list = list_ports.comports()
-    else:
-        port_list = list_ports.grep(port)
+    port_list = list_ports.comports()
     for port, desc, hwid in port_list:
         for identifier, arduino in arduinos:
             if hwid.startswith(identifier):
