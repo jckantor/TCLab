@@ -1,4 +1,4 @@
-from .tclab import TCLab, TCLabModel
+from .tclab import TCLab, TCLabModel, diagnose
 from .historian import Historian, Plotter
 from .experiment import Experiment, runexperiment
 from .labtime import clock, labtime, setnow
