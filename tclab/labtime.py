@@ -71,6 +71,8 @@ def clock(period, step=1, tol=0.5, adaptive=True):
         tperiod (float): Time interval for clock operation in seconds.
         tstep (float): Time step.
         tol (float): Maximum permissible deviation from real time.
+        adaptive (Boolean): If true, and if the rate != 1, then the labtime
+            rate is adjusted to maximize simulation speed.
 
     Yields:
         float: The next time step rounded to nearest 10th of a second.
@@ -81,11 +83,12 @@ def clock(period, step=1, tol=0.5, adaptive=True):
     while now <= period - step + tol:
         yield round(now, 1)
         elapsed = labtime.time() - start - now
-        if labtime.get_rate() != 1:
+        rate = labtime.get_rate()
+        if (rate != 1) and adaptive:
             if elapsed > step:
-                labtime.set_rate(0.8*labtime.get_rate()*step/elapsed)
-            elif (elapsed < 0.5 * step) & (labtime.get_rate() < 50):
-                labtime.set_rate(1.2*labtime.get_rate())
+                labtime.set_rate(0.8 * rate * step / elapsed)
+            elif (elapsed < 0.5 * step) & (rate < 50):
+                labtime.set_rate(1.25 * rate)
         else:
             if elapsed > step + tol:
                 raise RuntimeError('Labtime clock lost synchronization with real time.')
