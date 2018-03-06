@@ -318,8 +318,11 @@ class TCLabModel(object):
     def measurement(self, T):
         return self.quantize(T + random.normalvariate(0, 0.043))
 
-    def update(self):
-        self.tnow = labtime.time() - self.tstart
+    def update(self, t=None):
+        if t is None:
+            self.tnow = labtime.time() - self.tstart
+        else:
+            self.tnow = t
         fullsteps, remainder = divmod(self.tnow - self.tlast, self.maxstep)
 
         for dt in [self.maxstep]*int(fullsteps) + [remainder]:
