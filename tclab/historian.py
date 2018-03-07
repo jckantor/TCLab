@@ -96,6 +96,7 @@ class Historian(object):
         >>> h = Historian([('a', getvalues),
         ...                ('b', None)])
         >>> h.update(0)
+        >>> h.log
         [(0, 1, 2)]
 
         """

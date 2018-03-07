@@ -11,9 +11,13 @@ class Experiment:
     and provide a `.clock` method.
 
     >>> with Experiment(connected=False, plot=False, time=20) as experiment:
-
     ...     for t in experiment.clock():
     ...         experiment.lab.Q1(100 if t < 100 else 0)
+    ... # doctest: +SKIP
+    ... # doctest: +ELLIPSIS
+    TCLab version ...
+    Simulated TCLab
+    TCLab Model disconnected successfully.
 
     Once the experiment has run, you can access `experiment.historian` to see
     the results from the simulation.
@@ -72,11 +76,11 @@ class Experiment:
         else:
             times = range(self.time)
         for t in times:
+            yield t
             if self.plot:
                 self.plotter.update(t)
             else:
                 self.historian.update(t)
-            yield t
             if self.speedup == 0:
                 self.lab.update(t)
 
