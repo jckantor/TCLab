@@ -198,8 +198,9 @@ class TCLab(object):
 
 
 class TCLabModel(object):
-    def __init__(self, port='', debug=False):
+    def __init__(self, port='', debug=False, synced=True):
         self.debug = debug
+        self.synced = synced
         print("TCLab version", __version__)
         labtime.start()
         print('Simulated TCLab')
@@ -320,12 +321,17 @@ class TCLabModel(object):
 
     def update(self, t=None):
         if t is None:
-            self.tnow = labtime.time() - self.tstart
+            if self.synced:
+                self.tnow = labtime.time() - self.tstart
+            else:
+                return
         else:
             self.tnow = t
-        fullsteps, remainder = divmod(self.tnow - self.tlast, self.maxstep)
 
-        for dt in [self.maxstep]*int(fullsteps) + [remainder]:
+        teuler = self.tlast
+
+        while teuler < self.tnow:
+            dt = min(self.maxstep, self.tnow - teuler)
             DeltaTaH1 = self.Ta - self._H1
             DeltaTaH2 = self.Ta - self._H2
             DeltaT12 = self._H1 - self._H2
@@ -338,6 +344,7 @@ class TCLabModel(object):
             self._H2 += dt * dH2
             self._T1 += dt * dT1
             self._T2 += dt * dT2
+            teuler += dt
 
         self.tlast = self.tnow
 

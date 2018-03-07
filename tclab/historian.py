@@ -217,6 +217,7 @@ class Plotter:
         self.historian = historian
         self.twindow = twindow
         self.last_plot_update = 0
+        self.last_plotted_time = 0
 
         if layout is None:
             layout = tuple((field,) for field in historian.columns[1:])
@@ -255,10 +256,15 @@ class Plotter:
     def update(self, tnow=None):
         self.historian.update(tnow)
 
-        if time.time() - self.last_plot_update <= 0.33:
+        minfps = 3
+        maxskip = 50
+
+        clocktime_since_refresh = time.time() - self.last_plot_update
+        simtime_since_refresh = self.historian.tnow - self.last_plotted_time
+
+        if clocktime_since_refresh <= 1/minfps and simtime_since_refresh < maxskip:
             return
 
-        self.last_plot_update = time.time()
         tmin = max(self.historian.tnow - self.twindow, 0)
         tmax = max(self.historian.tnow, self.twindow)
         for axis in self.axes:
@@ -276,3 +282,6 @@ class Plotter:
         if self.backend != 'nbAgg':
             self.display.clear_output(wait=True)
             self.display.display(self.fig)
+
+        self.last_plot_update = time.time()
+        self.last_plotted_time = self.historian.tnow

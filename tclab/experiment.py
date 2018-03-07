@@ -27,7 +27,7 @@ class Experiment:
     def __init__(self, connected=True, plot=True,
                  twindow=200, time=500,
                  dbfile=':memory:',
-                 speedup=1):
+                 speedup=1, synced=True):
         """Parameters:
         connected: If True, connect to a physical TCLab, if False, connecte to
                    TCLabModel
@@ -35,8 +35,9 @@ class Experiment:
         twindow: (only applicable if plotting) the twindow for the Plotter
         time: total time to run for (used for experiment.clock)
         dbfile: The dbfile to use for the Historian
-        speedup: speedup factor to use if not connected. If this is zero, the
-                 experiment will run as fast as possible.
+        speedup: speedup factor to use if not connected.
+        synced: Try to run at a fixed factor of real time. If this is False, run
+                as fast as possible regardless of the value of speedup.
         """
         if speedup != 1 and connected:
             raise ValueError('The real TCLab can only run real time.')
@@ -47,7 +48,8 @@ class Experiment:
         self.time = time
         self.dbfile = dbfile
         self.speedup = speedup
-        if speedup != 0:
+        self.synced = synced
+        if synced:
             labtime.set_rate(speedup)
 
         self.lab = None
@@ -59,7 +61,7 @@ class Experiment:
         if self.connected:
             self.lab = TCLab()
         else:
-            self.lab = TCLabModel()
+            self.lab = TCLabModel(synced=self.synced)
         self.historian = Historian(self.lab.sources, dbfile=self.dbfile)
         if self.plot:
             self.plotter = Plotter(self.historian, twindow=self.twindow)
@@ -71,7 +73,7 @@ class Experiment:
         self.historian.close()
 
     def clock(self):
-        if self.speedup != 0:
+        if self.synced:
             times = clock(self.time)
         else:
             times = range(self.time)
@@ -81,15 +83,21 @@ class Experiment:
                 self.plotter.update(t)
             else:
                 self.historian.update(t)
-            if self.speedup == 0:
+            if not self.synced:
                 self.lab.update(t)
 
 
 def runexperiment(function, connected=True, plot=True,
                   twindow=200, time=500,
                   dbfile=':memory:',
-                  speedup=1):
-    with Experiment(connected, plot, twindow, time, dbfile, speedup) as experiment:
+                  speedup=1, synced=True):
+    """Simple wrapper for Experiment which builds an experiment and calls a
+    function in a timed for loop.
+
+    The function will be passed the time and a TCLab instance at every tick of
+    the clock.
+    """
+    with Experiment(connected, plot, twindow, time, dbfile, speedup, synced) as experiment:
         for t in experiment.clock():
             function(t, experiment.lab)
     return experiment
