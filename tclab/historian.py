@@ -199,6 +199,15 @@ class Historian(object):
         if self.db:
             self.db.close()
 
+    def to_csv(self, filename):
+        """Output contents of log file to CSV"""
+        import csv
+
+        with open(filename, 'w') as f:
+            writer = csv.writer(f)
+            writer.writerow(self.columns)
+            writer.writerows(self.log)
+
 
 class Plotter:
     def __init__(self, historian, twindow=120, layout=None):
