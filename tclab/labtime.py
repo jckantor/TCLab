@@ -2,58 +2,61 @@ import time as time
 
 
 class Labtime():
-    __realtime = time.time()
-    __labtime = 0
-    __rate = 1
-    __running = True
+    def __init__(self):
+        self._realtime = time.time()
+        self._labtime = 0
+        self._rate = 1
+        self._running = True
+        self.lastsleep = 0
 
     @property
     def running(self):
         """Returns variable indicating whether labtime is running."""
-        return self.__class__.__running
+        return self._running
 
     def time(self):
         """Return current labtime."""
         if self.running:
-            elapsed = time.time() - self.__class__.__realtime
-            return self.__class__.__labtime + self.__class__.__rate * elapsed
+            elapsed = time.time() - self._realtime
+            return self._labtime + self._rate * elapsed
         else:
-            return self.__class__.__labtime
+            return self._labtime
 
     def set_rate(self, rate=1):
         """Set the rate of labtime relative to real time."""
         if rate <= 0:
             raise ValueError("Labtime rates must be positive.")
-        self.__class__.__labtime = self.time()
-        self.__class__.__realtime = time.time()
-        self.__class__.__rate = rate
+        self._labtime = self.time()
+        self._realtime = time.time()
+        self._rate = rate
 
     def get_rate(self):
         """Return the rate of labtime relative to real time."""
-        return self.__class__.__rate
+        return self._rate
 
     def sleep(self, delay):
         """Sleep in labtime for a period delay."""
-        if self.__class__.__running:
-            time.sleep(delay / self.__class__.__rate)
+        self.lastsleep = delay
+        if self._running:
+            time.sleep(delay / self._rate)
         else:
             raise RuntimeWarning("sleep is not valid when labtime is stopped.")
 
     def stop(self):
         """Stop labtime."""
-        self.__class__.__labtime = self.time()
-        self.__class__.__realtime = time.time()
-        self.__class__.__running = False
+        self._labtime = self.time()
+        self._realtime = time.time()
+        self._running = False
 
     def start(self):
         """Restart labtime."""
-        self.__class__.__realtime = time.time()
-        self.__class__.__running = True
+        self._realtime = time.time()
+        self._running = True
 
     def reset(self, val=0):
         """Reset labtime to a specified value."""
-        self.__class__.__labtime = val
-        self.__class__.__realtime = time.time()
+        self._labtime = val
+        self._realtime = time.time()
 
 
 labtime = Labtime()
