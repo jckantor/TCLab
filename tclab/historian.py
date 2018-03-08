@@ -37,8 +37,17 @@ class TagDB:
         self.db.commit()
 
     def get_sessions(self):
-        result = self.cursor.execute("SELECT id, starttime FROM sessions")
-        return list(result)
+        query = """SELECT id, starttime, COUNT(DISTINCT timeseconds) 
+                   FROM sessions LEFT JOIN tagvalues ON sessions.id=session_id
+                   GROUP BY id ORDER BY starttime"""
+        return list(self.cursor.execute(query))
+
+    def delete_session(self, session_id):
+        queries = ['DELETE FROM sessions WHERE id = ?',
+                   'DELETE FROM tagvalues WHERE session_id = ?']
+        for query in queries:
+            self.cursor.execute(query, (session_id,))
+        self.db.commit()
 
     def record(self, timeseconds, name, value):
         if self.session is None:
@@ -59,7 +68,15 @@ class TagDB:
         query += " ORDER BY timeseconds"
         return list(self.cursor.execute(query, parameters))
 
+    def clean(self):
+        """Delete sessions with no associated points"""
+        query = """DELETE FROM sessions WHERE id NOT IN 
+                   (SELECT DISTINCT session_id FROM tagvalues)"""
+        self.cursor.execute(query)
+        self.db.commit()
+
     def close(self):
+        self.clean()
         self.db.close()
 
 
