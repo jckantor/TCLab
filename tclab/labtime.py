@@ -91,7 +91,10 @@ def clock(period, step=1, tol=0.5, adaptive=True):
                 labtime.set_rate(1.25 * rate)
         else:
             if elapsed > step + tol:
-                raise RuntimeError('Labtime clock lost synchronization with real time.')
+                message = ('Labtime clock lost synchronization with real time. '
+                           'Step size was {} s, but {:.2f} s elapsed '
+                           '({:.2f} too long). Consider increasing step.')
+                raise RuntimeError(message.format(step, elapsed, elapsed-step))
         labtime.sleep(step - (labtime.time() - start) % step)
         now = labtime.time() - start
 
