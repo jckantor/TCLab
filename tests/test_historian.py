@@ -129,7 +129,8 @@ def test_to_csv(tmpdir):
     a = 1
     h.update(2)
 
-    h.to_csv(outfile)
+    # we need the str here for older versions of Python
+    h.to_csv(str(outfile))
 
     import csv
     lines = list(csv.reader(outfile.open()))
