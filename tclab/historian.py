@@ -251,7 +251,7 @@ class Plotter:
 
         line_options = {'where': 'post', 'lw': 2, 'alpha': 0.8}
         self.lines = {}
-        self.fig, self.axes = plt.subplots(len(layout), 1, figsize=(8, 6),
+        self.fig, self.axes = plt.subplots(len(layout), 1, figsize=(8, 1.5*len(layout)),
                                            dpi = 80,
                                            sharex=True,
                                            gridspec_kw={'hspace': 0})
