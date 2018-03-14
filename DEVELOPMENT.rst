@@ -14,7 +14,7 @@ During development
 After making changes
 --------------------
 	
-1. Change the version number in ``tclab/version.y``.
+1. Change the version number in ``tclab/version.py``.
 2. Check the distribution::
 
     python setup.py check
