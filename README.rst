@@ -9,6 +9,9 @@ Master:
 .. image:: https://readthedocs.org/projects/tclab/badge/?version=latest
     :target: http://tclab.readthedocs.io/en/latest/?badge=latest
 
+.. image:: https://badge.fury.io/py/tclab.svg
+    :target: https://badge.fury.io/py/tclab
+
 Development:
 
 .. image:: https://travis-ci.org/jckantor/TCLab.svg?branch=development
