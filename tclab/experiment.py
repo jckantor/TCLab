@@ -39,7 +39,7 @@ class Experiment:
         synced: Try to run at a fixed factor of real time. If this is False, run
                 as fast as possible regardless of the value of speedup.
         """
-        if speedup != 1 and connected:
+        if (speedup != 1 or not synced) and connected:
             raise ValueError('The real TCLab can only run real time.')
 
         self.connected = connected
@@ -55,7 +55,6 @@ class Experiment:
         self.lab = None
         self.historian = None
         self.plotter = None
-
 
     def __enter__(self):
         if self.connected:
