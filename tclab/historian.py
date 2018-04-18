@@ -185,22 +185,24 @@ class Historian(object):
         """ Return the values of columns after or just before a certain time"""
         return self.timeslice(t, columns=columns)
 
-    def new_session(self):
+    def _dbcheck(selfs):
         if self.db is None:
             raise NotImplementedError("Sessions not supported without dbfile")
+        return True
+
+    def new_session(self):
+        self._dbcheck()
         self.db.new_session()
         self.session = self.db.session
         self.tstart = labtime.time()
         self.build_fields()
 
     def get_sessions(self):
-        if self.db is None:
-            raise NotImplementedError("Sessions not supported without dbfile")
+        self._dbcheck()
         return self.db.get_sessions()
 
     def load_session(self, session):
-        if self.db is None:
-            raise NotImplementedError("Sessions not supported without dbfile")
+        self._dbcheck()
         self.db.session = session
         self.build_fields()
         # FIXME: The way time is handled here is a bit brittle
