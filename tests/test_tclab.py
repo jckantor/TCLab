@@ -71,6 +71,7 @@ def test_LED(lab):
 def settertests(method):
     assert method(-10) == 0
     assert method(50) == 50
+    assert method(0.5) == 0.5
     assert method(120) == 100
     assert 0 <= method() <= 100
 
