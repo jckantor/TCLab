@@ -86,17 +86,16 @@ class Experiment:
                 self.lab.update(t)
 
 
-def runexperiment(function, connected=True, plot=True,
-                  twindow=200, time=500,
-                  dbfile=':memory:',
-                  speedup=1, synced=True):
+def runexperiment(function, *args, **kwargs):
     """Simple wrapper for Experiment which builds an experiment and calls a
     function in a timed for loop.
 
     The function will be passed the time and a TCLab instance at every tick of
     the clock.
+
+    The remaining arguments are passed Experiment.
     """
-    with Experiment(connected, plot, twindow, time, dbfile, speedup, synced) as experiment:
+    with Experiment(*args, **kwargs) as experiment:
         for t in experiment.clock():
             function(t, experiment.lab)
     return experiment
