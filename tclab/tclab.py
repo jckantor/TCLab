@@ -356,28 +356,32 @@ def diagnose(port=''):
             time.sleep(1)
         print()
 
-    print('Looking for Arduino on', port, '...')
+    def heading(string):
+        print()
+        print(string)
+        print('-'*len(string))
+
+    heading('Checking connection')
+
+    if port:
+        print('Looking for Arduino on {} ...'.format(port))
+    else:
+        print('Looking for Arduino on any port...')
     comport, name = find_arduino(port=port)
 
     if comport is None:
-        print('''
-No known Arduino was found in the ports listed above.
-''')
+        print('No known Arduino was found in the ports listed above.')
         return
 
     print(name, 'found on port', comport)
 
-    print()
-    print('Testing TCLab object in debug mode')
-    print('----------------------------------')
+    heading('Testing TCLab object in debug mode')
 
     with TCLab(port=port, debug=True) as lab:
         print('Reading temperature')
         print(lab.T1)
 
-    print()
-    print('Testing TCLab functions')
-    print('-----------------------')
+    heading('Testing TCLab functions')
 
     with TCLab(port=port) as lab:
         print('Testing LED. Should turn on for 10 seconds.')
@@ -389,6 +393,15 @@ No known Arduino was found in the ports listed above.
         T1 = lab.T1
         T2 = lab.T2
         print('T1 = {} °C, T2 = {} °C'.format(T1, T2))
+
+        print()
+        print('Writing fractional value to heaters...')
+        Q1 = lab.Q1(0.5)
+        print("We wrote Q1 = 0.5, and read back Q1 =", Q1)
+
+        if Q1 != 0.5:
+            print("TCLab firmware doesn't support fractional heater values.")
+            print("You need to upgrade to at least version 1.4.0 for this.")
         
         print()
         print('We will now turn on the heaters, wait 30 seconds '
