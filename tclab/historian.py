@@ -185,7 +185,7 @@ class Historian(object):
         """ Return the values of columns after or just before a certain time"""
         return self.timeslice(t, columns=columns)
 
-    def _dbcheck(selfs):
+    def _dbcheck(self):
         if self.db is None:
             raise NotImplementedError("Sessions not supported without dbfile")
         return True
