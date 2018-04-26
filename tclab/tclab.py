@@ -20,6 +20,8 @@ arduinos = [('USB VID:PID=16D0:0613', 'Arduino Uno'),
             ('USB VID:PID', 'unknown device'),
             ]
 
+_sketchurl = 'https://github.com/jckantor/TCLab-sketch'
+
 
 def clip(val, lower=0, upper=100):
     """Limit value to be between lower and upper limits"""
@@ -61,7 +63,7 @@ class TCLab(object):
                 print('Could not connect at high speed, but succeeded at low speed.')
                 print('This may be due to an old TCLab firmware.')
                 print('New Arduino TCLab firmware available at:')
-                print(' https://github.com/jckantor/TCLab-sketch')
+                print(_sketchurl)
         except:
             raise RuntimeError('Failed to Connect.')
 
@@ -400,9 +402,11 @@ def diagnose(port=''):
         print("We wrote Q1 = 0.5, and read back Q1 =", Q1)
 
         if Q1 != 0.5:
-            print("TCLab firmware doesn't support fractional heater values.")
-            print("You need to upgrade to at least version 1.4.0 for this.")
-        
+            print("Your TCLab firmware version ({}) doesn't support"
+                  "fractional heater values.".format(lab.version))
+            print("You need to upgrade to at least version 1.4.0 for this:")
+            print(_sketchurl)
+
         print()
         print('We will now turn on the heaters, wait 30 seconds '
               'and see if the temperatures have gone up. ')
@@ -423,6 +427,22 @@ def diagnose(port=''):
 
         tempcheck('T1', T1, T1_final)
         tempcheck('T2', T2, T2_final)
+
+        print()
+        heading("Throughput check")
+        print("This part checks how fast your unit is")
+        print("We will read T1 as fast as possible")
+
+        start = time.time()
+        n = 0
+        while time.time() - start < 10:
+            elapsed = time.time() - start + 0.0001  # avoid divide by zero
+            T1 = lab.T1
+            n += 1
+            print('\rTime elapsed: {:3.2f} s.'
+                  ' Number of reads: {}.'
+                  ' Sampling rate: {:2.2f} Hz'.format(elapsed, n, n/elapsed),
+                  end='')
 
         print()
 
