@@ -21,6 +21,7 @@ arduinos = [('USB VID:PID=16D0:0613', 'Arduino Uno'),
             ]
 
 _sketchurl = 'https://github.com/jckantor/TCLab-sketch'
+_connected = False
 
 
 def clip(val, lower=0, upper=100):
@@ -46,6 +47,10 @@ def find_arduino(port=''):
     return None, None
 
 
+class AlreadyConnectedError(BaseException):
+    pass
+
+
 class TCLab(object):
     def __init__(self, port='', debug=False):
         self.debug = debug
@@ -55,17 +60,19 @@ class TCLab(object):
             raise RuntimeError('No Arduino device found.')
 
         try:
+            self.connect(baud=115200)
+        except AlreadyConnectedError:
+            raise
+        except:
             try:
-                self.connect(baud=115200)
-            except:
                 self.sp.close()
                 self.connect(baud=9600)
                 print('Could not connect at high speed, but succeeded at low speed.')
                 print('This may be due to an old TCLab firmware.')
                 print('New Arduino TCLab firmware available at:')
                 print(_sketchurl)
-        except:
-            raise RuntimeError('Failed to Connect.')
+            except:
+                raise RuntimeError('Failed to Connect.')
 
         self.sp.readline().decode('UTF-8')
         self.version = self.send_and_receive('VER')
@@ -95,6 +102,13 @@ class TCLab(object):
         """Establish a connection to the arduino
 
         baud: baud rate"""
+        global _connected
+
+        if _connected:
+            raise AlreadyConnectedError('You already have an open connection')
+
+        _connected = True
+
         self.sp = serial.Serial(port=self.port, baudrate=baud, timeout=2)
         time.sleep(2)
         self.Q1(0)  # fails if not connected
@@ -102,10 +116,13 @@ class TCLab(object):
 
     def close(self):
         """Shut down TCLab device and close serial connection."""
+        global _connected
+
         self.Q1(0)
         self.Q2(0)
         self.send_and_receive('X')
         self.sp.close()
+        _connected = False
         print('TCLab disconnected successfully.')
         return
 
