@@ -105,19 +105,19 @@ def test_setnow():
     assert labtime.time() < 10.01
 
 
-@pytest.mark.parametrize("rate", [1, 2, 5, 10, 20])
+@pytest.mark.parametrize("rate", [1, 2, 5])
 def test_generator(rate):
     labtime.set_rate(rate)
     assert [round(_) for _ in clock(3)] == [0, 1, 2, 3]
 
 
-@pytest.mark.parametrize("rate", [1, 2, 5, 10, 20])
+@pytest.mark.parametrize("rate", [1, 2, 5])
 def test_tstep(rate):
     labtime.set_rate(rate)
     assert [round(_) for _ in clock(4, 2)] == [0, 2, 4]
 
 
-@pytest.mark.parametrize("rate", [1, 2, 5, 10, 20])
+@pytest.mark.parametrize("rate", [1, 2, 5])
 def test_tolerance(rate):
     labtime.set_rate(rate)
     for _ in clock(1, tol=0.25):
@@ -128,7 +128,7 @@ def test_tolerance(rate):
     assert round(t) == 5.0
 
 
-@pytest.mark.parametrize("rate", [1, 2, 5, 10, 20])
+@pytest.mark.parametrize("rate", [1, 2, 5])
 def test_sync(rate):
     labtime.set_rate(rate)
     for t in clock(5, 1, tol=0.25):

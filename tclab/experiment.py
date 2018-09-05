@@ -50,7 +50,7 @@ class Experiment:
         self.dbfile = dbfile
         self.speedup = speedup
         self.synced = synced
-        self.skip = skip
+        self.tol = tol
         if synced:
             labtime.set_rate(speedup)
 
