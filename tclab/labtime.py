@@ -71,19 +71,23 @@ def clock(period, step=1, tol=0.5, adaptive=True):
     """Generator providing time values in sync with real time clock.
 
     Args:
-        tperiod (float): Time interval for clock operation in seconds.
-        tstep (float): Time step.
+        period (float): Time interval for clock operation in seconds.
+        step (float): Time step.
         tol (float): Maximum permissible deviation from real time.
         adaptive (Boolean): If true, and if the rate != 1, then the labtime
             rate is adjusted to maximize simulation speed.
 
     Yields:
         float: The next time step rounded to nearest 10th of a second.
+
+
+    Note:
+        Passing `tol=float('inf')` will effectively disable sync error checking
     """
     start = labtime.time()
     now = 0
 
-    while now <= period - step + tol:
+    while now <= period - step:
         yield round(now, 1)
         elapsed = labtime.time() - start - now
         rate = labtime.get_rate()
