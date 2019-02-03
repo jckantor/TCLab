@@ -189,6 +189,3 @@ texinfo_documents = [
      author, 'TCLab', 'One line description of project.',
      'Miscellaneous'),
 ]
-
-
-

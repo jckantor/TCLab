@@ -20,6 +20,9 @@ arduinos = [('USB VID:PID=16D0:0613', 'Arduino Uno'),
             ('USB VID:PID', 'unknown device'),
             ]
 
+_sketchurl = 'https://github.com/jckantor/TCLab-sketch'
+_connected = False
+
 
 def clip(val, lower=0, upper=100):
     """Limit value to be between lower and upper limits"""
@@ -44,6 +47,10 @@ def find_arduino(port=''):
     return None, None
 
 
+class AlreadyConnectedError(BaseException):
+    pass
+
+
 class TCLab(object):
     def __init__(self, port='', debug=False):
         self.debug = debug
@@ -53,17 +60,19 @@ class TCLab(object):
             raise RuntimeError('No Arduino device found.')
 
         try:
+            self.connect(baud=115200)
+        except AlreadyConnectedError:
+            raise
+        except:
             try:
-                self.connect(baud=115200)
-            except:
                 self.sp.close()
                 self.connect(baud=9600)
                 print('Could not connect at high speed, but succeeded at low speed.')
                 print('This may be due to an old TCLab firmware.')
                 print('New Arduino TCLab firmware available at:')
-                print(' https://github.com/jckantor/TCLab-sketch')
-        except:
-            raise RuntimeError('Failed to Connect.')
+                print(_sketchurl)
+            except:
+                raise RuntimeError('Failed to Connect.')
 
         self.sp.readline().decode('UTF-8')
         self.version = self.send_and_receive('VER')
@@ -93,6 +102,13 @@ class TCLab(object):
         """Establish a connection to the arduino
 
         baud: baud rate"""
+        global _connected
+
+        if _connected:
+            raise AlreadyConnectedError('You already have an open connection')
+
+        _connected = True
+
         self.sp = serial.Serial(port=self.port, baudrate=baud, timeout=2)
         time.sleep(2)
         self.Q1(0)  # fails if not connected
@@ -100,10 +116,13 @@ class TCLab(object):
 
     def close(self):
         """Shut down TCLab device and close serial connection."""
+        global _connected
+
         self.Q1(0)
         self.Q2(0)
         self.send_and_receive('X')
         self.sp.close()
+        _connected = False
         print('TCLab disconnected successfully.')
         return
 
@@ -356,28 +375,32 @@ def diagnose(port=''):
             time.sleep(1)
         print()
 
-    print('Looking for Arduino on', port, '...')
+    def heading(string):
+        print()
+        print(string)
+        print('-'*len(string))
+
+    heading('Checking connection')
+
+    if port:
+        print('Looking for Arduino on {} ...'.format(port))
+    else:
+        print('Looking for Arduino on any port...')
     comport, name = find_arduino(port=port)
 
     if comport is None:
-        print('''
-No known Arduino was found in the ports listed above.
-''')
+        print('No known Arduino was found in the ports listed above.')
         return
 
     print(name, 'found on port', comport)
 
-    print()
-    print('Testing TCLab object in debug mode')
-    print('----------------------------------')
+    heading('Testing TCLab object in debug mode')
 
     with TCLab(port=port, debug=True) as lab:
         print('Reading temperature')
         print(lab.T1)
 
-    print()
-    print('Testing TCLab functions')
-    print('-----------------------')
+    heading('Testing TCLab functions')
 
     with TCLab(port=port) as lab:
         print('Testing LED. Should turn on for 10 seconds.')
@@ -389,7 +412,18 @@ No known Arduino was found in the ports listed above.
         T1 = lab.T1
         T2 = lab.T2
         print('T1 = {} °C, T2 = {} °C'.format(T1, T2))
-        
+
+        print()
+        print('Writing fractional value to heaters...')
+        Q1 = lab.Q1(0.5)
+        print("We wrote Q1 = 0.5, and read back Q1 =", Q1)
+
+        if Q1 != 0.5:
+            print("Your TCLab firmware version ({}) doesn't support"
+                  "fractional heater values.".format(lab.version))
+            print("You need to upgrade to at least version 1.4.0 for this:")
+            print(_sketchurl)
+
         print()
         print('We will now turn on the heaters, wait 30 seconds '
               'and see if the temperatures have gone up. ')
@@ -410,6 +444,22 @@ No known Arduino was found in the ports listed above.
 
         tempcheck('T1', T1, T1_final)
         tempcheck('T2', T2, T2_final)
+
+        print()
+        heading("Throughput check")
+        print("This part checks how fast your unit is")
+        print("We will read T1 as fast as possible")
+
+        start = time.time()
+        n = 0
+        while time.time() - start < 10:
+            elapsed = time.time() - start + 0.0001  # avoid divide by zero
+            T1 = lab.T1
+            n += 1
+            print('\rTime elapsed: {:3.2f} s.'
+                  ' Number of reads: {}.'
+                  ' Sampling rate: {:2.2f} Hz'.format(elapsed, n, n/elapsed),
+                  end='')
 
         print()
 

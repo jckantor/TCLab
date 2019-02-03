@@ -185,22 +185,24 @@ class Historian(object):
         """ Return the values of columns after or just before a certain time"""
         return self.timeslice(t, columns=columns)
 
-    def new_session(self):
+    def _dbcheck(self):
         if self.db is None:
             raise NotImplementedError("Sessions not supported without dbfile")
+        return True
+
+    def new_session(self):
+        self._dbcheck()
         self.db.new_session()
         self.session = self.db.session
         self.tstart = labtime.time()
         self.build_fields()
 
     def get_sessions(self):
-        if self.db is None:
-            raise NotImplementedError("Sessions not supported without dbfile")
+        self._dbcheck()
         return self.db.get_sessions()
 
     def load_session(self, session):
-        if self.db is None:
-            raise NotImplementedError("Sessions not supported without dbfile")
+        self._dbcheck()
         self.db.session = session
         self.build_fields()
         # FIXME: The way time is handled here is a bit brittle
@@ -236,6 +238,8 @@ class Plotter:
                 plotted. For example (("T1", "T2"), ("Q1", "Q2")) indicates
                 that there will be two subplots with the two indicated fields
                 plotted on each.
+
+                Note: A single plot is specified as (("T1",),) (note the commas)
         """
         import matplotlib.pyplot as plt
         from matplotlib import get_backend
@@ -252,9 +256,11 @@ class Plotter:
         line_options = {'where': 'post', 'lw': 2, 'alpha': 0.8}
         self.lines = {}
         self.fig, self.axes = plt.subplots(len(layout), 1, figsize=(8, 1.5*len(layout)),
-                                           dpi = 80,
+                                           dpi=80,
                                            sharex=True,
-                                           gridspec_kw={'hspace': 0})
+                                           gridspec_kw={'hspace': 0},
+                                           squeeze=False)
+        self.axes = self.axes[:, 0]
         values = {c: 0 for c in historian.columns}
         plt.setp([a.get_xticklabels() for a in self.axes[:-1]], visible=False)
         for axis, fields in zip(self.axes, self.layout):

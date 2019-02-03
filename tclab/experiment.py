@@ -27,7 +27,7 @@ class Experiment:
     def __init__(self, connected=True, plot=True,
                  twindow=200, time=500,
                  dbfile=':memory:',
-                 speedup=1, synced=True):
+                 speedup=1, synced=True, tol=0.5):
         """Parameters:
         connected: If True, connect to a physical TCLab, if False, connecte to
                    TCLabModel
@@ -38,8 +38,9 @@ class Experiment:
         speedup: speedup factor to use if not connected.
         synced: Try to run at a fixed factor of real time. If this is False, run
                 as fast as possible regardless of the value of speedup.
+        tol: Clock tolerance (used for experiment.clock)
         """
-        if speedup != 1 and connected:
+        if (speedup != 1 or not synced) and connected:
             raise ValueError('The real TCLab can only run real time.')
 
         self.connected = connected
@@ -49,13 +50,13 @@ class Experiment:
         self.dbfile = dbfile
         self.speedup = speedup
         self.synced = synced
+        self.tol = tol
         if synced:
             labtime.set_rate(speedup)
 
         self.lab = None
         self.historian = None
         self.plotter = None
-
 
     def __enter__(self):
         if self.connected:
@@ -74,7 +75,7 @@ class Experiment:
 
     def clock(self):
         if self.synced:
-            times = clock(self.time)
+            times = clock(self.time, tol=self.tol)
         else:
             times = range(self.time)
         for t in times:
@@ -87,17 +88,16 @@ class Experiment:
                 self.lab.update(t)
 
 
-def runexperiment(function, connected=True, plot=True,
-                  twindow=200, time=500,
-                  dbfile=':memory:',
-                  speedup=1, synced=True):
+def runexperiment(function, *args, **kwargs):
     """Simple wrapper for Experiment which builds an experiment and calls a
     function in a timed for loop.
 
     The function will be passed the time and a TCLab instance at every tick of
     the clock.
+
+    The remaining arguments are passed Experiment.
     """
-    with Experiment(connected, plot, twindow, time, dbfile, speedup, synced) as experiment:
+    with Experiment(*args, **kwargs) as experiment:
         for t in experiment.clock():
             function(t, experiment.lab)
     return experiment

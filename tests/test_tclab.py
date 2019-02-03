@@ -1,6 +1,7 @@
 import pytest
 
 from tclab import TCLabModel, TCLab
+from tclab.tclab import AlreadyConnectedError
 import os
 
 TRAVIS = "TRAVIS" in os.environ
@@ -33,6 +34,20 @@ def test_context():
     with TCLab() as _:
         pass
 
+@skip_on_travis
+def test_already_connected():
+    with pytest.raises(AlreadyConnectedError):
+        lab = TCLab()
+        _ = TCLab()
+    lab.close()
+
+@skip_on_travis
+def test_lock_release():
+    """Check that we release the lock"""
+    with TCLab() as lab:
+        _ = lab.T1
+    lab = TCLab()
+    lab.close()
 
 def test_T1(lab):
     assert type(lab.T1) == float
@@ -71,6 +86,7 @@ def test_LED(lab):
 def settertests(method):
     assert method(-10) == 0
     assert method(50) == 50
+    assert method(0.5) == 0.5
     assert method(120) == 100
     assert 0 <= method() <= 100
 
