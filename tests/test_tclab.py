@@ -1,7 +1,7 @@
 import pytest
 
 from tclab import TCLabModel, TCLab
-from tclab.tclab import AlreadyConnectedError
+#from tclab.tclab import AlreadyConnectedError
 import os
 
 TRAVIS = "TRAVIS" in os.environ
@@ -34,12 +34,12 @@ def test_context():
     with TCLab() as _:
         pass
 
-@skip_on_travis
-def test_already_connected():
-    with pytest.raises(AlreadyConnectedError):
-        lab = TCLab()
-        _ = TCLab()
-    lab.close()
+#@skip_on_travis
+#def test_already_connected():
+#    with pytest.raises(AlreadyConnectedError):
+#        lab = TCLab()
+#        _ = TCLab()
+#    lab.close()
 
 @skip_on_travis
 def test_lock_release():
