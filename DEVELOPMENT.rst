@@ -1,11 +1,11 @@
 During development
 ==================
 
-1. Develop using::
+1. To develop, in the top directory of the respository use::
 
     python setup.py develop
     
-2. Test changes using::
+2. With the Arduino plugged, test changes using::
 
     pytest -v
     pytest --cov=tclab tests/
