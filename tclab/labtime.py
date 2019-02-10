@@ -67,7 +67,7 @@ def setnow(tnow=0):
     labtime.reset(tnow)
 
 
-def clock(period, step=1, tol=0.5, adaptive=True):
+def clock(period, step=1, tol=float('inf'), adaptive=True):
     """Generator providing time values in sync with real time clock.
 
     Args:
