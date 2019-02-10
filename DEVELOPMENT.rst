@@ -7,9 +7,11 @@ During development
     
 2. With the Arduino plugged, test changes using::
 
-    pytest -v
-    pytest --cov=tclab tests/
+    python -m pytest -v
+    python -m pytest --cov=tclab tests/
 
+Note that `pytest -v` fails because the root file is not included in the
+search path.
 
 After making changes
 --------------------

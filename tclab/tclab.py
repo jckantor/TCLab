@@ -47,7 +47,7 @@ def find_arduino(port=''):
     return None, None
 
 
-class AlreadyConnectedError(BaseException):
+class AlreadyConnectedError(Exception):
     pass
 
 
