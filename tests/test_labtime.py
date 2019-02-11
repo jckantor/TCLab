@@ -114,6 +114,7 @@ def test_generator(rate):
 @pytest.mark.parametrize("rate", [1, 2, 5])
 def test_tstep(rate):
     labtime.set_rate(rate)
+    print([_ for _ in clock(4,2)])
     assert [round(_) for _ in clock(4, 2)] == [0, 2, 4]
 
 

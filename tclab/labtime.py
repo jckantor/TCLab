@@ -89,8 +89,8 @@ def clock(period, step=1, tol=float('inf'), adaptive=True):
     start = labtime.time()
     now = 0
 
-    while round(now, 1) <= period:
-        yield round(now, 1)
+    while round(now, 0) <= period:
+        yield round(now, 2)
         if round(now) >= period:
             break
         elapsed = labtime.time() - start - now
