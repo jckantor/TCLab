@@ -93,7 +93,7 @@ def clock(period, step=1, tol=float('inf'), adaptive=True):
         yield round(now, 2)
         if round(now) >= period:
             break
-        elapsed = labtime.time() - start - now
+        elapsed = labtime.time() - (start + now)
         rate = labtime.get_rate()
         if (rate != 1) and adaptive:
             if elapsed > step:
