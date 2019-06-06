@@ -53,6 +53,7 @@ class AlreadyConnectedError(Exception):
 
 class TCLab(object):
     def __init__(self, port='', debug=False):
+        global _connected
         self.debug = debug
         print("TCLab version", __version__)
         self.port, self.arduino = find_arduino(port)
@@ -65,6 +66,7 @@ class TCLab(object):
             raise
         except:
             try:
+                _connected = False
                 self.sp.close()
                 self.connect(baud=9600)
                 print('Could not connect at high speed, but succeeded at low speed.')
@@ -415,7 +417,10 @@ def diagnose(port=''):
 
         print()
         print('Writing fractional value to heaters...')
-        Q1 = lab.Q1(0.5)
+        try:
+            Q1 = lab.Q1(0.5)
+        except:
+            Q1 = -1.0
         print("We wrote Q1 = 0.5, and read back Q1 =", Q1)
 
         if Q1 != 0.5:
