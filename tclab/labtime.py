@@ -67,7 +67,7 @@ def setnow(tnow=0):
     labtime.reset(tnow)
 
 
-def clock(period, step=1, tol=0.5, adaptive=True):
+def clock(period, step=1, tol=float('inf'), adaptive=True):
     """Generator providing time values in sync with real time clock.
 
     Args:
@@ -89,11 +89,11 @@ def clock(period, step=1, tol=0.5, adaptive=True):
     start = labtime.time()
     now = 0
 
-    while round(now, 1) <= period:
-        yield round(now, 1)
+    while round(now, 0) <= period:
+        yield round(now, 2)
         if round(now) >= period:
             break
-        elapsed = labtime.time() - start - now
+        elapsed = labtime.time() - (start + now)
         rate = labtime.get_rate()
         if (rate != 1) and adaptive:
             if elapsed > step:
