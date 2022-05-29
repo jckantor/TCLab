@@ -3,7 +3,6 @@
 
 from __future__ import print_function
 from __future__ import division
-from collections import Iterable
 import bisect
 import sqlite3
 from .labtime import labtime
@@ -146,9 +145,9 @@ class Historian(object):
         for name, valuefunction in self.sources:
             if valuefunction:
                 v = valuefunction()
-                if isinstance(v, Iterable):
+                try:
                     values = iter(v)
-                else:
+                except TypeError:
                     values = iter([v])
             try:
                 value = next(values)
