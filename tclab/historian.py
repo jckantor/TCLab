@@ -218,10 +218,40 @@ class Historian(object):
             self.db.close()
 
     def to_csv(self, filename):
-        """Output contents of log file to CSV"""
-        import csv
+        """Output contents of log file to CSV
 
-        with open(filename, 'w') as f:
+        :param filename: str, pathlib.Path, file handle or file-like object
+                into which the CSV data should be written. Files and
+                file-like objects should be opened in text mode and files
+                should be opened with the option `newline=""` to prevent
+                extra new lines being inserted.
+
+        Examples::
+
+        >>> h = Historian(lab.sources)
+        >>> # run the experiment
+        >>>
+        >>> h.to_csv("myfile.csv")
+        >>>
+        >>> with open("myfile2.csv", "w", newline="") as fh:
+        ...     h.to_csv(fh)
+        >>>
+        >>> s = io.StringIO()
+        >>> h.to_csv(s)
+        """
+        import contextlib
+        import csv
+        import pathlib
+
+        @contextlib.contextmanager
+        def open_if_filename(file_or_filename):
+            if isinstance(file_or_filename, (str, pathlib.Path)):
+                with open(file_or_filename, 'w', newline='') as fh:
+                    yield fh
+            else:
+                yield file_or_filename
+
+        with open_if_filename(filename) as f:
             writer = csv.writer(f)
             writer.writerow(self.columns)
             writer.writerows(self.log)
