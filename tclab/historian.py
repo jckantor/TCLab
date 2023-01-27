@@ -263,17 +263,17 @@ class Plotter:
         self.axes = self.axes[:, 0]
         values = {c: 0 for c in historian.columns}
         plt.setp([a.get_xticklabels() for a in self.axes[:-1]], visible=False)
+        plt.setp([a.get_xticklabels() for a in self.axes[:-1]], visible=False)
         for axis, fields in zip(self.axes, self.layout):
             for field in fields:
                 y = values[field]
-                self.lines[field] = axis.step(0, y, label=field,
-                                              **line_options)[0]
+                self.lines[field] = axis.step(0, y, label=field, **line_options)[0]
             axis.set_xlim(0, self.twindow)
             axis.autoscale(axis='y', tight=False)
             axis.set_ylabel(', '.join(fields))
             if len(fields) > 1:
                 axis.legend()
-            axis.grid()
+            axis.grid(True)
 
         self.axes[-1].set_xlabel('Time / Seconds')
         plt.tight_layout()
